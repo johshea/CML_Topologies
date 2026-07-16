@@ -1,0 +1,2010 @@
+annotations: []
+smart_annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |2-
+
+          !Command: show running-config
+          !Running configuration last done at: Wed Jul 15 21:45:12 2026
+          !Time: Wed Jul 15 21:45:13 2026
+
+          version 10.6(2) Bios:version
+          hostname Spine1-Border
+          vdc Spine1-Border id 1
+            limit-resource vlan minimum 16 maximum 4094
+            limit-resource vrf minimum 2 maximum 4096
+            limit-resource port-channel minimum 0 maximum 511
+            limit-resource m4route-mem minimum 58 maximum 58
+            limit-resource m6route-mem minimum 8 maximum 8
+
+          nv overlay evpn
+          feature ospf
+          feature bgp
+          feature interface-vlan
+          feature vn-segment-vlan-based
+          feature nv overlay
+
+          username admin password 5 $5$FBMHMN$zTKP.uouwjN2wfkWxM3Py4oYxYhcNUuQtPQldaWElq7  role network-admin
+          ip domain-lookup
+          snmp-server user admin network-admin auth md5 333D0232718E0CFC6F185409152C1703E661 priv aes-128 37431B2E7AA001F4751A0B1E59271A019443 localizedV2key
+          rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+          rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+          rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+          rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+          rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+
+          vlan 1,110,120,3001-3002
+          vlan 110
+            name BLUE-TRANSIT
+          vlan 120
+            name GREEN-TRANSIT
+          vlan 3001
+            name VRF-BLUE-L3VNI
+            vn-segment 50001
+          vlan 3002
+            name VRF-GREEN-L3VNI
+            vn-segment 50002
+
+          route-map PERMIT-ALL permit 10
+          vrf context BLUE
+            vni 50001
+            ip route 0.0.0.0/0 192.168.110.2
+            rd auto
+            address-family ipv4 unicast
+              route-target both auto
+              route-target both auto evpn
+          vrf context GREEN
+            vni 50002
+            ip route 0.0.0.0/0 192.168.120.2
+            rd auto
+            address-family ipv4 unicast
+              route-target both auto
+              route-target both auto evpn
+          vrf context management
+
+
+          interface Vlan1
+
+          interface Vlan110
+            no shutdown
+            vrf member BLUE
+            ip address 192.168.110.1/30
+
+          interface Vlan120
+            no shutdown
+            vrf member GREEN
+            ip address 192.168.120.1/30
+
+          interface Vlan3001
+            no shutdown
+            vrf member BLUE
+            ip forward
+
+          interface Vlan3002
+            no shutdown
+            vrf member GREEN
+            ip forward
+
+          interface nve1
+            no shutdown
+            host-reachability protocol bgp
+            source-interface loopback0
+            member vni 50001 associate-vrf
+            member vni 50002 associate-vrf
+
+          interface Ethernet1/1
+            description to Leaf1 Eth1/1
+            no switchport
+            ip address 172.16.1.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            no shutdown
+
+          interface Ethernet1/2
+            description to Leaf2 Eth1/1
+            no switchport
+            ip address 172.16.1.2/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            no shutdown
+
+          interface Ethernet1/3
+            description trunk to BorderRouter-DNS-DHCP Gi0/1
+            switchport mode trunk
+            switchport trunk allowed vlan 110,120
+
+          interface Ethernet1/4
+
+          interface Ethernet1/5
+
+          interface Ethernet1/6
+
+          interface Ethernet1/7
+
+          interface Ethernet1/8
+
+          interface Ethernet1/9
+
+          interface Ethernet1/10
+
+          interface Ethernet1/11
+
+          interface Ethernet1/12
+
+          interface Ethernet1/13
+
+          interface Ethernet1/14
+
+          interface Ethernet1/15
+
+          interface Ethernet1/16
+
+          interface Ethernet1/17
+
+          interface Ethernet1/18
+
+          interface Ethernet1/19
+
+          interface Ethernet1/20
+
+          interface Ethernet1/21
+
+          interface Ethernet1/22
+
+          interface Ethernet1/23
+
+          interface Ethernet1/24
+
+          interface Ethernet1/25
+
+          interface Ethernet1/26
+
+          interface Ethernet1/27
+
+          interface Ethernet1/28
+
+          interface Ethernet1/29
+
+          interface Ethernet1/30
+
+          interface Ethernet1/31
+
+          interface Ethernet1/32
+
+          interface Ethernet1/33
+
+          interface Ethernet1/34
+
+          interface Ethernet1/35
+
+          interface Ethernet1/36
+
+          interface Ethernet1/37
+
+          interface Ethernet1/38
+
+          interface Ethernet1/39
+
+          interface Ethernet1/40
+
+          interface Ethernet1/41
+
+          interface Ethernet1/42
+
+          interface Ethernet1/43
+
+          interface Ethernet1/44
+
+          interface Ethernet1/45
+
+          interface Ethernet1/46
+
+          interface Ethernet1/47
+
+          interface Ethernet1/48
+
+          interface Ethernet1/49
+
+          interface Ethernet1/50
+
+          interface Ethernet1/51
+
+          interface Ethernet1/52
+
+          interface Ethernet1/53
+
+          interface Ethernet1/54
+
+          interface Ethernet1/55
+
+          interface Ethernet1/56
+
+          interface Ethernet1/57
+
+          interface Ethernet1/58
+
+          interface Ethernet1/59
+
+          interface Ethernet1/60
+
+          interface Ethernet1/61
+
+          interface Ethernet1/62
+
+          interface Ethernet1/63
+
+          interface Ethernet1/64
+
+          interface mgmt0
+            vrf member management
+
+          interface loopback0
+            ip address 172.16.255.1/32
+            ip router ospf UNDERLAY area 0.0.0.0
+          icam monitor scale
+
+          line console
+            exec-timeout 0
+          line vty
+            exec-timeout 0
+          router ospf UNDERLAY
+            router-id 172.16.255.1
+          router bgp 65000
+            router-id 172.16.255.1
+            address-family l2vpn evpn
+            neighbor 172.16.255.11
+              remote-as 65000
+              update-source loopback0
+              address-family l2vpn evpn
+                send-community
+                send-community extended
+                route-reflector-client
+            neighbor 172.16.255.12
+              remote-as 65000
+              update-source loopback0
+              address-family l2vpn evpn
+                send-community
+                send-community extended
+                route-reflector-client
+            vrf BLUE
+              address-family ipv4 unicast
+                advertise l2vpn evpn
+                redistribute static route-map PERMIT-ALL
+                default-information originate
+            vrf GREEN
+              address-family ipv4 unicast
+                advertise l2vpn evpn
+                redistribute static route-map PERMIT-ALL
+                default-information originate
+
+          no logging console
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: Spine1-Border
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -320
+    y: -280
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |2-
+
+          !Command: show running-config
+          !Running configuration last done at: Wed Jul 15 21:45:09 2026
+          !Time: Wed Jul 15 21:45:09 2026
+
+          version 10.6(2) Bios:version
+          hostname Spine2
+          vdc Spine2 id 1
+            limit-resource vlan minimum 16 maximum 4094
+            limit-resource vrf minimum 2 maximum 4096
+            limit-resource port-channel minimum 0 maximum 511
+            limit-resource m4route-mem minimum 58 maximum 58
+            limit-resource m6route-mem minimum 8 maximum 8
+
+          nv overlay evpn
+          feature ospf
+          feature bgp
+          feature nv overlay
+
+          username admin password 5 $5$KFHBKA$UHL3D4OVCjyNVCC3ePVh3cgIXdUAjtollrt7wMtMRk.  role network-admin
+          ip domain-lookup
+          snmp-server user admin network-admin auth md5 056BA6246FBD016E2CF9EE62A5F0F81B4FD3 priv aes-128 057F8913418A6F4739F1D92DEAAFB8460B95 localizedV2key
+          rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+          rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+          rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+          rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+          rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+
+          vlan 1
+
+          vrf context management
+
+          interface Ethernet1/1
+            description to Leaf1 Eth1/2
+            no switchport
+            ip address 172.16.1.4/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            no shutdown
+
+          interface Ethernet1/2
+            description to Leaf2 Eth1/2
+            no switchport
+            ip address 172.16.1.6/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            no shutdown
+
+          interface Ethernet1/3
+
+          interface Ethernet1/4
+
+          interface Ethernet1/5
+
+          interface Ethernet1/6
+
+          interface Ethernet1/7
+
+          interface Ethernet1/8
+
+          interface Ethernet1/9
+
+          interface Ethernet1/10
+
+          interface Ethernet1/11
+
+          interface Ethernet1/12
+
+          interface Ethernet1/13
+
+          interface Ethernet1/14
+
+          interface Ethernet1/15
+
+          interface Ethernet1/16
+
+          interface Ethernet1/17
+
+          interface Ethernet1/18
+
+          interface Ethernet1/19
+
+          interface Ethernet1/20
+
+          interface Ethernet1/21
+
+          interface Ethernet1/22
+
+          interface Ethernet1/23
+
+          interface Ethernet1/24
+
+          interface Ethernet1/25
+
+          interface Ethernet1/26
+
+          interface Ethernet1/27
+
+          interface Ethernet1/28
+
+          interface Ethernet1/29
+
+          interface Ethernet1/30
+
+          interface Ethernet1/31
+
+          interface Ethernet1/32
+
+          interface Ethernet1/33
+
+          interface Ethernet1/34
+
+          interface Ethernet1/35
+
+          interface Ethernet1/36
+
+          interface Ethernet1/37
+
+          interface Ethernet1/38
+
+          interface Ethernet1/39
+
+          interface Ethernet1/40
+
+          interface Ethernet1/41
+
+          interface Ethernet1/42
+
+          interface Ethernet1/43
+
+          interface Ethernet1/44
+
+          interface Ethernet1/45
+
+          interface Ethernet1/46
+
+          interface Ethernet1/47
+
+          interface Ethernet1/48
+
+          interface Ethernet1/49
+
+          interface Ethernet1/50
+
+          interface Ethernet1/51
+
+          interface Ethernet1/52
+
+          interface Ethernet1/53
+
+          interface Ethernet1/54
+
+          interface Ethernet1/55
+
+          interface Ethernet1/56
+
+          interface Ethernet1/57
+
+          interface Ethernet1/58
+
+          interface Ethernet1/59
+
+          interface Ethernet1/60
+
+          interface Ethernet1/61
+
+          interface Ethernet1/62
+
+          interface Ethernet1/63
+
+          interface Ethernet1/64
+
+          interface mgmt0
+            vrf member management
+
+          interface loopback0
+            ip address 172.16.255.2/32
+            ip router ospf UNDERLAY area 0.0.0.0
+          icam monitor scale
+
+          line console
+            exec-timeout 0
+          line vty
+            exec-timeout 0
+          router ospf UNDERLAY
+            router-id 172.16.255.2
+          router bgp 65000
+            router-id 172.16.255.2
+            address-family l2vpn evpn
+            neighbor 172.16.255.11
+              remote-as 65000
+              update-source loopback0
+              address-family l2vpn evpn
+                send-community
+                send-community extended
+                route-reflector-client
+            neighbor 172.16.255.12
+              remote-as 65000
+              update-source loopback0
+              address-family l2vpn evpn
+                send-community
+                send-community extended
+                route-reflector-client
+
+          no logging console
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: Spine2
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 160
+    y: -280
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |2-
+
+          !Command: show running-config
+          !Running configuration last done at: Wed Jul 15 21:47:40 2026
+          !Time: Wed Jul 15 21:47:41 2026
+
+          version 10.6(2) Bios:version
+          hostname Leaf1
+          vdc Leaf1 id 1
+            limit-resource vlan minimum 16 maximum 4094
+            limit-resource vrf minimum 2 maximum 4096
+            limit-resource port-channel minimum 0 maximum 511
+            limit-resource m4route-mem minimum 58 maximum 58
+            limit-resource m6route-mem minimum 8 maximum 8
+
+          cfs eth distribute
+          nv overlay evpn
+          feature ospf
+          feature bgp
+          feature interface-vlan
+          feature vn-segment-vlan-based
+          feature dhcp
+          feature nv overlay
+
+          username admin password 5 $5$CHAAEA$CBsWRdIV22I1AZ4XeXRGP2pPWrEiweyoLbO9j14fK44  role network-admin
+          ip domain-lookup
+          snmp-server user admin network-admin auth md5 49477C040CFE791654D9D128F55519C594DE priv aes-128 21512F1409E3581C57CE802EA6270BD8CC91 localizedV2key
+          rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+          rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+          rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+          rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+          rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+
+          fabric forwarding anycast-gateway-mac 2020.0000.00aa
+          vlan 1,10,20,3001-3002
+          vlan 10
+            name BLUE-CLIENTS
+            vn-segment 10010
+          vlan 20
+            name GREEN-CLIENTS
+            vn-segment 10020
+          vlan 3001
+            name VRF-BLUE-L3VNI
+            vn-segment 50001
+          vlan 3002
+            name VRF-GREEN-L3VNI
+            vn-segment 50002
+
+          route-map PERMIT-ALL permit 10
+          service dhcp
+          ip dhcp relay
+          ipv6 dhcp relay
+          vrf context BLUE
+            vni 50001
+            rd auto
+            address-family ipv4 unicast
+              route-target both auto
+              route-target both auto evpn
+          vrf context GREEN
+            vni 50002
+            rd auto
+            address-family ipv4 unicast
+              route-target both auto
+              route-target both auto evpn
+          vrf context management
+
+
+          interface Vlan1
+            no ip redirects
+            no ipv6 redirects
+
+          interface Vlan10
+            no shutdown
+            vrf member BLUE
+            no ip redirects
+            ip address 192.168.10.1/24
+            no ipv6 redirects
+            fabric forwarding mode anycast-gateway
+            ip dhcp relay address 192.168.110.2
+
+          interface Vlan20
+            no shutdown
+            vrf member GREEN
+            no ip redirects
+            ip address 192.168.20.1/24
+            no ipv6 redirects
+            fabric forwarding mode anycast-gateway
+            ip dhcp relay address 192.168.120.2
+
+          interface Vlan3001
+            no shutdown
+            vrf member BLUE
+            no ip redirects
+            ip forward
+            no ipv6 redirects
+
+          interface Vlan3002
+            no shutdown
+            vrf member GREEN
+            no ip redirects
+            ip forward
+            no ipv6 redirects
+
+          interface nve1
+            no shutdown
+            host-reachability protocol bgp
+            source-interface loopback9
+            member vni 10010
+              ingress-replication protocol bgp
+            member vni 10020
+              ingress-replication protocol bgp
+            member vni 50001 associate-vrf
+            member vni 50002 associate-vrf
+
+          interface Ethernet1/1
+            description to Spine1
+            no switchport
+            ip address 172.16.1.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            no shutdown
+
+          interface Ethernet1/2
+            description to Spine2
+            no switchport
+            ip address 172.16.1.5/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            no shutdown
+
+          interface Ethernet1/3
+            description to Client3-Green (access)
+            switchport access vlan 20
+            switchport trunk allowed vlan 10,20
+
+          interface Ethernet1/4
+            no switchport
+
+          interface Ethernet1/5
+            description vPC member to AccessSwitch
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+
+          interface Ethernet1/6
+            description to Client1-Blue (access)
+            switchport access vlan 10
+
+          interface Ethernet1/7
+
+          interface Ethernet1/8
+
+          interface Ethernet1/9
+
+          interface Ethernet1/10
+
+          interface Ethernet1/11
+
+          interface Ethernet1/12
+
+          interface Ethernet1/13
+
+          interface Ethernet1/14
+
+          interface Ethernet1/15
+
+          interface Ethernet1/16
+
+          interface Ethernet1/17
+
+          interface Ethernet1/18
+
+          interface Ethernet1/19
+
+          interface Ethernet1/20
+
+          interface Ethernet1/21
+
+          interface Ethernet1/22
+
+          interface Ethernet1/23
+
+          interface Ethernet1/24
+
+          interface Ethernet1/25
+
+          interface Ethernet1/26
+
+          interface Ethernet1/27
+
+          interface Ethernet1/28
+
+          interface Ethernet1/29
+
+          interface Ethernet1/30
+
+          interface Ethernet1/31
+
+          interface Ethernet1/32
+
+          interface Ethernet1/33
+
+          interface Ethernet1/34
+
+          interface Ethernet1/35
+
+          interface Ethernet1/36
+
+          interface Ethernet1/37
+
+          interface Ethernet1/38
+
+          interface Ethernet1/39
+
+          interface Ethernet1/40
+
+          interface Ethernet1/41
+
+          interface Ethernet1/42
+
+          interface Ethernet1/43
+
+          interface Ethernet1/44
+
+          interface Ethernet1/45
+
+          interface Ethernet1/46
+
+          interface Ethernet1/47
+
+          interface Ethernet1/48
+
+          interface Ethernet1/49
+
+          interface Ethernet1/50
+
+          interface Ethernet1/51
+
+          interface Ethernet1/52
+
+          interface Ethernet1/53
+
+          interface Ethernet1/54
+
+          interface Ethernet1/55
+
+          interface Ethernet1/56
+
+          interface Ethernet1/57
+
+          interface Ethernet1/58
+
+          interface Ethernet1/59
+
+          interface Ethernet1/60
+
+          interface Ethernet1/61
+
+          interface Ethernet1/62
+
+          interface Ethernet1/63
+
+          interface Ethernet1/64
+
+          interface mgmt0
+            vrf member management
+
+          interface loopback9
+            ip address 172.16.255.11/32
+            ip router ospf UNDERLAY area 0.0.0.0
+          icam monitor scale
+
+          line console
+            exec-timeout 0
+          line vty
+            exec-timeout 0
+          router ospf UNDERLAY
+            router-id 172.16.255.11
+          router bgp 65000
+            router-id 172.16.255.11
+            address-family l2vpn evpn
+            neighbor 172.16.255.1
+              remote-as 65000
+              update-source loopback9
+              address-family l2vpn evpn
+                send-community
+                send-community extended
+            neighbor 172.16.255.2
+              remote-as 65000
+              update-source loopback9
+              address-family l2vpn evpn
+                send-community
+                send-community extended
+            vrf BLUE
+              address-family ipv4 unicast
+                advertise l2vpn evpn
+                redistribute direct route-map PERMIT-ALL
+            vrf GREEN
+              address-family ipv4 unicast
+                advertise l2vpn evpn
+                redistribute direct route-map PERMIT-ALL
+          evpn
+            vni 10010 l2
+              rd auto
+              route-target import auto
+              route-target export auto
+            vni 10020 l2
+              rd auto
+              route-target import auto
+              route-target export auto
+
+          no logging console
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: Leaf1
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -320
+    y: -40
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: Ethernet1/5
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: Ethernet1/6
+        mac_address: null
+        type: physical
+        slot: 6
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname AccessSwitch
+          no logging console
+          vtp mode transparent
+          spanning-tree mode pvst
+          spanning-tree extend system-id
+          vlan 10
+           name BLUE-CLIENTS
+          vlan 20
+           name GREEN-CLIENTS
+          interface GigabitEthernet0/0
+           description trunk to Leaf1 Eth1/5
+           switchport trunk encapsulation dot1q
+           switchport trunk allowed vlan 10,20
+           switchport mode trunk
+           no shutdown
+          interface GigabitEthernet0/1
+           description unused
+           shutdown
+          interface GigabitEthernet0/2
+           description to Client3-Blue (access)
+           switchport access vlan 10
+           switchport mode access
+           no shutdown
+          interface GigabitEthernet0/3
+           description to Client3-Green (access)
+           switchport access vlan 20
+           switchport mode access
+           no shutdown
+          line con 0
+           exec-timeout 0 0
+          line vty 0 4
+           exec-timeout 0 0
+           login
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: AccessSwitch
+    node_definition: iosvl2
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -600
+    y: -40
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          Building configuration...
+
+          Current configuration : 3888 bytes
+          !
+          ! Last configuration change at 21:49:03 UTC Wed Jul 15 2026
+          !
+          version 15.9
+          service timestamps debug datetime msec
+          service timestamps log datetime msec
+          no service password-encryption
+          !
+          hostname BorderRouter-DNS-DHCP
+          !
+          boot-start-marker
+          boot-end-marker
+          !
+          !
+          no logging console
+          !
+          no aaa new-model
+          !
+          !
+          !
+          mmi polling-interval 60
+          no mmi auto-configure
+          no mmi pvc
+          mmi snmp-timeout 180
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          ip dhcp excluded-address 192.168.10.1 192.168.10.10
+          ip dhcp excluded-address 192.168.20.1 192.168.20.10
+          !
+          ip dhcp pool BLUE
+           network 192.168.10.0 255.255.255.0
+           default-router 192.168.10.1
+           dns-server 192.168.110.2
+           domain-name blue.lab
+          !
+          ip dhcp pool GREEN
+           network 192.168.20.0 255.255.255.0
+           default-router 192.168.20.1
+           dns-server 192.168.120.2
+           domain-name green.lab
+          !
+          !
+          !
+          ip host gw-blue.lab 192.168.10.1
+          ip host gw-green.lab 192.168.20.1
+          ip host border.lab 192.168.110.2
+          ip cef
+          no ipv6 cef
+          !
+          multilink bundle-name authenticated
+          !
+          !
+          !
+          !
+          username admin privilege 15 secret 9 $9$KRoE.BleFkrv17$X465rp1bWhkS4wWOBKSzevXNfANJNgeloa16.d.oFDU
+          !
+          redundancy
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          !
+          interface GigabitEthernet0/0
+           no ip address
+           shutdown
+           duplex auto
+           speed auto
+           media-type rj45
+          !
+          interface GigabitEthernet0/1
+           no ip address
+           duplex auto
+           speed auto
+           media-type rj45
+          !
+          interface GigabitEthernet0/1.110
+           encapsulation dot1Q 110
+           ip address 192.168.110.2 255.255.255.252
+          !
+          interface GigabitEthernet0/1.120
+           encapsulation dot1Q 120
+           ip address 192.168.120.2 255.255.255.252
+          !
+          interface GigabitEthernet0/2
+           no ip address
+           shutdown
+           duplex auto
+           speed auto
+           media-type rj45
+          !
+          interface GigabitEthernet0/3
+           no ip address
+           shutdown
+           duplex auto
+           speed auto
+           media-type rj45
+          !
+          ip forward-protocol nd
+          !
+          !
+          no ip http server
+          no ip http secure-server
+          ip dns server
+          ip route 192.168.10.0 255.255.255.0 192.168.110.1
+          ip route 192.168.20.0 255.255.255.0 192.168.120.1
+          !
+          ipv6 ioam timestamp
+          !
+          !
+          !
+          control-plane
+          !
+          banner exec ^C
+          **************************************************************************
+          * IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+          * education. IOSv is provided as-is and is not supported by Cisco's      *
+          * Technical Advisory Center. Any use or disclosure, in whole or in part, *
+          * of the IOSv Software or Documentation to any third party for any       *
+          * purposes is expressly prohibited except as otherwise authorized by     *
+          * Cisco in writing.                                                      *
+          **************************************************************************^C
+          banner incoming ^C
+          **************************************************************************
+          * IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+          * education. IOSv is provided as-is and is not supported by Cisco's      *
+          * Technical Advisory Center. Any use or disclosure, in whole or in part, *
+          * of the IOSv Software or Documentation to any third party for any       *
+          * purposes is expressly prohibited except as otherwise authorized by     *
+          * Cisco in writing.                                                      *
+          **************************************************************************^C
+          banner login ^C
+          **************************************************************************
+          * IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+          * education. IOSv is provided as-is and is not supported by Cisco's      *
+          * Technical Advisory Center. Any use or disclosure, in whole or in part, *
+          * of the IOSv Software or Documentation to any third party for any       *
+          * purposes is expressly prohibited except as otherwise authorized by     *
+          * Cisco in writing.                                                      *
+          **************************************************************************^C
+          !
+          line con 0
+           exec-timeout 0 0
+          line aux 0
+          line vty 0 4
+           exec-timeout 0 0
+           login local
+           transport input none
+          !
+          no scheduler allocate
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: null
+    label: BorderRouter-DNS-DHCP
+    node_definition: iosv
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -320
+    y: -480
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: null
+    label: Client1-Blue
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -200
+    y: 120
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: null
+    label: Client2-Green
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 40
+    y: 120
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname Leaf2
+          feature ospf
+          feature bgp
+          feature interface-vlan
+          feature vn-segment-vlan-based
+          feature nv overlay
+          feature dhcp
+          nv overlay evpn
+
+          route-map PERMIT-ALL permit 10
+
+          fabric forwarding anycast-gateway-mac 2020.0000.00aa
+
+          vlan 10
+            name BLUE-CLIENTS
+            vn-segment 10010
+          vlan 20
+            name GREEN-CLIENTS
+            vn-segment 10020
+          vlan 3001
+            name VRF-BLUE-L3VNI
+            vn-segment 50001
+          vlan 3002
+            name VRF-GREEN-L3VNI
+            vn-segment 50002
+
+          vrf context BLUE
+            vni 50001
+            rd auto
+            address-family ipv4 unicast
+              route-target both auto
+              route-target both auto evpn
+          vrf context GREEN
+            vni 50002
+            rd auto
+            address-family ipv4 unicast
+              route-target both auto
+              route-target both auto evpn
+
+          evpn
+            vni 10010 l2
+              rd auto
+              route-target both auto
+            vni 10020 l2
+              rd auto
+              route-target both auto
+
+          interface nve1
+            no shutdown
+            source-interface loopback9
+            host-reachability protocol bgp
+            member vni 10010
+              ingress-replication protocol bgp
+            member vni 10020
+              ingress-replication protocol bgp
+            member vni 50001 associate-vrf
+            member vni 50002 associate-vrf
+
+          interface Vlan10
+            no shutdown
+            vrf member BLUE
+            ip address 192.168.10.1/24
+            fabric forwarding mode anycast-gateway
+            ip dhcp relay address 192.168.110.2
+          interface Vlan20
+            no shutdown
+            vrf member GREEN
+            ip address 192.168.20.1/24
+            fabric forwarding mode anycast-gateway
+            ip dhcp relay address 192.168.120.2
+          interface Vlan3001
+            no shutdown
+            vrf member BLUE
+            ip forward
+          interface Vlan3002
+            no shutdown
+            vrf member GREEN
+            ip forward
+
+          interface loopback9
+            ip address 172.16.255.12/32
+            ip router ospf UNDERLAY area 0.0.0.0
+
+          interface Ethernet1/1
+            description to Spine1
+            no switchport
+            ip address 172.16.1.3/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            no shutdown
+
+          interface Ethernet1/2
+            description to Spine2
+            no switchport
+            ip address 172.16.1.7/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            no shutdown
+
+          interface Ethernet1/3
+            description to Client2-Green (access)
+            switchport
+            switchport mode access
+            switchport access vlan 20
+            no shutdown
+
+          interface Ethernet1/4
+            description to Client4-Blue (access)
+            switchport
+            switchport mode access
+            switchport access vlan 10
+            no shutdown
+
+          router ospf UNDERLAY
+            router-id 172.16.255.12
+
+          router bgp 65000
+            router-id 172.16.255.12
+            address-family l2vpn evpn
+            neighbor 172.16.255.1
+              remote-as 65000
+              update-source loopback9
+              address-family l2vpn evpn
+                send-community both
+            neighbor 172.16.255.2
+              remote-as 65000
+              update-source loopback9
+              address-family l2vpn evpn
+                send-community both
+            vrf BLUE
+              address-family ipv4 unicast
+                advertise l2vpn evpn
+                redistribute direct route-map PERMIT-ALL
+            vrf GREEN
+              address-family ipv4 unicast
+                advertise l2vpn evpn
+                redistribute direct route-map PERMIT-ALL
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n7
+    image_definition: nxosv9300-10-6-2-f
+    label: Leaf2
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 160
+    y: -40
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n8
+    image_definition: null
+    label: Client2-Blue
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 280
+    y: 120
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n9
+    image_definition: null
+    label: Client1-Green
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -440
+    y: 120
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n10
+    image_definition: null
+    label: Client3-Blue
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -800
+    y: -120
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n11
+    image_definition: null
+    label: Client3-Green
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -800
+    y: 40
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n12
+    image_definition: null
+    label: Client2-Blue-Moved
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -80
+    y: -40
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+links:
+  - id: l0
+    n1: n0
+    n2: n2
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: Spine1-Border-Ethernet1/1<->Leaf1-Ethernet1/1
+  - id: l1
+    n1: n1
+    n2: n2
+    i1: i2
+    i2: i3
+    conditioning: {}
+    label: Spine2-Ethernet1/1<->Leaf1-Ethernet1/2
+  - id: l2
+    n1: n2
+    n2: n3
+    i1: i6
+    i2: i1
+    conditioning: {}
+    label: Leaf1-Ethernet1/5<->AccessSwitch-GigabitEthernet0/0
+  - id: l3
+    n1: n2
+    n2: n5
+    i1: i7
+    i2: i0
+    conditioning: {}
+    label: Leaf1-Ethernet1/6<->Client1-Blue-eth0
+  - id: l4
+    n1: n0
+    n2: n4
+    i1: i4
+    i2: i2
+    conditioning: {}
+    label: Spine1-Border-Ethernet1/3<->BorderRouter-DNS-DHCP-GigabitEthernet0/1
+  - id: l5
+    n1: n0
+    n2: n7
+    i1: i3
+    i2: i2
+    conditioning: {}
+    label: Spine1-Border-Ethernet1/2<->Leaf2-Ethernet1/1
+  - id: l6
+    n1: n1
+    n2: n7
+    i1: i3
+    i2: i3
+    conditioning: {}
+    label: Spine2-Ethernet1/2<->Leaf2-Ethernet1/2
+  - id: l7
+    n1: n6
+    n2: n7
+    i1: i0
+    i2: i4
+    conditioning: {}
+    label: Client2-Green-eth0<->Leaf2-Ethernet1/3
+  - id: l8
+    n1: n8
+    n2: n7
+    i1: i0
+    i2: i5
+    conditioning: {}
+    label: Client4-Blue-eth0<->Leaf2-Ethernet1/4
+  - id: l9
+    n1: n9
+    n2: n2
+    i1: i0
+    i2: i4
+    conditioning: {}
+    label: Client3-Green-eth0<->Leaf1-Ethernet1/3
+  - id: l10
+    n1: n10
+    n2: n3
+    i1: i0
+    i2: i3
+    conditioning: {}
+    label: Client5-Blue-eth0<->AccessSwitch-GigabitEthernet0/2
+  - id: l11
+    n1: n11
+    n2: n3
+    i1: i0
+    i2: i4
+    conditioning: {}
+    label: Client6-Green-eth0<->AccessSwitch-GigabitEthernet0/3
+  - id: l12
+    n1: n12
+    n2: n2
+    i1: i0
+    i2: i5
+    conditioning: {}
+    label: Client2-Blue-Moved-eth0<->Leaf1-Ethernet1/4
+lab:
+  description: Basic 2-spine/2-leaf BGP EVPN VXLAN fabric. OSPF underlay (172.16.0.0/16),
+    iBGP EVPN overlay with spines as route reflectors (AS 65000), ingress-replication
+    (no multicast), anycast gateways for VRF Blue/Green (192.168.0.0/16 client subnets).
+    Leaf1/Leaf2 vPC peer-link + dual-homed access switch. Spine1 is border node connecting
+    an IOSv router providing DHCP+DNS for both VRFs.
+  notes: |-
+    ## BGP EVPN VXLAN Fabric — Blue/Green VRF Lab Guide
+
+    A walkthrough of every node in this lab, what each major piece of configuration actually does, and step-by-step instructions for reproducing the demo scenarios that were run against it.
+
+    ---
+
+    ### 1. Topology at a glance
+
+    | Node | Platform | Role | Loopback / Mgmt IP | Credentials |
+    |---|---|---|---|---|
+    | Spine1-Border | Nexus 9000v (NX-OS 10.6(2)) | Spine + Route Reflector + Border/VRF gateway | Lo0: 172.16.255.1/32 | admin / CiscoLab! |
+    | Spine2 | Nexus 9000v (NX-OS 10.6(2)) | Spine + Route Reflector | Lo0: 172.16.255.2/32 | admin / CiscoLab! |
+    | Leaf1 | Nexus 9000v (NX-OS 10.6(2)) | VTEP leaf | Lo9: 172.16.255.11/32 | admin / CiscoLab! |
+    | Leaf2 | Nexus 9000v (NX-OS 10.6(2)) | VTEP leaf | Lo9: 172.16.255.12/32 | admin / CiscoLab! |
+    | AccessSwitch | IOSvL2 | Plain L2 access switch behind Leaf1 | — | (no login required) |
+    | BorderRouter-DNS-DHCP | IOSv | DHCP + DNS server for both VRFs, VRF transit router | — | admin / cisco123 |
+    | Client1-Blue, Client2-Blue-Moved, Client3-Blue | Alpine Linux | Blue VRF end hosts | — | cisco / cisco |
+    | Client1-Green, Client2-Green, Client3-Green | Alpine Linux | Green VRF end hosts | — | cisco / cisco |
+
+    **Physical layout:** Spine1-Border and Spine2 each connect to both Leaf1 and Leaf2 (classic Clos). Spine1-Border also trunks off to BorderRouter-DNS-DHCP. Leaf1 connects directly to two clients plus AccessSwitch (which itself hosts two more clients). Leaf2 connects directly to two clients. There is no vPC anywhere in this build — see §4.7 for why.
+
+    ---
+
+    ### 2. Addressing plan
+
+    | Segment | VLAN | L2 VNI | Subnet | Anycast GW | Notes |
+    |---|---|---|---|---|---|
+    | BLUE clients | 10 | 10010 | 192.168.10.0/24 | .1 | Blue VRF |
+    | GREEN clients | 20 | 10020 | 192.168.20.0/24 | .1 | Green VRF |
+    | BLUE transit (to border router) | 110 | — | 192.168.110.0/30 | — | Spine1-Border ↔ BorderRouter |
+    | GREEN transit (to border router) | 120 | — | 192.168.120.0/30 | — | Spine1-Border ↔ BorderRouter |
+    | VRF BLUE L3VNI | 3001 | 50001 | — | — | routed/VXLAN plumbing only |
+    | VRF GREEN L3VNI | 3002 | 50002 | — | — | routed/VXLAN plumbing only |
+    | Underlay point-to-points | — | — | 172.16.1.0/31 blocks | — | one /31 per spine-leaf link |
+    | Underlay loopbacks | — | — | 172.16.255.0/24 | — | BGP/OSPF router-IDs, VTEP source |
+
+    Current client IPs (all via DHCP except where noted):
+
+    | Client | Attached to | VRF | IP |
+    |---|---|---|---|
+    | Client1-Blue | Leaf1 Eth1/6 | BLUE | 192.168.10.11 |
+    | Client2-Blue-Moved | Leaf1 Eth1/4 | BLUE | 192.168.10.13 (static — see §5.2) |
+    | Client3-Blue | AccessSwitch Gi0/2 | BLUE | 192.168.10.14 |
+    | Client1-Green | Leaf1 Eth1/3 | GREEN | 192.168.20.12 |
+    | Client2-Green | Leaf2 Eth1/3 | GREEN | 192.168.20.13 (designated shared-services host — see §5.3) |
+    | Client3-Green | AccessSwitch Gi0/3 | GREEN | 192.168.20.14 |
+
+    ---
+
+    ### 3. Node-by-node breakdown
+
+    **Spine1-Border** — an ordinary BGP EVPN route-reflector spine that *also* terminates the VRFs. It carries no client-facing VLANs; its `nve1` only has `member vni ... associate-vrf` statements (L3VNI only, no L2VNI), because its only job is routing between the fabric and the outside world. It holds a static default route per VRF pointing at the border router, and redistributes it into EVPN.
+
+    **Spine2** — a "pure" spine. OSPF underlay + BGP EVPN route-reflector-client relationship to both leafs, nothing else. No VXLAN, no VRFs. Included specifically to prove ECMP/redundancy works with more than one spine.
+
+    **Leaf1 / Leaf2** — the actual VTEPs. Each owns VLAN 10 and VLAN 20 locally (anycast gateway on both), relays DHCP to the border router, and peers BGP EVPN to *both* spines (never to each other directly — that's the point of the route reflector). Both use `loopback9` as their VTEP source interface (a historical artifact — see §4.7).
+
+    **AccessSwitch** — a plain L2 switch with no routing and no BGP/VXLAN awareness at all. It exists purely to prove that a VXLAN EVPN fabric looks like an ordinary switch to anything plugged into it — from AccessSwitch's point of view, Leaf1 is just an upstream trunk.
+
+    **BorderRouter-DNS-DHCP** — the one "traditional" router in the topology. It has two sub-interfaces, one per VRF transit VLAN, and provides DHCP and DNS to both Blue and Green from a single box. It is *not* itself VRF-aware — its two sub-interfaces sit in one shared IOS routing table, which is exactly what created the accidental full VRF leak discovered in §5.3.
+
+    **Clients** — minimal Alpine Linux VMs. They don't auto-configure networking; DHCP is triggered manually with `sudo udhcpc -i eth0` (see any scenario below for examples).
+
+    ---
+
+    ### 4. What the major configuration blocks are doing
+
+    #### 4.1 OSPF underlay
+    Every point-to-point spine-leaf link and every loopback carries:
+    ```
+    ip router ospf UNDERLAY area 0.0.0.0
+    ```
+    directly on the interface — there are no `network` statements anywhere. This is the modern, less error-prone way to run OSPF: whatever interface has the command is in the process, full stop. The underlay's only job is to make every loopback reachable from every other loopback; it has no idea VXLAN or VRFs exist.
+
+    #### 4.2 BGP EVPN overlay with route reflectors
+    Single AS (65000), iBGP only. Spine1-Border and Spine2 are configured as route-reflector-clients for both leafs under `address-family l2vpn evpn`:
+    ```
+    neighbor 172.16.255.11
+      remote-as 65000
+      update-source loopback0
+      address-family l2vpn evpn
+        route-reflector-client
+    ```
+    Leafs peer to *both* spines (never to each other) using their own loopback as the update-source. This is why removing vPC didn't cost any redundancy — BGP already has two independent paths to reflect routes through.
+
+    #### 4.3 VNI / VRF / route-target scheme
+    Two VNI types are in play:
+    - **L2 VNIs** (10010, 10020) carry Ethernet frames for VLAN 10/20 across the fabric — this is what makes two hosts on the same VLAN, on different leafs, look like they're on the same wire.
+    - **L3 VNIs** (50001 for BLUE, 50002 for GREEN) carry *routed* traffic between VRFs and the border. They're represented locally by VLAN 3001/3002 SVIs that have `ip forward` but no IP address — pure VXLAN-routing plumbing, nothing terminates there.
+
+    Every VRF and VNI uses `rd auto` / `route-target both auto` — NX-OS derives the route-distinguisher and route-target automatically from the local ASN and VNI, so every node with `vrf context BLUE` configured automatically imports and exports the same targets without anyone typing a real RT number anywhere.
+
+    #### 4.4 The NVE interface (VTEP)
+    ```
+    interface nve1
+      source-interface loopback9
+      host-reachability protocol bgp
+      member vni 10010
+        ingress-replication protocol bgp
+      member vni 50001 associate-vrf
+    ```
+    - `source-interface` is the VTEP's own identity — the IP every other VTEP will encapsulate traffic to when sending it here.
+    - `host-reachability protocol bgp` means MAC/IP learning happens via the BGP EVPN control plane, not flood-and-learn — a leaf never floods to find a remote host, it just looks it up in a table BGP already populated.
+    - `ingress-replication protocol bgp` is what replaces multicast for BUM (broadcast/unknown-unicast/multicast) traffic: each VTEP keeps a unicast replication list built from BGP Type-3 routes, and sends one copy per remote VTEP instead of relying on a multicast underlay. This was a hard requirement from day one — no multicast anywhere in this build.
+    - `associate-vrf` (no VLAN) is the L3VNI variant — it ties the VNI straight to a VRF for routed inter-subnet/inter-site traffic instead of a single VLAN.
+
+    #### 4.5 Anycast gateway — the important one
+    Two commands make this work:
+    ```
+    fabric forwarding anycast-gateway-mac 2020.0000.00aa      ! global, identical on every leaf
+    !
+    interface Vlan10
+      ip address 192.168.10.1/24
+      fabric forwarding mode anycast-gateway
+    ```
+    **What it does:** every leaf that owns VLAN 10 answers ARP for 192.168.10.1 using the *exact same* virtual MAC, and every leaf has that *exact same* IP configured on its own local Vlan10 SVI. There is no "primary" or "standby" gateway — every leaf is simultaneously the gateway for whatever hosts happen to be plugged into it.
+
+    **How it works / why it's different from HSRP:** HSRP/VRRP elect one active router per subnet and everyone else is standby — traffic to the gateway has to physically reach the active box, even if a closer router exists. Anycast gateway skips the election entirely: routing for a host always happens at the *first leaf it touches*, then the fabric (VXLAN, over the L3VNI) carries the already-routed packet to wherever it needs to go. This is only safe because BGP EVPN's control-plane MAC/IP synchronization keeps every leaf's ARP/routing tables consistent — there's no risk of two leafs answering ARP differently for the same host, because the host itself is only ever attached to one leaf at a time (see §5.2 for what happens when that changes).
+
+    This is also *why* the host-mobility demo in §5.2 works cleanly: moving a host to a different leaf doesn't require any gateway reconfiguration at all — the new leaf already has the identical gateway IP/MAC sitting there waiting.
+
+    #### 4.6 DHCP relay
+    ```
+    feature dhcp
+    !
+    interface Vlan10
+      ip dhcp relay address 192.168.110.2
+    ```
+    DHCP DISCOVER is a subnet broadcast, and broadcasts don't get flooded across the VXLAN fabric to a remote DHCP server by themselves. The relay command converts the broadcast into a unicast packet aimed straight at the border router's Blue-side IP, which is why the border router needed one relay target per VRF (192.168.110.2 for Blue, 192.168.120.2 for Green).
+
+    #### 4.7 Route leaking to the border, and a real NX-OS gotcha
+    On every leaf:
+    ```
+    router bgp 65000
+      vrf BLUE
+        address-family ipv4 unicast
+          advertise l2vpn evpn
+          redistribute direct route-map PERMIT-ALL
+    ```
+    This takes the leaf's own connected client subnet and injects it as an EVPN Type-5 (IP-prefix) route so the border and other leafs can route to it.
+
+    On Spine1-Border, the reverse direction (the *default route*, so clients can reach the DHCP/DNS server and beyond) needed one extra command that isn't obvious from the docs:
+    ```
+    vrf BLUE
+      ip route 0.0.0.0/0 192.168.110.2
+    router bgp 65000
+      vrf BLUE
+        address-family ipv4 unicast
+          redistribute static route-map PERMIT-ALL
+          default-information originate      ← without this, the 0.0.0.0/0 never actually gets advertised
+    ```
+    `redistribute static` alone does **not** propagate a static default route into BGP, even with a fully permissive route-map — NX-OS specifically requires `default-information originate` to originate 0.0.0.0/0. This was one of the real bugs hit while building this lab (clients had no default route until this was added).
+
+    #### 4.8 Why there's no vPC in this build
+    The lab originally used full vPC multihoming between Leaf1 and Leaf2 (peer-link, peer-keepalive, dual-homed AccessSwitch). During testing, Leaf2 repeatedly lost its VTEP loopback ("Administratively down" every 10–40 seconds) with `feature vpc` enabled — confirmed independent of NX-OS image version and independent of primary/secondary vPC role. Removing `feature vpc`/`feature lacp` entirely fixed it permanently. AccessSwitch is now single-homed to Leaf1 only, and two extra standalone clients were added (one per VRF) to keep the "multiple attachment points" idea alive without vPC. Section §5.4 below covers what does and doesn't work as an alternative on this platform.
+
+    ---
+
+    ### 5. Hands-on scenarios
+
+    #### 5.1 Failure / convergence test
+    **Goal:** prove the fabric survives a spine-leaf link failure without vPC, using only ECMP in the underlay.
+
+    1. Baseline, on Leaf1:
+       ```
+       show ip ospf neighbors
+       show bgp l2vpn evpn summary
+       ```
+       You should see two OSPF neighbors (both spines) and two established EVPN sessions.
+    2. Fail the link to Spine1:
+       ```
+       configure terminal
+       interface Ethernet1/1
+       shutdown
+       ```
+    3. Re-check convergence:
+       ```
+       show ip ospf neighbors          ! only Spine2 remains as a direct neighbor
+       show ip route 172.16.255.1      ! Spine1's loopback is now reached via Eth1/2, through Leaf2
+       show bgp l2vpn evpn summary     ! the session to Spine1 keeps its ORIGINAL uptime — it never flapped
+       ```
+    4. From any client, confirm the data plane never blinked: `sudo udhcpc -i eth0` still succeeds.
+    5. Restore: `interface Ethernet1/1` → `no shutdown`. The direct OSPF neighbor reforms in a few seconds.
+
+    #### 5.2 Host mobility demo
+    **Goal:** show BGP EVPN detect a host moving to a different leaf with zero manual MAC-table intervention anywhere in the fabric.
+
+    1. Check where the host currently lives, on both leafs:
+       ```
+       show l2route evpn mac-ip all
+       ```
+       The host's MAC/IP shows `HMM / L (Local)` on its home leaf, and `BGP` with a next-hop pointing at that leaf's loopback on every other leaf.
+    2. Relocate it. In CML you can't hot-swap an interface's cable, so the clean way is:
+       - Wire a (new or existing) client into a free port on the *other* leaf.
+       - Configure that port as an access port in the correct VLAN.
+       - Give the client the **same IP** the old host had (a fresh MAC is fine and, if anything, makes the demo more realistic — think "replacement NIC, same address").
+       - Generate traffic so the new leaf actually learns it: `ping <anycast-gateway-ip>` from the client is enough.
+    3. Re-check both leafs:
+       ```
+       show l2route evpn mac-ip all
+       ```
+       The old leaf's local entry for that IP is completely gone; the new leaf now shows it as `Local`; every other leaf's remote pointer flips to the new leaf's loopback automatically. You can also see the underlying route directly:
+       ```
+       show bgp l2vpn evpn | include <the IP>
+       ```
+
+    #### 5.3 Shared-services VRF leak
+    **Goal:** deliberately allow exactly one host to be reachable across the Blue/Green boundary, while keeping everything else isolated.
+
+    1. **Check your assumptions first.** Before changing anything, try pinging across VRFs from a client and traceroute it:
+       ```
+       ping <a Green IP> from a Blue client
+       traceroute <a Green IP> from a Blue client
+       ```
+       In this lab that ping unexpectedly *succeeded* — traceroute showed the path going through the border router's own Blue and Green transit addresses. The border router isn't VRF-aware; it has both client subnets in one routing table, so it was silently routing between Blue and Green the whole time. Worth checking on any lab before assuming VRFs are actually isolated.
+    2. On the border router, build two directional ACLs — permit the one designated shared host explicitly, block the general subnet-to-subnet path, then allow everything else through untouched (DNS/DHCP replies, etc.):
+       ```
+       ip access-list extended BLUE-TO-GREEN-FILTER
+        permit ip 192.168.10.0 0.0.0.255 host 192.168.20.13
+        deny   ip 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255
+        permit ip any any
+       !
+       ip access-list extended GREEN-TO-BLUE-FILTER
+        permit ip host 192.168.20.13 192.168.10.0 0.0.0.255
+        deny   ip 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255
+        permit ip any any
+       ```
+    3. Apply each ACL inbound on its matching VRF sub-interface:
+       ```
+       interface GigabitEthernet0/1.110
+        ip access-group BLUE-TO-GREEN-FILTER in
+       interface GigabitEthernet0/1.120
+        ip access-group GREEN-TO-BLUE-FILTER in
+       ```
+    4. Verify all four cases:
+       ```
+       Blue client  → 192.168.20.13 (shared host)   → succeeds
+       Blue client  → any other Green host          → fails
+       192.168.20.13 → Blue client                  → succeeds
+       any other Green host → Blue client           → fails
+       ```
+
+    #### 5.4 Testing whether an advanced feature is actually usable on this platform
+    **Goal:** a repeatable method for verifying platform support instead of trusting the datasheet — used here to check both EVPN ESI Multihoming and EVPN Multi-Site/Border-Gateway.
+
+    1. Identify exactly what you're running:
+       ```
+       show version | include NXOS
+       show inventory | include PID
+       ```
+       (This lab reports NX-OS 10.6(2) on PID `N9K-C9300v` — a generic virtual chassis, not tied to a specific real ASIC.)
+    2. Cross-reference Cisco's platform-support table for the feature in the matching release's config guide.
+    3. Try the actual configuration commands live, starting with the most fundamental one first:
+       - **ESI Multihoming** (a vPC-less alternative multihoming method):
+         ```
+         hardware access-list tcam region ing-flow-redirect 512
+         evpn multihoming
+         ```
+         Both rejected as `% Invalid command` on this platform — the feature is not available here at all, regardless of NX-OS version eligibility on paper.
+       - **EVPN Multi-Site / Border Gateway**:
+         ```
+         evpn multisite border-gateway 100
+         interface loopback100
+          ip address <unused loopback>/32
+         interface nve1
+          multisite border-gateway interface loopback100
+         ```
+         Both accepted and confirmed in `show running-config nv overlay` — but the interface-level commands needed for a real deployment:
+         ```
+         interface EthernetX/Y
+          evpn multisite dci-tracking
+          evpn multisite fabric-tracking
+         ```
+         were both rejected as invalid. Verdict: **partial support** — the core BGW control-plane config works, but the platform can't actually track DCI/fabric links, so a real Multi-Site deployment isn't achievable here.
+    4. Whichever way it goes, remove the test configuration immediately afterward (reverse order) so the lab's real state doesn't carry half-applied features:
+       ```
+       interface nve1
+        no multisite border-gateway interface loopback100
+       no interface loopback100
+       no evpn multisite border-gateway 100
+       ```
+
+    ---
+
+    ### 6. Quick reference — useful verification commands
+
+    | Command | What it tells you |
+    |---|---|
+    | `show ip ospf neighbors` | Underlay adjacency state |
+    | `show bgp l2vpn evpn summary` | EVPN session state + prefix counts per neighbor |
+    | `show nve peers` | VTEP-to-VTEP reachability and uptime |
+    | `show l2route evpn mac-ip all` | Where every host's MAC/IP currently lives (local vs. remote) |
+    | `show bgp l2vpn evpn` | Raw EVPN route types (Type-2 MAC/IP, Type-3 IMET, Type-5 prefix, etc.) |
+    | `show ip route vrf <BLUE\|GREEN>` | What each VRF's routing table actually looks like |
+    | `show interface status` (or `show interfaces status` on IOS switches) | Physical/access-port link state |
+  title: NXOS BGP EVPN VXLAN Basic Fabric - Blue-Green VRFs
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
