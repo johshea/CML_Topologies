@@ -1,0 +1,1151 @@
+annotations: []
+smart_annotations:
+  - tag: as109
+    is_on: true
+    padding: 35
+    label: as109
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#007A3380'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: as65000
+    is_on: true
+    padding: 35
+    label: as65000
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: client
+    is_on: true
+    padding: 35
+    label: client
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: ebgp
+    is_on: true
+    padding: 35
+    label: ebgp
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: enterprise
+    is_on: true
+    padding: 35
+    label: enterprise
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#007A3380'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: ibgp
+    is_on: true
+    padding: 35
+    label: ibgp
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: isp
+    is_on: true
+    padding: 35
+    label: isp
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: route-reflector
+    is_on: true
+    padding: 35
+    label: route-reflector
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: rr-client
+    is_on: true
+    padding: 35
+    label: rr-client
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#A95FBE80'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: spoke1
+    is_on: true
+    padding: 35
+    label: spoke1
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: spoke1-lan
+    is_on: true
+    padding: 35
+    label: spoke1-lan
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: spoke2
+    is_on: true
+    padding: 35
+    label: spoke2
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: spoke2-lan
+    is_on: true
+    padding: 35
+    label: spoke2-lan
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname ISP-Router
+          !
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          interface Loopback0
+           ip address 10.0.0.100 255.255.255.255
+           ipv6 address 2001:db8:100::1/128
+           ipv6 enable
+          !
+          interface Loopback1
+           ip address 198.51.100.1 255.255.255.0
+           description SIMULATED-INTERNET-IPv4
+          !
+          interface Loopback2
+           ipv6 address 2001:db8:ffff::1/48
+           description SIMULATED-INTERNET-IPv6
+          !
+          interface Ethernet0/0
+           description TO-WAN-EDGE
+           ip address 10.1.0.1 255.255.255.252
+           ipv6 address 2001:db8:1::0/127
+           ipv6 enable
+           bfd interval 300 min_rx 300 multiplier 3
+           no shutdown
+          !
+          ip route 0.0.0.0 0.0.0.0 Null0
+          ipv6 route ::/0 Null0
+          !
+          router bgp 109
+           bgp router-id 10.0.0.100
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           neighbor 10.1.0.2 remote-as 65000
+           neighbor 10.1.0.2 description EBGP-TO-WAN-EDGE-IPv4
+           neighbor 10.1.0.2 password Cisc0Lab!
+           neighbor 10.1.0.2 bfd
+           neighbor 2001:db8:1::1 remote-as 65000
+           neighbor 2001:db8:1::1 description EBGP-TO-WAN-EDGE-IPv6
+           neighbor 2001:db8:1::1 password Cisc0Lab!
+           !
+           address-family ipv4
+            network 10.0.0.100 mask 255.255.255.255
+            network 198.51.100.0 mask 255.255.255.0
+            default-information originate
+            neighbor 10.1.0.2 activate
+            neighbor 10.1.0.2 send-community both
+            neighbor 10.1.0.2 route-map ISP-TO-ENT-v4 out
+            neighbor 10.1.0.2 route-map ENT-TO-ISP-v4 in
+            neighbor 10.1.0.2 soft-reconfiguration inbound
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:db8:100::1/128
+            network 2001:db8:ffff::/48
+            neighbor 2001:db8:1::1 activate
+            neighbor 2001:db8:1::1 send-community both
+            neighbor 2001:db8:1::1 route-map ISP-TO-ENT-v6 out
+            neighbor 2001:db8:1::1 route-map ENT-TO-ISP-v6 in
+            neighbor 2001:db8:1::1 soft-reconfiguration inbound
+           exit-address-family
+          !
+          route-map ISP-TO-ENT-v4 permit 10
+           set community 109:1000 additive
+          !
+          route-map ISP-TO-ENT-v6 permit 10
+          !
+          route-map ENT-TO-ISP-v4 permit 10
+          !
+          route-map ENT-TO-ISP-v6 permit 10
+          !
+          bfd slow-timers 5000
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: iol-xe-17-18-02
+    label: ISP-Router
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - isp
+      - as109
+      - ebgp
+    x: 0
+    y: -700
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname WAN-Edge
+          !
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          interface Loopback0
+           ip address 10.0.0.1 255.255.255.255
+           ipv6 address 2001:db8:0:1::1/128
+           ipv6 enable
+           description ROUTER-ID-iBGP-SOURCE
+          !
+          ! === Uplink to ISP ===
+          interface Ethernet0/0
+           description TO-ISP-ROUTER
+           ip address 10.1.0.2 255.255.255.252
+           ipv6 address 2001:db8:1::1/127
+           ipv6 enable
+           bfd interval 300 min_rx 300 multiplier 3
+           no shutdown
+          !
+          ! === Link to RR-Core ===
+          interface Ethernet0/1
+           description TO-RR-CORE
+           ip address 10.1.1.1 255.255.255.252
+           ipv6 address 2001:db8:1:1::0/127
+           ipv6 enable
+           bfd interval 300 min_rx 300 multiplier 3
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          ! === OSPF IGP ===
+          router ospf 1
+           router-id 10.0.0.1
+           passive-interface default
+           no passive-interface Ethernet0/1
+           network 10.0.0.1 0.0.0.0 area 0
+           network 10.1.1.0 0.0.0.3 area 0
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.1
+           passive-interface default
+           no passive-interface Ethernet0/1
+          !
+          ! === Prefix Lists ===
+          ip prefix-list ACCEPT-FROM-ISP seq 5 permit 0.0.0.0/0
+          ip prefix-list ACCEPT-FROM-ISP seq 10 permit 198.51.100.0/24
+          ip prefix-list ACCEPT-FROM-ISP seq 100 deny 0.0.0.0/0 le 32
+          !
+          ip prefix-list ADVERTISE-TO-ISP seq 5 permit 10.10.1.0/24
+          ip prefix-list ADVERTISE-TO-ISP seq 10 permit 10.10.2.0/24
+          ip prefix-list ADVERTISE-TO-ISP seq 15 permit 10.10.3.0/24
+          ip prefix-list ADVERTISE-TO-ISP seq 100 deny 0.0.0.0/0 le 32
+          !
+          ipv6 prefix-list ACCEPT-FROM-ISP-v6 seq 5 permit ::/0
+          ipv6 prefix-list ACCEPT-FROM-ISP-v6 seq 10 permit 2001:db8:ffff::/48
+          ipv6 prefix-list ACCEPT-FROM-ISP-v6 seq 100 deny ::/0 le 128
+          !
+          ipv6 prefix-list ADVERTISE-TO-ISP-v6 seq 5 permit 2001:db8:10:1::/64
+          ipv6 prefix-list ADVERTISE-TO-ISP-v6 seq 10 permit 2001:db8:10:2::/64
+          ipv6 prefix-list ADVERTISE-TO-ISP-v6 seq 15 permit 2001:db8:10:3::/64
+          ipv6 prefix-list ADVERTISE-TO-ISP-v6 seq 100 deny ::/0 le 128
+          !
+          ! === Route-maps ===
+          ip community-list standard ISP-DEFAULT permit 109:1000
+          !
+          route-map EBGP-IN-IPv4 permit 10
+           match ip address prefix-list ACCEPT-FROM-ISP
+           set community 65000:100 additive
+           set local-preference 200
+          !
+          route-map EBGP-OUT-IPv4 permit 10
+           match ip address prefix-list ADVERTISE-TO-ISP
+           set community 65000:100
+          !
+          route-map EBGP-IN-IPv6 permit 10
+           match ipv6 address prefix-list ACCEPT-FROM-ISP-v6
+           set local-preference 200
+          !
+          route-map EBGP-OUT-IPv6 permit 10
+           match ipv6 address prefix-list ADVERTISE-TO-ISP-v6
+          !
+          ! === BGP AS 65000 ===
+          router bgp 65000
+           bgp router-id 10.0.0.1
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           !
+           ! eBGP to ISP
+           neighbor 10.1.0.1 remote-as 109
+           neighbor 10.1.0.1 description EBGP-TO-ISP-IPv4
+           neighbor 10.1.0.1 password Cisc0Lab!
+           neighbor 10.1.0.1 bfd
+           neighbor 10.1.0.1 ttl-security hops 1
+           neighbor 2001:db8:1:: remote-as 109
+           neighbor 2001:db8:1:: description EBGP-TO-ISP-IPv6
+           neighbor 2001:db8:1:: password Cisc0Lab!
+           !
+           ! iBGP to RR-Core via loopback
+           neighbor 10.0.0.2 remote-as 65000
+           neighbor 10.0.0.2 description IBGP-TO-RR-CORE-IPv4
+           neighbor 10.0.0.2 update-source Loopback0
+           neighbor 10.0.0.2 bfd
+           neighbor 2001:db8:0:1::2 remote-as 65000
+           neighbor 2001:db8:0:1::2 description IBGP-TO-RR-CORE-IPv6
+           neighbor 2001:db8:0:1::2 update-source Loopback0
+           !
+           address-family ipv4
+            network 10.0.0.1 mask 255.255.255.255
+            neighbor 10.1.0.1 activate
+            neighbor 10.1.0.1 send-community both
+            neighbor 10.1.0.1 route-map EBGP-IN-IPv4 in
+            neighbor 10.1.0.1 route-map EBGP-OUT-IPv4 out
+            neighbor 10.1.0.1 soft-reconfiguration inbound
+            neighbor 10.1.0.1 prefix-list ACCEPT-FROM-ISP in
+            neighbor 10.0.0.2 activate
+            neighbor 10.0.0.2 send-community both
+            neighbor 10.0.0.2 next-hop-self
+            neighbor 10.0.0.2 soft-reconfiguration inbound
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:db8:0:1::1/128
+            neighbor 2001:db8:1:: activate
+            neighbor 2001:db8:1:: send-community both
+            neighbor 2001:db8:1:: route-map EBGP-IN-IPv6 in
+            neighbor 2001:db8:1:: route-map EBGP-OUT-IPv6 out
+            neighbor 2001:db8:1:: soft-reconfiguration inbound
+            neighbor 2001:db8:0:1::2 activate
+            neighbor 2001:db8:0:1::2 send-community both
+            neighbor 2001:db8:0:1::2 next-hop-self
+            neighbor 2001:db8:0:1::2 soft-reconfiguration inbound
+           exit-address-family
+          !
+          ip route 0.0.0.0 0.0.0.0 10.1.0.1 254
+          !
+          bfd slow-timers 5000
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: iol-xe-17-18-02
+    label: WAN-Edge
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - enterprise
+      - as65000
+      - ebgp
+      - ibgp
+      - rr-client
+    x: 0
+    y: -500
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname RR-Core
+          !
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          interface Loopback0
+           ip address 10.0.0.2 255.255.255.255
+           ipv6 address 2001:db8:0:1::2/128
+           ipv6 enable
+           description RR-CORE-ROUTER-ID
+          !
+          ! === Link to WAN-Edge ===
+          interface Ethernet0/0
+           description TO-WAN-EDGE
+           ip address 10.1.1.2 255.255.255.252
+           ipv6 address 2001:db8:1:1::1/127
+           ipv6 enable
+           bfd interval 300 min_rx 300 multiplier 3
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          ! === Link to Spoke-Router ===
+          interface Ethernet0/1
+           description TO-SPOKE-ROUTER
+           ip address 10.1.2.1 255.255.255.252
+           ipv6 address 2001:db8:1:2::0/127
+           ipv6 enable
+           bfd interval 300 min_rx 300 multiplier 3
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          ! === Link to Spoke2-Router ===
+          interface Ethernet0/2
+           description TO-SPOKE2-ROUTER
+           ip address 10.1.3.1 255.255.255.252
+           ipv6 address 2001:db8:1:3::0/127
+           ipv6 enable
+           bfd interval 300 min_rx 300 multiplier 3
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          ! === OSPF ===
+          router ospf 1
+           router-id 10.0.0.2
+           passive-interface default
+           no passive-interface Ethernet0/0
+           no passive-interface Ethernet0/1
+           no passive-interface Ethernet0/2
+           network 10.0.0.2 0.0.0.0 area 0
+           network 10.1.1.0 0.0.0.3 area 0
+           network 10.1.2.0 0.0.0.3 area 0
+           network 10.1.3.0 0.0.0.3 area 0
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.2
+           passive-interface default
+           no passive-interface Ethernet0/0
+           no passive-interface Ethernet0/1
+           no passive-interface Ethernet0/2
+          !
+          ! === BGP Route Reflector — 3 clients ===
+          router bgp 65000
+           bgp router-id 10.0.0.2
+           bgp log-neighbor-changes
+           bgp cluster-id 10.0.0.2
+           no bgp default ipv4-unicast
+           !
+           ! RR Client: WAN-Edge
+           neighbor 10.0.0.1 remote-as 65000
+           neighbor 10.0.0.1 description IBGP-RR-CLIENT-WAN-EDGE-v4
+           neighbor 10.0.0.1 update-source Loopback0
+           neighbor 10.0.0.1 bfd
+           neighbor 2001:db8:0:1::1 remote-as 65000
+           neighbor 2001:db8:0:1::1 description IBGP-RR-CLIENT-WAN-EDGE-v6
+           neighbor 2001:db8:0:1::1 update-source Loopback0
+           !
+           ! RR Client: Spoke-Router
+           neighbor 10.0.0.3 remote-as 65000
+           neighbor 10.0.0.3 description IBGP-RR-CLIENT-SPOKE1-v4
+           neighbor 10.0.0.3 update-source Loopback0
+           neighbor 10.0.0.3 bfd
+           neighbor 2001:db8:0:1::3 remote-as 65000
+           neighbor 2001:db8:0:1::3 description IBGP-RR-CLIENT-SPOKE1-v6
+           neighbor 2001:db8:0:1::3 update-source Loopback0
+           !
+           ! RR Client: Spoke2-Router
+           neighbor 10.0.0.4 remote-as 65000
+           neighbor 10.0.0.4 description IBGP-RR-CLIENT-SPOKE2-v4
+           neighbor 10.0.0.4 update-source Loopback0
+           neighbor 10.0.0.4 bfd
+           neighbor 2001:db8:0:1::4 remote-as 65000
+           neighbor 2001:db8:0:1::4 description IBGP-RR-CLIENT-SPOKE2-v6
+           neighbor 2001:db8:0:1::4 update-source Loopback0
+           !
+           address-family ipv4
+            network 10.0.0.2 mask 255.255.255.255
+            neighbor 10.0.0.1 activate
+            neighbor 10.0.0.1 route-reflector-client
+            neighbor 10.0.0.1 send-community both
+            neighbor 10.0.0.1 soft-reconfiguration inbound
+            neighbor 10.0.0.3 activate
+            neighbor 10.0.0.3 route-reflector-client
+            neighbor 10.0.0.3 send-community both
+            neighbor 10.0.0.3 soft-reconfiguration inbound
+            neighbor 10.0.0.4 activate
+            neighbor 10.0.0.4 route-reflector-client
+            neighbor 10.0.0.4 send-community both
+            neighbor 10.0.0.4 soft-reconfiguration inbound
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:db8:0:1::2/128
+            neighbor 2001:db8:0:1::1 activate
+            neighbor 2001:db8:0:1::1 route-reflector-client
+            neighbor 2001:db8:0:1::1 send-community both
+            neighbor 2001:db8:0:1::1 soft-reconfiguration inbound
+            neighbor 2001:db8:0:1::3 activate
+            neighbor 2001:db8:0:1::3 route-reflector-client
+            neighbor 2001:db8:0:1::3 send-community both
+            neighbor 2001:db8:0:1::3 soft-reconfiguration inbound
+            neighbor 2001:db8:0:1::4 activate
+            neighbor 2001:db8:0:1::4 route-reflector-client
+            neighbor 2001:db8:0:1::4 send-community both
+            neighbor 2001:db8:0:1::4 soft-reconfiguration inbound
+           exit-address-family
+          !
+          bfd slow-timers 5000
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: iol-xe-17-18-02
+    label: RR-Core
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - enterprise
+      - as65000
+      - ibgp
+      - route-reflector
+    x: 0
+    y: -250
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname Spoke-Router
+          !
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          interface Loopback0
+           ip address 10.0.0.3 255.255.255.255
+           ipv6 address 2001:db8:0:1::3/128
+           ipv6 enable
+           description SPOKE1-ROUTER-ID
+          !
+          interface Loopback10
+           ip address 10.10.2.1 255.255.255.0
+           ipv6 address 2001:db8:10:2::1/64
+           description SPOKE1-LAN-STUB
+          !
+          ! === Link to RR-Core ===
+          interface Ethernet0/0
+           description TO-RR-CORE
+           ip address 10.1.2.2 255.255.255.252
+           ipv6 address 2001:db8:1:2::1/127
+           ipv6 enable
+           bfd interval 300 min_rx 300 multiplier 3
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          ! === LAN toward Client-B ===
+          interface Ethernet0/1
+           description LAN-CLIENT-B
+           ip address 10.10.2.1 255.255.255.0
+           ipv6 address 2001:db8:10:2::1/64
+           ipv6 enable
+           ipv6 nd prefix 2001:db8:10:2::/64
+           no shutdown
+          !
+          ! === OSPF ===
+          router ospf 1
+           router-id 10.0.0.3
+           passive-interface default
+           no passive-interface Ethernet0/0
+           network 10.0.0.3 0.0.0.0 area 0
+           network 10.1.2.0 0.0.0.3 area 0
+           network 10.10.2.0 0.0.0.255 area 0
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.3
+           passive-interface default
+           no passive-interface Ethernet0/0
+          !
+          ! === BGP RR Client ===
+          router bgp 65000
+           bgp router-id 10.0.0.3
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           neighbor 10.0.0.2 remote-as 65000
+           neighbor 10.0.0.2 description IBGP-TO-RR-CORE-IPv4
+           neighbor 10.0.0.2 update-source Loopback0
+           neighbor 10.0.0.2 bfd
+           neighbor 2001:db8:0:1::2 remote-as 65000
+           neighbor 2001:db8:0:1::2 description IBGP-TO-RR-CORE-IPv6
+           neighbor 2001:db8:0:1::2 update-source Loopback0
+           !
+           address-family ipv4
+            network 10.0.0.3 mask 255.255.255.255
+            network 10.10.2.0 mask 255.255.255.0
+            neighbor 10.0.0.2 activate
+            neighbor 10.0.0.2 send-community both
+            neighbor 10.0.0.2 soft-reconfiguration inbound
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:db8:0:1::3/128
+            network 2001:db8:10:2::/64
+            neighbor 2001:db8:0:1::2 activate
+            neighbor 2001:db8:0:1::2 send-community both
+            neighbor 2001:db8:0:1::2 soft-reconfiguration inbound
+           exit-address-family
+          !
+          bfd slow-timers 5000
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: iol-xe-17-18-02
+    label: Spoke-Router
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - enterprise
+      - as65000
+      - ibgp
+      - rr-client
+      - spoke1
+    x: 300
+    y: 0
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname Spoke2-Router
+          !
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          interface Loopback0
+           ip address 10.0.0.4 255.255.255.255
+           ipv6 address 2001:db8:0:1::4/128
+           ipv6 enable
+           description SPOKE2-ROUTER-ID
+          !
+          interface Loopback10
+           ip address 10.10.3.1 255.255.255.0
+           ipv6 address 2001:db8:10:3::1/64
+           description SPOKE2-STUB-PREFIX
+          !
+          ! === Link to RR-Core ===
+          interface Ethernet0/0
+           description TO-RR-CORE
+           ip address 10.1.3.2 255.255.255.252
+           ipv6 address 2001:db8:1:3::1/127
+           ipv6 enable
+           bfd interval 300 min_rx 300 multiplier 3
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          ! === LAN toward Client-A ===
+          interface Ethernet0/1
+           description LAN-CLIENT-A
+           ip address 10.10.1.1 255.255.255.0
+           ipv6 address 2001:db8:10:1::1/64
+           ipv6 enable
+           ipv6 nd prefix 2001:db8:10:1::/64
+           no shutdown
+          !
+          ! === OSPF ===
+          router ospf 1
+           router-id 10.0.0.4
+           passive-interface default
+           no passive-interface Ethernet0/0
+           network 10.0.0.4 0.0.0.0 area 0
+           network 10.1.3.0 0.0.0.3 area 0
+           network 10.10.1.0 0.0.0.255 area 0
+           network 10.10.3.0 0.0.0.255 area 0
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.4
+           passive-interface default
+           no passive-interface Ethernet0/0
+          !
+          ! === BGP RR Client ===
+          router bgp 65000
+           bgp router-id 10.0.0.4
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           neighbor 10.0.0.2 remote-as 65000
+           neighbor 10.0.0.2 description IBGP-TO-RR-CORE-IPv4
+           neighbor 10.0.0.2 update-source Loopback0
+           neighbor 10.0.0.2 bfd
+           neighbor 2001:db8:0:1::2 remote-as 65000
+           neighbor 2001:db8:0:1::2 description IBGP-TO-RR-CORE-IPv6
+           neighbor 2001:db8:0:1::2 update-source Loopback0
+           !
+           address-family ipv4
+            network 10.0.0.4 mask 255.255.255.255
+            network 10.10.1.0 mask 255.255.255.0
+            network 10.10.3.0 mask 255.255.255.0
+            neighbor 10.0.0.2 activate
+            neighbor 10.0.0.2 send-community both
+            neighbor 10.0.0.2 soft-reconfiguration inbound
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:db8:0:1::4/128
+            network 2001:db8:10:1::/64
+            network 2001:db8:10:3::/64
+            neighbor 2001:db8:0:1::2 activate
+            neighbor 2001:db8:0:1::2 send-community both
+            neighbor 2001:db8:0:1::2 soft-reconfiguration inbound
+           exit-address-family
+          !
+          bfd slow-timers 5000
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: iol-xe-17-18-02
+    label: Spoke2-Router
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - enterprise
+      - as65000
+      - ibgp
+      - rr-client
+      - spoke2
+    x: -300
+    y: 0
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          auto eth0
+          iface eth0 inet static
+            address 10.10.1.100
+            netmask 255.255.255.0
+            gateway 10.10.1.1
+          iface eth0 inet6 static
+            address 2001:db8:10:1::100
+            netmask 64
+            gateway 2001:db8:10:1::1
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: alpine-base-3-23-3
+    label: Client-A
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - client
+      - spoke2-lan
+    x: -500
+    y: 0
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          auto eth0
+          iface eth0 inet static
+            address 10.10.2.100
+            netmask 255.255.255.0
+            gateway 10.10.2.1
+          iface eth0 inet6 static
+            address 2001:db8:10:2::100
+            netmask 64
+            gateway 2001:db8:10:2::1
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: alpine-base-3-23-3
+    label: Client-B
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - client
+      - spoke1-lan
+    x: 500
+    y: 0
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i1
+    i2: i1
+    conditioning: {}
+    label: ISP-Router-Ethernet0/0<->WAN-Edge-Ethernet0/0
+  - id: l1
+    n1: n1
+    n2: n2
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: WAN-Edge-Ethernet0/1<->RR-Core-Ethernet0/0
+  - id: l2
+    n1: n2
+    n2: n3
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: RR-Core-Ethernet0/1<->Spoke-Router-Ethernet0/0
+  - id: l3
+    n1: n2
+    n2: n4
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: RR-Core-Ethernet0/2<->Spoke2-Router-Ethernet0/0
+  - id: l4
+    n1: n4
+    n2: n5
+    i1: i2
+    i2: i0
+    conditioning: {}
+    label: Spoke2-Router-Ethernet0/1<->Client-A-eth0
+  - id: l5
+    n1: n3
+    n2: n6
+    i1: i2
+    i2: i0
+    conditioning: {}
+    label: Spoke-Router-Ethernet0/1<->Client-B-eth0
+lab:
+  description: 'Enterprise BGP lab: AS65000 with WAN-Edge (eBGP to ISP AS109), RR-Core
+    as iBGP Route Reflector with 3 RR-clients (WAN-Edge, Spoke-Router, Spoke2-Router).
+    Full IPv4/IPv6 dual-stack, OSPF IGP, BFD, communities, prefix filtering. Client-A
+    on Spoke2-Router LAN, Client-B on Spoke-Router LAN.'
+  notes: |-
+    === AS Design ===
+      AS 65000  Enterprise (WAN-Edge, RR-Core, Spoke-Router, Spoke2-Router)
+      AS 109    ISP (ISP-Router)
+
+    === Loopbacks (Router-IDs / iBGP peering) ===
+      WAN-Edge:     10.0.0.1/32   2001:db8:0:1::1/128
+      RR-Core:      10.0.0.2/32   2001:db8:0:1::2/128
+      Spoke-Router: 10.0.0.3/32   2001:db8:0:1::3/128
+      Spoke2-Router:10.0.0.4/32   2001:db8:0:1::4/128
+      ISP-Router:   10.0.0.100/32 2001:db8:100::1/128
+
+    === Transit Links ===
+      WAN-Edge  <-> ISP:          10.1.0.0/30  2001:db8:1::/127
+      WAN-Edge  <-> RR-Core:      10.1.1.0/30  2001:db8:1:1::/127
+      RR-Core   <-> Spoke-Router: 10.1.2.0/30  2001:db8:1:2::/127
+      RR-Core   <-> Spoke2-Router:10.1.3.0/30  2001:db8:1:3::/127
+
+    === LAN Subnets ===
+      Spoke2-Router LAN: 10.10.1.0/24  2001:db8:10:1::/64  (Client-A)
+      Spoke-Router LAN:  10.10.2.0/24  2001:db8:10:2::/64  (Client-B)
+      Spoke2-Router stub:10.10.3.0/24  2001:db8:10:3::/64
+
+    === ISP Prefixes into AS65000 ===
+      0.0.0.0/0, ::/0, 198.51.100.0/24, 2001:db8:ffff::/48
+
+    === Enterprise Prefixes to ISP ===
+      10.10.1.0/24, 10.10.2.0/24, 10.10.3.0/24
+      2001:db8:10:1::/64, 2001:db8:10:2::/64, 2001:db8:10:3::/64
+
+    === Credentials ===
+      admin / Cisc0Lab! on all devices
+      BGP MD5: Cisc0Lab!
+  title: BGP Dual-Stack Lab — AS65000 Enterprise / AS109 ISP
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
