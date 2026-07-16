@@ -1,0 +1,1649 @@
+annotations: []
+smart_annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname SPINE-1
+          !
+          feature ospf
+          feature bgp
+          !
+          interface loopback0
+            ip address 10.0.0.1/32
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+          !
+          interface Ethernet1/1
+            description LEAF-1A
+            no switchport
+            ip address 10.1.11.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/2
+            description LEAF-1B
+            no switchport
+            ip address 10.1.12.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/3
+            description LEAF-2A
+            no switchport
+            ip address 10.1.13.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/4
+            description LEAF-2B
+            no switchport
+            ip address 10.1.14.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/5
+            description BORDER-1A
+            no switchport
+            ip address 10.1.15.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/6
+            description BORDER-1B
+            no switchport
+            ip address 10.1.16.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          router ospf UNDERLAY
+            router-id 10.0.0.1
+          !
+          router bgp 65000
+            router-id 10.0.0.1
+            address-family ipv4 unicast
+              maximum-paths 8
+            neighbor 10.0.0.3
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.4
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.5
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.6
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.7
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.8
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: SPINE-1
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 150
+    y: -400
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: Ethernet1/5
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: Ethernet1/6
+        mac_address: null
+        type: physical
+        slot: 6
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname SPINE-2
+          !
+          feature ospf
+          feature bgp
+          !
+          interface loopback0
+            ip address 10.0.0.2/32
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+          !
+          interface Ethernet1/1
+            description LEAF-1A
+            no switchport
+            ip address 10.2.11.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/2
+            description LEAF-1B
+            no switchport
+            ip address 10.2.12.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/3
+            description LEAF-2A
+            no switchport
+            ip address 10.2.13.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/4
+            description LEAF-2B
+            no switchport
+            ip address 10.2.14.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/5
+            description BORDER-1A
+            no switchport
+            ip address 10.2.15.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/6
+            description BORDER-1B
+            no switchport
+            ip address 10.2.16.0/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          router ospf UNDERLAY
+            router-id 10.0.0.2
+          !
+          router bgp 65000
+            router-id 10.0.0.2
+            address-family ipv4 unicast
+              maximum-paths 8
+            neighbor 10.0.0.3
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.4
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.5
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.6
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.7
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+            neighbor 10.0.0.8
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                route-reflector-client
+                send-community both
+                next-hop-self
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: SPINE-2
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 450
+    y: -400
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: Ethernet1/5
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: Ethernet1/6
+        mac_address: null
+        type: physical
+        slot: 6
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname LEAF-1A
+          !
+          feature ospf
+          feature bgp
+          feature vpc
+          feature interface-vlan
+          feature hsrp
+          feature lacp
+          !
+          spanning-tree mode rapid-pvst
+          spanning-tree vlan 1-4094 priority 8192
+          !
+          vlan 10
+            name RED-ZONE
+          vlan 20
+            name BLUE-ZONE
+          !
+          vpc domain 10
+            peer-keepalive destination 10.0.0.4 source 10.0.0.3
+            peer-switch
+            auto-recovery
+            delay restore 60
+            ip arp synchronize
+          !
+          interface loopback0
+            ip address 10.0.0.3/32
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+          !
+          interface Ethernet1/1
+            description SPINE-1
+            no switchport
+            ip address 10.1.11.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/2
+            description SPINE-2
+            no switchport
+            ip address 10.2.11.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/3
+            description vPC-PEER-LINK-to-LEAF-1B
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            channel-group 1 mode active
+            no shutdown
+          !
+          interface port-channel1
+            description vPC-PEER-LINK
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            vpc peer-link
+            spanning-tree port type network
+            no shutdown
+          !
+          interface Ethernet1/4
+            description CLIENT-RED
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 10
+            channel-group 10 mode active
+            no shutdown
+          !
+          interface port-channel10
+            description CLIENT-RED-vPC-10
+            switchport mode trunk
+            switchport trunk allowed vlan 10
+            vpc 10
+            no shutdown
+          !
+          interface Vlan10
+            description RED-ZONE-SVI
+            ip address 10.10.10.2/24
+            hsrp 10
+              ip 10.10.10.1
+              priority 110
+              preempt
+            no shutdown
+          !
+          interface Vlan20
+            description BLUE-ZONE-SVI
+            ip address 10.20.20.2/24
+            hsrp 20
+              ip 10.20.20.1
+              priority 90
+            no shutdown
+          !
+          ip dhcp relay address 10.99.0.2
+          !
+          router ospf UNDERLAY
+            router-id 10.0.0.3
+          !
+          router bgp 65000
+            router-id 10.0.0.3
+            address-family ipv4 unicast
+              network 10.10.10.0/24
+              network 10.20.20.0/24
+              maximum-paths 8
+            neighbor 10.0.0.1
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+            neighbor 10.0.0.2
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: LEAF-1A
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -200
+    y: -100
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname LEAF-1B
+          !
+          feature ospf
+          feature bgp
+          feature vpc
+          feature interface-vlan
+          feature hsrp
+          feature lacp
+          !
+          spanning-tree mode rapid-pvst
+          spanning-tree vlan 1-4094 priority 16384
+          !
+          vlan 10
+            name RED-ZONE
+          vlan 20
+            name BLUE-ZONE
+          !
+          vpc domain 10
+            peer-keepalive destination 10.0.0.3 source 10.0.0.4
+            peer-switch
+            auto-recovery
+            delay restore 60
+            ip arp synchronize
+          !
+          interface loopback0
+            ip address 10.0.0.4/32
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+          !
+          interface Ethernet1/1
+            description SPINE-1
+            no switchport
+            ip address 10.1.12.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/2
+            description SPINE-2
+            no switchport
+            ip address 10.2.12.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/3
+            description vPC-PEER-LINK-to-LEAF-1A
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            channel-group 1 mode active
+            no shutdown
+          !
+          interface port-channel1
+            description vPC-PEER-LINK
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            vpc peer-link
+            spanning-tree port type network
+            no shutdown
+          !
+          interface Ethernet1/4
+            description CLIENT-RED
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 10
+            channel-group 10 mode active
+            no shutdown
+          !
+          interface port-channel10
+            description CLIENT-RED-vPC-10
+            switchport mode trunk
+            switchport trunk allowed vlan 10
+            vpc 10
+            no shutdown
+          !
+          interface Vlan10
+            description RED-ZONE-SVI
+            ip address 10.10.10.3/24
+            hsrp 10
+              ip 10.10.10.1
+              priority 90
+            no shutdown
+          !
+          interface Vlan20
+            description BLUE-ZONE-SVI
+            ip address 10.20.20.3/24
+            hsrp 20
+              ip 10.20.20.1
+              priority 90
+            no shutdown
+          !
+          ip dhcp relay address 10.99.0.2
+          !
+          router ospf UNDERLAY
+            router-id 10.0.0.4
+          !
+          router bgp 65000
+            router-id 10.0.0.4
+            address-family ipv4 unicast
+              network 10.10.10.0/24
+              network 10.20.20.0/24
+              maximum-paths 8
+            neighbor 10.0.0.1
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+            neighbor 10.0.0.2
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: LEAF-1B
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 100
+    y: -100
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname LEAF-2A
+          !
+          feature ospf
+          feature bgp
+          feature vpc
+          feature interface-vlan
+          feature hsrp
+          feature lacp
+          !
+          spanning-tree mode rapid-pvst
+          spanning-tree vlan 1-4094 priority 8192
+          !
+          vlan 10
+            name RED-ZONE
+          vlan 20
+            name BLUE-ZONE
+          !
+          vpc domain 20
+            peer-keepalive destination 10.0.0.6 source 10.0.0.5
+            peer-switch
+            auto-recovery
+            delay restore 60
+            ip arp synchronize
+          !
+          interface loopback0
+            ip address 10.0.0.5/32
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+          !
+          interface Ethernet1/1
+            description SPINE-1
+            no switchport
+            ip address 10.1.13.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/2
+            description SPINE-2
+            no switchport
+            ip address 10.2.13.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/3
+            description vPC-PEER-LINK-to-LEAF-2B
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            channel-group 1 mode active
+            no shutdown
+          !
+          interface port-channel1
+            description vPC-PEER-LINK
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            vpc peer-link
+            spanning-tree port type network
+            no shutdown
+          !
+          interface Ethernet1/4
+            description CLIENT-BLUE
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 20
+            channel-group 20 mode active
+            no shutdown
+          !
+          interface port-channel20
+            description CLIENT-BLUE-vPC-20
+            switchport mode trunk
+            switchport trunk allowed vlan 20
+            vpc 20
+            no shutdown
+          !
+          interface Vlan10
+            description RED-ZONE-SVI
+            ip address 10.10.10.4/24
+            hsrp 10
+              ip 10.10.10.1
+              priority 90
+            no shutdown
+          !
+          interface Vlan20
+            description BLUE-ZONE-SVI
+            ip address 10.20.20.4/24
+            hsrp 20
+              ip 10.20.20.1
+              priority 110
+              preempt
+            no shutdown
+          !
+          ip dhcp relay address 10.99.0.2
+          !
+          router ospf UNDERLAY
+            router-id 10.0.0.5
+          !
+          router bgp 65000
+            router-id 10.0.0.5
+            address-family ipv4 unicast
+              network 10.10.10.0/24
+              network 10.20.20.0/24
+              maximum-paths 8
+            neighbor 10.0.0.1
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+            neighbor 10.0.0.2
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: null
+    label: LEAF-2A
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 500
+    y: -100
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname LEAF-2B
+          !
+          feature ospf
+          feature bgp
+          feature vpc
+          feature interface-vlan
+          feature hsrp
+          feature lacp
+          !
+          spanning-tree mode rapid-pvst
+          spanning-tree vlan 1-4094 priority 16384
+          !
+          vlan 10
+            name RED-ZONE
+          vlan 20
+            name BLUE-ZONE
+          !
+          vpc domain 20
+            peer-keepalive destination 10.0.0.5 source 10.0.0.6
+            peer-switch
+            auto-recovery
+            delay restore 60
+            ip arp synchronize
+          !
+          interface loopback0
+            ip address 10.0.0.6/32
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+          !
+          interface Ethernet1/1
+            description SPINE-1
+            no switchport
+            ip address 10.1.14.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/2
+            description SPINE-2
+            no switchport
+            ip address 10.2.14.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/3
+            description vPC-PEER-LINK-to-LEAF-2A
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            channel-group 1 mode active
+            no shutdown
+          !
+          interface port-channel1
+            description vPC-PEER-LINK
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            vpc peer-link
+            spanning-tree port type network
+            no shutdown
+          !
+          interface Ethernet1/4
+            description CLIENT-BLUE
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 20
+            channel-group 20 mode active
+            no shutdown
+          !
+          interface port-channel20
+            description CLIENT-BLUE-vPC-20
+            switchport mode trunk
+            switchport trunk allowed vlan 20
+            vpc 20
+            no shutdown
+          !
+          interface Vlan10
+            description RED-ZONE-SVI
+            ip address 10.10.10.5/24
+            hsrp 10
+              ip 10.10.10.1
+              priority 90
+            no shutdown
+          !
+          interface Vlan20
+            description BLUE-ZONE-SVI
+            ip address 10.20.20.5/24
+            hsrp 20
+              ip 10.20.20.1
+              priority 90
+            no shutdown
+          !
+          ip dhcp relay address 10.99.0.2
+          !
+          router ospf UNDERLAY
+            router-id 10.0.0.6
+          !
+          router bgp 65000
+            router-id 10.0.0.6
+            address-family ipv4 unicast
+              network 10.10.10.0/24
+              network 10.20.20.0/24
+              maximum-paths 8
+            neighbor 10.0.0.1
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+            neighbor 10.0.0.2
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: null
+    label: LEAF-2B
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 800
+    y: -100
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname BORDER-1A
+          !
+          feature ospf
+          feature bgp
+          feature vpc
+          feature interface-vlan
+          feature lacp
+          !
+          spanning-tree mode rapid-pvst
+          !
+          vlan 10
+            name RED-ZONE
+          vlan 20
+            name BLUE-ZONE
+          !
+          vpc domain 30
+            peer-keepalive destination 10.99.99.2 source 10.99.99.1
+            peer-switch
+            auto-recovery
+            ip arp synchronize
+          !
+          interface loopback0
+            ip address 10.0.0.7/32
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+          !
+          interface Ethernet1/1
+            description SPINE-1
+            no switchport
+            ip address 10.1.15.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/2
+            description SPINE-2
+            no switchport
+            ip address 10.2.15.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/3
+            description vPC-PEER-LINK-to-BORDER-1B
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            channel-group 1 mode active
+            no shutdown
+          !
+          interface port-channel1
+            description vPC-PEER-LINK
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            vpc peer-link
+            spanning-tree port type network
+            no shutdown
+          !
+          interface Ethernet1/4
+            description FRR-ROUTER-bond
+            no switchport
+            channel-group 30 mode active
+            no shutdown
+          !
+          interface port-channel30
+            description FRR-ROUTER-vPC-30
+            no switchport
+            ip address 10.99.0.1/30
+            vpc 30
+            no shutdown
+          !
+          interface Ethernet1/5
+            description vPC-KEEPALIVE-to-BORDER-1B
+            no switchport
+            ip address 10.99.99.1/30
+            no shutdown
+          !
+          router ospf UNDERLAY
+            router-id 10.0.0.7
+          !
+          router bgp 65000
+            router-id 10.0.0.7
+            address-family ipv4 unicast
+              network 10.10.10.0/24
+              network 10.20.20.0/24
+              maximum-paths 8
+            neighbor 10.0.0.1
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+            neighbor 10.0.0.2
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+            neighbor 10.99.0.2
+              remote-as 65100
+              address-family ipv4 unicast
+                default-originate
+                send-community both
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: null
+    label: BORDER-1A
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 150
+    y: -700
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: Ethernet1/5
+        mac_address: null
+        type: physical
+        slot: 5
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname BORDER-1B
+          !
+          feature ospf
+          feature bgp
+          feature vpc
+          feature interface-vlan
+          feature lacp
+          !
+          spanning-tree mode rapid-pvst
+          !
+          vlan 10
+            name RED-ZONE
+          vlan 20
+            name BLUE-ZONE
+          !
+          vpc domain 30
+            peer-keepalive destination 10.99.99.1 source 10.99.99.2
+            peer-switch
+            auto-recovery
+            ip arp synchronize
+          !
+          interface loopback0
+            ip address 10.0.0.8/32
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+          !
+          interface Ethernet1/1
+            description SPINE-1
+            no switchport
+            ip address 10.1.16.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/2
+            description SPINE-2
+            no switchport
+            ip address 10.2.16.1/31
+            ip router ospf UNDERLAY area 0.0.0.0
+            ip ospf network point-to-point
+            no shutdown
+          !
+          interface Ethernet1/3
+            description vPC-PEER-LINK-to-BORDER-1A
+            switchport
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            channel-group 1 mode active
+            no shutdown
+          !
+          interface port-channel1
+            description vPC-PEER-LINK
+            switchport mode trunk
+            switchport trunk allowed vlan 10,20
+            vpc peer-link
+            spanning-tree port type network
+            no shutdown
+          !
+          interface Ethernet1/4
+            description FRR-ROUTER-bond
+            no switchport
+            channel-group 30 mode active
+            no shutdown
+          !
+          interface port-channel30
+            description FRR-ROUTER-vPC-30
+            no switchport
+            ip address 10.99.0.1/30
+            vpc 30
+            no shutdown
+          !
+          interface Ethernet1/5
+            description vPC-KEEPALIVE-to-BORDER-1A
+            no switchport
+            ip address 10.99.99.2/30
+            no shutdown
+          !
+          router ospf UNDERLAY
+            router-id 10.0.0.8
+          !
+          router bgp 65000
+            router-id 10.0.0.8
+            address-family ipv4 unicast
+              network 10.10.10.0/24
+              network 10.20.20.0/24
+              maximum-paths 8
+            neighbor 10.0.0.1
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+            neighbor 10.0.0.2
+              remote-as 65000
+              update-source loopback0
+              address-family ipv4 unicast
+                send-community both
+            neighbor 10.99.0.2
+              remote-as 65100
+              address-family ipv4 unicast
+                default-originate
+                send-community both
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n7
+    image_definition: null
+    label: BORDER-1B
+    node_definition: nxosv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 450
+    y: -700
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: mgmt0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet1/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet1/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet1/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: Ethernet1/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: Ethernet1/5
+        mac_address: null
+        type: physical
+        slot: 5
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          frr version 10.2
+          frr defaults datacenter
+          hostname FRR-ROUTER
+          !
+          ip forwarding
+          !
+          interface eth0
+            description BOND-MEMBER-TO-BORDER-1A
+          !
+          interface eth1
+            description BOND-MEMBER-TO-BORDER-1B
+          !
+          interface bond0
+            description LAG-TO-BORDER-vPC-PAIR
+            ip address 10.99.0.2/30
+          !
+          router bgp 65100
+            bgp router-id 10.99.0.2
+            no bgp ebgp-requires-policy
+            neighbor 10.99.0.1 remote-as 65000
+            neighbor 10.99.0.1 description BORDER-vPC-pair
+            !
+            address-family ipv4 unicast
+              network 0.0.0.0/0
+              neighbor 10.99.0.1 activate
+              neighbor 10.99.0.1 route-map PERMIT-ALL in
+              neighbor 10.99.0.1 route-map PERMIT-ALL out
+            exit-address-family
+          !
+          route-map PERMIT-ALL permit 10
+          !
+          ip route 0.0.0.0/0 Null0 254
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n8
+    image_definition: null
+    label: FRR-ROUTER
+    node_definition: frr
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 300
+    y: -1000
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i1
+        label: eth1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i2
+        label: eth2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i3
+        label: eth3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          #!/bin/sh
+          # CLIENT-RED -- dual-homed LACP bond to LEAF-1A (Eth1/4) and LEAF-1B (Eth1/4)
+          # vPC domain 10 makes both leafs appear as one logical switch
+          ip link add bond0 type bond mode 802.3ad
+          ip link set bond0 type bond miimon 100 lacp_rate fast
+          ip link set eth0 master bond0
+          ip link set eth1 master bond0
+          ip link set eth0 up
+          ip link set eth1 up
+          ip link set bond0 up
+          udhcpc -i bond0 -b
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n9
+    image_definition: null
+    label: CLIENT-RED
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -50
+    y: 250
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i1
+        label: eth1
+        mac_address: null
+        type: physical
+        slot: 1
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          #!/bin/sh
+          # CLIENT-BLUE -- dual-homed LACP bond to LEAF-2A (Eth1/4) and LEAF-2B (Eth1/4)
+          # vPC domain 20 makes both leafs appear as one logical switch
+          ip link add bond0 type bond mode 802.3ad
+          ip link set bond0 type bond miimon 100 lacp_rate fast
+          ip link set eth0 master bond0
+          ip link set eth1 master bond0
+          ip link set eth0 up
+          ip link set eth1 up
+          ip link set bond0 up
+          udhcpc -i bond0 -b
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n10
+    image_definition: null
+    label: CLIENT-BLUE
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 650
+    y: 250
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i1
+        label: eth1
+        mac_address: null
+        type: physical
+        slot: 1
+links:
+  - id: l0
+    n1: n0
+    n2: n2
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: SPINE-1-Ethernet1/1<->LEAF-1A-Ethernet1/1
+  - id: l1
+    n1: n0
+    n2: n3
+    i1: i3
+    i2: i2
+    conditioning: {}
+    label: SPINE-1-Ethernet1/2<->LEAF-1B-Ethernet1/1
+  - id: l2
+    n1: n0
+    n2: n4
+    i1: i4
+    i2: i2
+    conditioning: {}
+    label: SPINE-1-Ethernet1/3<->LEAF-2A-Ethernet1/1
+  - id: l3
+    n1: n0
+    n2: n5
+    i1: i5
+    i2: i2
+    conditioning: {}
+    label: SPINE-1-Ethernet1/4<->LEAF-2B-Ethernet1/1
+  - id: l4
+    n1: n0
+    n2: n6
+    i1: i6
+    i2: i2
+    conditioning: {}
+    label: SPINE-1-Ethernet1/5<->BORDER-1A-Ethernet1/1
+  - id: l5
+    n1: n0
+    n2: n7
+    i1: i7
+    i2: i2
+    conditioning: {}
+    label: SPINE-1-Ethernet1/6<->BORDER-1B-Ethernet1/1
+  - id: l6
+    n1: n1
+    n2: n2
+    i1: i2
+    i2: i3
+    conditioning: {}
+    label: SPINE-2-Ethernet1/1<->LEAF-1A-Ethernet1/2
+  - id: l7
+    n1: n1
+    n2: n3
+    i1: i3
+    i2: i3
+    conditioning: {}
+    label: SPINE-2-Ethernet1/2<->LEAF-1B-Ethernet1/2
+  - id: l8
+    n1: n1
+    n2: n4
+    i1: i4
+    i2: i3
+    conditioning: {}
+    label: SPINE-2-Ethernet1/3<->LEAF-2A-Ethernet1/2
+  - id: l9
+    n1: n1
+    n2: n5
+    i1: i5
+    i2: i3
+    conditioning: {}
+    label: SPINE-2-Ethernet1/4<->LEAF-2B-Ethernet1/2
+  - id: l10
+    n1: n1
+    n2: n6
+    i1: i6
+    i2: i3
+    conditioning: {}
+    label: SPINE-2-Ethernet1/5<->BORDER-1A-Ethernet1/2
+  - id: l11
+    n1: n1
+    n2: n7
+    i1: i7
+    i2: i3
+    conditioning: {}
+    label: SPINE-2-Ethernet1/6<->BORDER-1B-Ethernet1/2
+  - id: l12
+    n1: n2
+    n2: n3
+    i1: i4
+    i2: i4
+    conditioning: {}
+    label: LEAF-1A-Ethernet1/3<->LEAF-1B-Ethernet1/3
+  - id: l13
+    n1: n4
+    n2: n5
+    i1: i4
+    i2: i4
+    conditioning: {}
+    label: LEAF-2A-Ethernet1/3<->LEAF-2B-Ethernet1/3
+  - id: l14
+    n1: n6
+    n2: n7
+    i1: i4
+    i2: i4
+    conditioning: {}
+    label: BORDER-1A-Ethernet1/3<->BORDER-1B-Ethernet1/3
+  - id: l15
+    n1: n6
+    n2: n7
+    i1: i6
+    i2: i6
+    conditioning: {}
+    label: BORDER-1A-Ethernet1/5<->BORDER-1B-Ethernet1/5
+  - id: l16
+    n1: n2
+    n2: n9
+    i1: i5
+    i2: i0
+    conditioning: {}
+    label: LEAF-1A-Ethernet1/4<->CLIENT-RED-eth0
+  - id: l17
+    n1: n3
+    n2: n9
+    i1: i5
+    i2: i1
+    conditioning: {}
+    label: LEAF-1B-Ethernet1/4<->CLIENT-RED-eth1
+  - id: l18
+    n1: n4
+    n2: n10
+    i1: i5
+    i2: i0
+    conditioning: {}
+    label: LEAF-2A-Ethernet1/4<->CLIENT-BLUE-eth0
+  - id: l19
+    n1: n5
+    n2: n10
+    i1: i5
+    i2: i1
+    conditioning: {}
+    label: LEAF-2B-Ethernet1/4<->CLIENT-BLUE-eth1
+  - id: l20
+    n1: n6
+    n2: n8
+    i1: i5
+    i2: i0
+    conditioning: {}
+    label: BORDER-1A-Ethernet1/4<->FRR-ROUTER-eth0
+  - id: l21
+    n1: n7
+    n2: n8
+    i1: i5
+    i2: i1
+    conditioning: {}
+    label: BORDER-1B-Ethernet1/4<->FRR-ROUTER-eth1
+lab:
+  description: 'vPC fabric: 2 Spines, 2 vPC Leaf Pairs, Border vPC pair, FRR DHCP+BGP,
+    HSRP gateways, dual-homed clients'
+  notes: ''
+  title: vPC DC Fabric - 2S 2xLeafPair 1Border
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
