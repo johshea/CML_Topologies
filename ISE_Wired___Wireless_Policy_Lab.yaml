@@ -1,0 +1,907 @@
+annotations: []
+smart_annotations:
+  - tag: ap
+    is_on: true
+    padding: 35
+    label: ap
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: client
+    is_on: true
+    padding: 35
+    label: client
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: dot1x
+    is_on: true
+    padding: 35
+    label: dot1x
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: infrastructure
+    is_on: true
+    padding: 35
+    label: infrastructure
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: ise
+    is_on: true
+    padding: 35
+    label: ise
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: mab
+    is_on: true
+    padding: 35
+    label: mab
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: policy
+    is_on: true
+    padding: 35
+    label: policy
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: wired
+    is_on: true
+    padding: 35
+    label: wired
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: wireless
+    is_on: true
+    padding: 35
+    label: wireless
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: wlc
+    is_on: true
+    padding: 35
+    label: wlc
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname Core-Router
+          !
+          ip dhcp excluded-address 192.168.100.1 192.168.100.50
+          ip dhcp excluded-address 10.20.0.1 10.20.0.10
+          ip dhcp excluded-address 10.30.0.1 10.30.0.10
+          ip dhcp excluded-address 10.40.0.1 10.40.0.10
+          !
+          ip dhcp pool MGMT
+           network 192.168.100.0 255.255.255.0
+           default-router 192.168.100.1
+           dns-server 8.8.8.8
+          !
+          ip dhcp pool CORP-VLAN20
+           network 10.20.0.0 255.255.255.0
+           default-router 10.20.0.1
+           dns-server 8.8.8.8
+          !
+          ip dhcp pool GUEST-VLAN30
+           network 10.30.0.0 255.255.255.0
+           default-router 10.30.0.1
+           dns-server 8.8.8.8
+          !
+          ip dhcp pool IOT-VLAN40
+           network 10.40.0.0 255.255.255.0
+           default-router 10.40.0.1
+           dns-server 8.8.8.8
+          !
+          interface GigabitEthernet0/0
+           description UPLINK-TO-SWITCH
+           no ip address
+           no shutdown
+          !
+          interface GigabitEthernet0/0.10
+           encapsulation dot1Q 10
+           ip address 192.168.100.1 255.255.255.0
+          !
+          interface GigabitEthernet0/0.20
+           encapsulation dot1Q 20
+           ip address 10.20.0.1 255.255.255.0
+          !
+          interface GigabitEthernet0/0.30
+           encapsulation dot1Q 30
+           ip address 10.30.0.1 255.255.255.0
+          !
+          interface GigabitEthernet0/0.40
+           encapsulation dot1Q 40
+           ip address 10.40.0.1 255.255.255.0
+          !
+          ip routing
+          !
+          ntp master 1
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          crypto key generate rsa modulus 2048
+          ip ssh version 2
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: Core-Router
+    node_definition: iosv
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - infrastructure
+    x: 0
+    y: -600
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname Cat9000v-Access
+          !
+          vtp mode transparent
+          vlan 10
+           name MGMT
+          vlan 20
+           name CORP
+          vlan 30
+           name GUEST
+          vlan 40
+           name IOT
+          !
+          ip routing
+          !
+          interface Loopback0
+           ip address 192.168.100.20 255.255.255.255
+          !
+          interface Vlan10
+           description MGMT
+           ip address 192.168.100.20 255.255.255.0
+           no shutdown
+          !
+          interface Vlan20
+           description CORP
+           ip address 10.20.0.254 255.255.255.0
+           no shutdown
+          !
+          interface Vlan30
+           description GUEST-PREAUTH
+           ip address 10.30.0.254 255.255.255.0
+           no shutdown
+          !
+          interface Vlan40
+           description IOT-MAB
+           ip address 10.40.0.254 255.255.255.0
+           no shutdown
+          !
+          ip route 0.0.0.0 0.0.0.0 192.168.100.1
+          !
+          aaa new-model
+          aaa group server radius ISE-SERVERS
+           server name ISE-PSN
+          !
+          radius server ISE-PSN
+           address ipv4 192.168.100.10 auth-port 1812 acct-port 1813
+           key Cisc0Lab!
+          !
+          aaa authentication dot1x default group ISE-SERVERS
+          aaa authorization network default group ISE-SERVERS
+          aaa accounting dot1x default start-stop group ISE-SERVERS
+          aaa server radius dynamic-author
+           client 192.168.100.10 server-key Cisc0Lab!
+          !
+          dot1x system-auth-control
+          ip device tracking
+          !
+          ip access-list extended ACL-PREAUTH
+           permit udp any any eq 67
+           permit udp any any eq 68
+           permit udp any any eq 53
+           permit ip any host 192.168.100.10
+           deny ip any any log
+          !
+          interface GigabitEthernet1/0/1
+           description UPLINK-ROUTER
+           switchport mode trunk
+           switchport trunk allowed vlan 10,20,30,40
+           no shutdown
+          !
+          interface GigabitEthernet1/0/2
+           description UPLINK-WLC
+           switchport mode trunk
+           switchport trunk allowed vlan 10,20,30,40
+           no shutdown
+          !
+          interface GigabitEthernet1/0/3
+           description DOT1X-CORP-CLIENT
+           switchport mode access
+           switchport access vlan 30
+           switchport nonegotiate
+           ip access-group ACL-PREAUTH in
+           authentication event fail action next-method
+           authentication event server dead action reinitialize vlan 20
+           authentication event server alive action reinitialize
+           authentication host-mode multi-auth
+           authentication order dot1x mab
+           authentication priority dot1x mab
+           authentication port-control auto
+           authentication periodic
+           authentication timer reauthenticate server
+           mab
+           dot1x pae authenticator
+           dot1x timeout tx-period 7
+           dot1x timeout supp-timeout 15
+           spanning-tree portfast
+           no shutdown
+          !
+          interface GigabitEthernet1/0/4
+           description MAB-IOT-DEVICE
+           switchport mode access
+           switchport access vlan 30
+           switchport nonegotiate
+           ip access-group ACL-PREAUTH in
+           authentication event fail action authorize vlan 30
+           authentication event server dead action reinitialize vlan 40
+           authentication event server alive action reinitialize
+           authentication host-mode single-host
+           authentication order mab
+           authentication priority mab
+           authentication port-control auto
+           mab
+           spanning-tree portfast
+           no shutdown
+          !
+          interface GigabitEthernet1/0/5
+           description UPLINK-AP
+           switchport mode trunk
+           switchport trunk allowed vlan 10,20,30
+           switchport trunk native vlan 10
+           spanning-tree portfast trunk
+           no shutdown
+          !
+          interface GigabitEthernet1/0/6
+           description WIRELESS-CORP-CLIENT-SIM
+           switchport mode access
+           switchport access vlan 30
+           switchport nonegotiate
+           ip access-group ACL-PREAUTH in
+           authentication event fail action next-method
+           authentication event server dead action reinitialize vlan 20
+           authentication event server alive action reinitialize
+           authentication host-mode multi-auth
+           authentication order dot1x mab
+           authentication priority dot1x mab
+           authentication port-control auto
+           authentication periodic
+           authentication timer reauthenticate server
+           mab
+           dot1x pae authenticator
+           dot1x timeout tx-period 7
+           dot1x timeout supp-timeout 15
+           spanning-tree portfast
+           no shutdown
+          !
+          interface GigabitEthernet1/0/7
+           description ISE-MGMT
+           switchport mode access
+           switchport access vlan 10
+           spanning-tree portfast
+           no shutdown
+          !
+          snmp-server community ISE-READ ro
+          snmp-server host 192.168.100.10 version 2c ISE-READ
+          device-sensor accounting
+          device-sensor notify all-changes
+          logging host 192.168.100.10
+          logging trap informational
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          crypto key generate rsa modulus 2048
+          ip ssh version 2
+          line vty 0 15
+           login local
+           transport input ssh
+          !
+          ntp server 192.168.100.1
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: cat9000v-uadp-17-18-02
+    label: Cat9000v-Access
+    node_definition: cat9000v-uadp
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - wired
+      - dot1x
+    x: 0
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet1/0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet1/0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet1/0/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: GigabitEthernet1/0/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: GigabitEthernet1/0/5
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: GigabitEthernet1/0/6
+        mac_address: null
+        type: physical
+        slot: 6
+      - id: i8
+        label: GigabitEthernet1/0/7
+        mac_address: null
+        type: physical
+        slot: 7
+      - id: i9
+        label: GigabitEthernet1/0/8
+        mac_address: null
+        type: physical
+        slot: 8
+  - boot_disk_size: null
+    configuration:
+      - name: ise-ztp.conf
+        content: |-
+          hostname=ISE-PSN
+          ipv4_addr=192.168.100.10
+          ipv4_mask=255.255.255.0
+          ipv4_default_gw=192.168.100.1
+          domain=lab.local
+          primary_nameserver=8.8.8.8
+          primary_ntpserver=192.168.100.1
+          timezone=America/New_York
+          ssh=true
+          username=admin
+          password=Cisc0Lab!
+          ers=true
+          openapi=true
+          pxgrid=true
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: ise-3-5-0
+    label: ISE-PSN
+    node_definition: ise
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - ise
+      - policy
+    x: -500
+    y: -550
+    interfaces:
+      - id: i0
+        label: lo
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          hostname Cat9800-WLC
+          !
+          ip routing
+          !
+          interface Loopback0
+           ip address 192.168.100.30 255.255.255.255
+          !
+          interface GigabitEthernet1
+           description UPLINK-TO-SWITCH
+           no ip address
+           no shutdown
+          !
+          interface GigabitEthernet1.10
+           encapsulation dot1Q 10
+           ip address 192.168.100.30 255.255.255.0
+          !
+          interface GigabitEthernet1.20
+           encapsulation dot1Q 20
+           no ip address
+          !
+          interface GigabitEthernet1.30
+           encapsulation dot1Q 30
+           no ip address
+          !
+          ip route 0.0.0.0 0.0.0.0 192.168.100.1
+          !
+          aaa new-model
+          aaa group server radius ISE-SERVERS
+           server name ISE-PSN
+          !
+          radius server ISE-PSN
+           address ipv4 192.168.100.10 auth-port 1812 acct-port 1813
+           key Cisc0Lab!
+          !
+          aaa authentication login default local
+          aaa authentication dot1x default group ISE-SERVERS
+          aaa authorization network default group ISE-SERVERS
+          aaa accounting dot1x default start-stop group ISE-SERVERS
+          !
+          aaa server radius dynamic-author
+           client 192.168.100.10 server-key Cisc0Lab!
+          !
+          wlan CORP-DOT1X 1 CORP-DOT1X
+           security dot1x authentication-list default
+           security wpa wpa2
+           security wpa wpa2 ciphers aes
+           security wpa akm dot1x
+           no shutdown
+          !
+          wlan GUEST-OPEN 2 GUEST-OPEN
+           no security wpa
+           no shutdown
+          !
+          ap profile default-ap-profile
+           capwap retransmit count 8
+           capwap retransmit interval 3
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip http server
+          ip http secure-server
+          crypto key generate rsa modulus 2048
+          ip ssh version 2
+          line vty 0 15
+           login local
+           transport input ssh
+          !
+          ntp server 192.168.100.1
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: cat9800-17-18-02
+    label: Cat9800-WLC
+    node_definition: cat9800
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - wireless
+      - wlc
+    x: 500
+    y: -550
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet4
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: user-data
+        content: |-
+          #cloud-config
+          hostname: wireless-ap
+          manage_etc_hosts: True
+          system_info:
+            default_user:
+              name: cisco
+          password: cisco
+          chpasswd:
+            expire: False
+          ssh_pwauth: True
+          write_files:
+            - path: /home/cisco/hostapd-corp.conf
+              content: |
+                interface=wlan0
+                driver=nl80211
+                ssid=CORP-DOT1X
+                channel=6
+                hw_mode=g
+                ieee8021x=1
+                wpa=2
+                wpa_key_mgmt=WPA-EAP
+                rsn_pairwise=CCMP
+                auth_algs=1
+                eap_server=0
+                auth_server_addr=192.168.100.10
+                auth_server_port=1812
+                auth_server_shared_secret=Cisc0Lab!
+                acct_server_addr=192.168.100.10
+                acct_server_port=1813
+                acct_server_shared_secret=Cisc0Lab!
+              owner: cisco:cisco
+              permissions: '0644'
+            - path: /home/cisco/hostapd-guest.conf
+              content: |
+                interface=wlan1
+                driver=nl80211
+                ssid=GUEST-OPEN
+                channel=11
+                hw_mode=g
+                auth_algs=1
+                wpa=0
+              owner: cisco:cisco
+              permissions: '0644'
+          runcmd:
+            - apt-get install -y hostapd 2>/dev/null || true
+      - name: network-config
+        content: |-
+          #network-config
+          network:
+            version: 2
+            ethernets:
+              ens2:
+                dhcp4: true
+                optional: true
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: wireless-ap-24-04-20260409
+    label: Wireless-AP
+    node_definition: wireless-ap
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - wireless
+      - ap
+    x: 500
+    y: -200
+    interfaces:
+      - id: i0
+        label: ens2
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          auto eth0
+          iface eth0 inet dhcp
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: null
+    label: Wired-Corp-Client
+    node_definition: desktop
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - client
+      - wired
+      - dot1x
+    x: -450
+    y: 150
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          auto eth0
+          iface eth0 inet dhcp
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: null
+    label: Wired-IoT-Printer
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - client
+      - wired
+      - mab
+    x: -150
+    y: 150
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          auto eth0
+          iface eth0 inet dhcp
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n7
+    image_definition: null
+    label: Wireless-Corp-Client
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - client
+      - wireless
+      - dot1x
+    x: 400
+    y: 200
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i1
+    i2: i2
+    conditioning: {}
+    label: Core-Router-GigabitEthernet0/0<->Cat9000v-Access-GigabitEthernet1/0/1
+  - id: l1
+    n1: n2
+    n2: n1
+    i1: i1
+    i2: i8
+    conditioning: {}
+    label: ISE-PSN-eth0<->Cat9000v-Access-GigabitEthernet1/0/7
+  - id: l2
+    n1: n3
+    n2: n1
+    i1: i1
+    i2: i3
+    conditioning: {}
+    label: Cat9800-WLC-GigabitEthernet1<->Cat9000v-Access-GigabitEthernet1/0/2
+  - id: l3
+    n1: n4
+    n2: n1
+    i1: i0
+    i2: i6
+    conditioning: {}
+    label: Wireless-AP-ens2<->Cat9000v-Access-GigabitEthernet1/0/5
+  - id: l4
+    n1: n5
+    n2: n1
+    i1: i0
+    i2: i4
+    conditioning: {}
+    label: Wired-Corp-Client-eth0<->Cat9000v-Access-GigabitEthernet1/0/3
+  - id: l5
+    n1: n6
+    n2: n1
+    i1: i0
+    i2: i5
+    conditioning: {}
+    label: Wired-IoT-Printer-eth0<->Cat9000v-Access-GigabitEthernet1/0/4
+  - id: l6
+    n1: n7
+    n2: n1
+    i1: i0
+    i2: i7
+    conditioning: {}
+    label: Wireless-Corp-Client-eth0<->Cat9000v-Access-GigabitEthernet1/0/6
+lab:
+  description: Cisco ISE 3.5 wired + wireless policy lab. Cat9000v (802.1X/MAB), Cat9800
+    WLC (CORP-DOT1X WPA3-Ent, GUEST-OPEN), wireless AP, wired and wireless test clients.
+    Full dot1x, MAB, CoA, VLAN assignment, profiling.
+  notes: |-
+    VLAN Plan:
+      10 = MGMT   192.168.100.0/24  GW .1
+      20 = CORP   10.20.0.0/24      GW .1
+      30 = GUEST  10.30.0.0/24      GW .1  (pre-auth / failed-auth)
+      40 = IOT    10.40.0.0/24      GW .1  (MAB devices)
+
+    Key IPs:
+      Router:    192.168.100.1 (GW + DHCP server)
+      ISE:       192.168.100.10
+      Switch:    192.168.100.20 (SVI VLAN10)
+      WLC:       192.168.100.30
+
+    RADIUS secret: Cisc0Lab!
+    Credentials:   admin / Cisc0Lab!
+
+    Switch port assignments:
+      Gi1/0/1 = Router trunk uplink
+      Gi1/0/2 = WLC trunk uplink
+      Gi1/0/3 = Wired-Corp-Client  (dot1x)
+      Gi1/0/4 = Wired-IoT-Printer  (MAB)
+      Gi1/0/5 = Wireless-AP        (trunk, native VLAN10)
+      Gi1/0/6 = Wireless-Corp-Client (simulated wireless, dot1x)
+      Gi1/0/7 = ISE management uplink
+  title: ISE Wired & Wireless Policy Lab
+  node_staging:
+    enabled: true
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
