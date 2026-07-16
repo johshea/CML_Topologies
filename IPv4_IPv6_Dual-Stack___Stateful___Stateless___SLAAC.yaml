@@ -1,0 +1,855 @@
+annotations: []
+smart_annotations:
+  - tag: client
+    is_on: true
+    padding: 35
+    label: client
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: dhcp
+    is_on: true
+    padding: 35
+    label: dhcp
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: gateway
+    is_on: true
+    padding: 35
+    label: gateway
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: ipv6
+    is_on: true
+    padding: 35
+    label: ipv6
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: ra-source
+    is_on: true
+    padding: 35
+    label: ra-source
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#007A3380'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: slaac
+    is_on: true
+    padding: 35
+    label: slaac
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: stateful
+    is_on: true
+    padding: 35
+    label: stateful
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#007A3380'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: stateless
+    is_on: true
+    padding: 35
+    label: stateless
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: vlan10
+    is_on: true
+    padding: 35
+    label: vlan10
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: vlan20
+    is_on: true
+    padding: 35
+    label: vlan20
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: vlan30
+    is_on: true
+    padding: 35
+    label: vlan30
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#005C9980'
+    border_color: '#00000080'
+    z_index: 1
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname GW-Router
+          !
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          interface Loopback0
+           ip address 1.1.1.1 255.255.255.255
+           ipv6 address 2001:db8::1/128
+          !
+          ! ============================================================
+          ! Uplink to DHCP-Router-10  (VLAN10 segment transit)
+          ! GW side: 10.10.10.1 / 2001:db8:1::1
+          ! ============================================================
+          interface Ethernet0/1
+           description TO-DHCP10-VLAN10
+           ip address 10.10.10.1 255.255.255.0
+           ipv6 address 2001:db8:1::1/64
+           ipv6 enable
+          !
+          ! RA flags for VLAN10 - STATEFUL DHCPv6
+          ! M=1: clients use DHCPv6 for addresses
+          ! O=1: clients use DHCPv6 for other options (DNS)
+          ! no-autoconfig: suppress SLAAC on this prefix
+           ipv6 nd managed-config-flag
+           ipv6 nd other-config-flag
+           ipv6 nd ra-interval 10
+           ipv6 nd ra-lifetime 1800
+           ipv6 nd prefix 2001:db8:1::/64 no-autoconfig
+          !
+          ! DHCPv6 relay - forward client Solicits to DHCP-Router-10
+           ipv6 dhcp relay destination 2001:db8:1::2
+          !
+          ! DHCPv4 helper - forward client Discovers to DHCP-Router-10
+           ip helper-address 10.10.10.2
+           no shutdown
+          !
+          ! ============================================================
+          ! Uplink to DHCP-Router-20  (VLAN20 segment transit)
+          ! GW side: 10.10.20.1 / 2001:db8:2::1
+          ! ============================================================
+          interface Ethernet0/2
+           description TO-DHCP20-VLAN20
+           ip address 10.10.20.1 255.255.255.0
+           ipv6 address 2001:db8:2::1/64
+           ipv6 enable
+          !
+          ! RA flags for VLAN20 - STATELESS DHCPv6
+          ! M=0: do NOT use DHCPv6 for addresses (use SLAAC)
+          ! O=1: use DHCPv6 for options only (DNS etc.)
+          ! prefix has autoconfig (A=1): SLAAC address from this prefix
+           ipv6 nd other-config-flag
+           ipv6 nd ra-interval 10
+           ipv6 nd ra-lifetime 1800
+           ipv6 nd prefix 2001:db8:2::/64
+          !
+          ! DHCPv6 relay for info-requests only
+           ipv6 dhcp relay destination 2001:db8:2::2
+          !
+           ip helper-address 10.10.20.2
+           no shutdown
+          !
+          ! ============================================================
+          ! Uplink to DHCP-Router-30  (VLAN30 segment transit)
+          ! GW side: 10.10.30.1 / 2001:db8:3::1
+          ! ============================================================
+          interface Ethernet0/3
+           description TO-DHCP30-VLAN30
+           ip address 10.10.30.1 255.255.255.0
+           ipv6 address 2001:db8:3::1/64
+           ipv6 enable
+          !
+          ! RA flags for VLAN30 - PURE SLAAC
+          ! M=0, O=0: no DHCPv6 at all
+          ! prefix has autoconfig (A=1): SLAAC only
+           ipv6 nd ra-interval 10
+           ipv6 nd ra-lifetime 1800
+           ipv6 nd prefix 2001:db8:3::/64
+          !
+          ! No DHCPv6 relay on VLAN30 - pure SLAAC
+           ip helper-address 10.10.30.2
+           no shutdown
+          !
+          ! ============================================================
+          ! Static routes back to client subnets via DHCP routers
+          ! ============================================================
+          ip route 0.0.0.0 0.0.0.0 Null0
+          ipv6 route ::/0 Null0
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: iol-xe-17-18-02
+    label: GW-Router
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - gateway
+      - ipv6
+      - ra-source
+    x: 0
+    y: -450
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname DHCP-Router-10
+          !
+          ! ============================================================
+          ! VLAN10  -  STATEFUL DHCPv6
+          ! This router provides:
+          !   - DHCPv4 pool for 10.10.10.0/24
+          !   - DHCPv6 pool (IA_NA) for 2001:db8:1::/64
+          !   - DNS service (IOS dns server)
+          ! ============================================================
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          ! === Uplink to GW-Router ===
+          interface Ethernet0/0
+           description TO-GW-ROUTER
+           ip address 10.10.10.2 255.255.255.0
+           ipv6 address 2001:db8:1::2/64
+           ipv6 enable
+           no shutdown
+          !
+          ! === Downlink to Client-Stateful ===
+          interface Ethernet0/1
+           description TO-CLIENT-STATEFUL
+           ip address 10.10.10.3 255.255.255.0
+           ipv6 address 2001:db8:1::3/64
+           ipv6 enable
+           no shutdown
+          !
+          ! ============================================================
+          ! DHCPv4 Server  -  VLAN10
+          ! ============================================================
+          ip dhcp excluded-address 10.10.10.1 10.10.10.99
+          ip dhcp excluded-address 10.10.10.151 10.10.10.254
+          !
+          ip dhcp pool VLAN10-IPv4
+           network 10.10.10.0 255.255.255.0
+           default-router 10.10.10.1
+           dns-server 10.10.10.2
+           domain-name stateful.lab
+           lease 0 12
+          !
+          ! ============================================================
+          ! DHCPv6 Server  -  STATEFUL (IA_NA pool)
+          ! Clients that receive M=1 in RA will send DHCPv6 Solicit
+          ! and receive a full IA_NA address lease from this pool.
+          ! ============================================================
+          ipv6 dhcp pool VLAN10-IPv6-STATEFUL
+           address prefix 2001:db8:1::/64
+           dns-server 2001:db8:1::2
+           domain-name stateful.lab
+          !
+          ! Bind the DHCPv6 pool to the uplink interface
+          ! (clients reach us via relay from GW-Router)
+          interface Ethernet0/0
+           ipv6 dhcp server VLAN10-IPv6-STATEFUL
+          !
+          ! Also serve directly-connected clients on Eth0/1
+          interface Ethernet0/1
+           ipv6 dhcp server VLAN10-IPv6-STATEFUL
+          !
+          ! ============================================================
+          ! DNS  -  IOS internal DNS server
+          ! ============================================================
+          ip dns server
+          ip host router.stateful.lab 10.10.10.1
+          ip host gw.stateful.lab 10.10.10.1
+          ip host dns.stateful.lab 10.10.10.2
+          !
+          ! Default route back to GW
+          ip route 0.0.0.0 0.0.0.0 10.10.10.1
+          ipv6 route ::/0 2001:db8:1::1
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: iol-xe-17-18-02
+    label: DHCP-Router-10
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - dhcp
+      - stateful
+      - vlan10
+    x: -450
+    y: -150
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname DHCP-Router-20
+          !
+          ! ============================================================
+          ! VLAN20  -  STATELESS DHCPv6 (ra-stateless / O=1 only)
+          ! This router provides:
+          !   - DHCPv4 pool for 10.10.20.0/24
+          !   - DHCPv6 information-only (DNS, domain — NO address pool)
+          !   - Clients form IPv6 addresses via SLAAC (EUI-64)
+          ! ============================================================
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          ! === Uplink to GW-Router ===
+          interface Ethernet0/0
+           description TO-GW-ROUTER
+           ip address 10.10.20.2 255.255.255.0
+           ipv6 address 2001:db8:2::2/64
+           ipv6 enable
+           no shutdown
+          !
+          ! === Downlink to Client-Stateless ===
+          interface Ethernet0/1
+           description TO-CLIENT-STATELESS
+           ip address 10.10.20.3 255.255.255.0
+           ipv6 address 2001:db8:2::3/64
+           ipv6 enable
+           no shutdown
+          !
+          ! ============================================================
+          ! DHCPv4 Server  -  VLAN20
+          ! ============================================================
+          ip dhcp excluded-address 10.10.20.1 10.10.20.99
+          ip dhcp excluded-address 10.10.20.151 10.10.20.254
+          !
+          ip dhcp pool VLAN20-IPv4
+           network 10.10.20.0 255.255.255.0
+           default-router 10.10.20.1
+           dns-server 10.10.20.2
+           domain-name stateless.lab
+           lease 0 12
+          !
+          ! ============================================================
+          ! DHCPv6 Server  -  STATELESS (information-only, no address pool)
+          ! When GW sends RA with O=1 and M=0, clients send
+          ! DHCPv6 Information-Request (not Solicit).
+          ! We respond with DNS and domain — no IA_NA address assigned.
+          ! Note: no 'address prefix' line = stateless (info-only) pool
+          ! ============================================================
+          ipv6 dhcp pool VLAN20-IPv6-STATELESS
+           dns-server 2001:db8:2::2
+           domain-name stateless.lab
+          !
+          interface Ethernet0/0
+           ipv6 dhcp server VLAN20-IPv6-STATELESS
+          !
+          interface Ethernet0/1
+           ipv6 dhcp server VLAN20-IPv6-STATELESS
+          !
+          ! ============================================================
+          ! DNS
+          ! ============================================================
+          ip dns server
+          ip host router.stateless.lab 10.10.20.1
+          ip host gw.stateless.lab 10.10.20.1
+          ip host dns.stateless.lab 10.10.20.2
+          !
+          ip route 0.0.0.0 0.0.0.0 10.10.20.1
+          ipv6 route ::/0 2001:db8:2::1
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: iol-xe-17-18-02
+    label: DHCP-Router-20
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - dhcp
+      - stateless
+      - vlan20
+    x: 0
+    y: -150
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname DHCP-Router-30
+          !
+          ! ============================================================
+          ! VLAN30  -  PURE SLAAC (M=0, O=0)
+          ! This router provides:
+          !   - DHCPv4 pool for 10.10.30.0/24
+          !   - NO DHCPv6 at all
+          !   - IPv6 addresses come entirely from GW RA (EUI-64 SLAAC)
+          ! ============================================================
+          no ip domain-lookup
+          ipv6 unicast-routing
+          ipv6 cef
+          ip cef
+          !
+          ! === Uplink to GW-Router ===
+          interface Ethernet0/0
+           description TO-GW-ROUTER
+           ip address 10.10.30.2 255.255.255.0
+           ipv6 address 2001:db8:3::2/64
+           ipv6 enable
+           no shutdown
+          !
+          ! === Downlink to Client-SLAAC ===
+          interface Ethernet0/1
+           description TO-CLIENT-SLAAC
+           ip address 10.10.30.3 255.255.255.0
+           ipv6 address 2001:db8:3::3/64
+           ipv6 enable
+           no shutdown
+          !
+          ! ============================================================
+          ! DHCPv4 Server  -  VLAN30
+          ! ============================================================
+          ip dhcp excluded-address 10.10.30.1 10.10.30.99
+          ip dhcp excluded-address 10.10.30.151 10.10.30.254
+          !
+          ip dhcp pool VLAN30-IPv4
+           network 10.10.30.0 255.255.255.0
+           default-router 10.10.30.1
+           dns-server 10.10.30.2
+           domain-name slaac.lab
+           lease 0 12
+          !
+          ! ============================================================
+          ! NO DHCPv6 config at all on this router.
+          ! IPv6 addressing is 100% SLAAC from GW RA.
+          ! The RA carries M=0, O=0, prefix 2001:db8:3::/64 with A=1.
+          ! Clients form EUI-64 address autonomously.
+          ! DNS for IPv6 is delivered via RA RDNSS option (set on GW).
+          ! ============================================================
+          !
+          ! ============================================================
+          ! DNS
+          ! ============================================================
+          ip dns server
+          ip host router.slaac.lab 10.10.30.1
+          ip host gw.slaac.lab 10.10.30.1
+          ip host dns.slaac.lab 10.10.30.2
+          !
+          ip route 0.0.0.0 0.0.0.0 10.10.30.1
+          ipv6 route ::/0 2001:db8:3::1
+          !
+          username admin privilege 15 secret Cisc0Lab!
+          ip ssh version 2
+          crypto key generate rsa modulus 2048
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: iol-xe-17-18-02
+    label: DHCP-Router-30
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - dhcp
+      - slaac
+      - vlan30
+    x: 450
+    y: -150
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          auto eth0
+          iface eth0 inet dhcp
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: alpine-base-3-23-3
+    label: Client-Stateful
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - client
+      - stateful
+      - vlan10
+    x: -450
+    y: 150
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          auto eth0
+          iface eth0 inet dhcp
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: alpine-base-3-23-3
+    label: Client-Stateless
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - client
+      - stateless
+      - vlan20
+    x: 0
+    y: 150
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          auto eth0
+          iface eth0 inet dhcp
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: alpine-base-3-23-3
+    label: Client-SLAAC
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags:
+      - client
+      - slaac
+      - vlan30
+    x: 450
+    y: 150
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: GW-Router-Ethernet0/1<->DHCP-Router-10-Ethernet0/0
+  - id: l1
+    n1: n0
+    n2: n2
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: GW-Router-Ethernet0/2<->DHCP-Router-20-Ethernet0/0
+  - id: l2
+    n1: n0
+    n2: n3
+    i1: i4
+    i2: i1
+    conditioning: {}
+    label: GW-Router-Ethernet0/3<->DHCP-Router-30-Ethernet0/0
+  - id: l3
+    n1: n1
+    n2: n4
+    i1: i2
+    i2: i0
+    conditioning: {}
+    label: DHCP-Router-10-Ethernet0/1<->Client-Stateful-eth0
+  - id: l4
+    n1: n2
+    n2: n5
+    i1: i2
+    i2: i0
+    conditioning: {}
+    label: DHCP-Router-20-Ethernet0/1<->Client-Stateless-eth0
+  - id: l5
+    n1: n3
+    n2: n6
+    i1: i2
+    i2: i0
+    conditioning: {}
+    label: DHCP-Router-30-Ethernet0/1<->Client-SLAAC-eth0
+lab:
+  description: Three-segment dual-stack lab using IOL-XE routers throughout. GW-Router
+    provides inter-VLAN routing and RAs. Three DHCP-Router nodes act as DHCPv4+DHCPv6
+    servers for each segment. VLAN10=Stateful DHCPv6, VLAN20=Stateless DHCPv6, VLAN30=Pure
+    SLAAC. One Alpine client per segment.
+  notes: |-
+    === Addressing Plan ===
+
+    VLAN10 - STATEFUL DHCPv6 (M=1, O=1)
+      IPv4: 10.10.10.0/24   GW: 10.10.10.1  DHCP-Router: 10.10.10.2
+      IPv6: 2001:db8:1::/64 GW: 2001:db8:1::1  DHCP-Router: 2001:db8:1::2
+      DHCPv4 pool: 10.10.10.100-150
+      DHCPv6 pool: 2001:db8:1::100-150 (IA_NA)
+      Client gets: DHCPv4 addr + DHCPv6 IA_NA addr (no SLAAC)
+
+    VLAN20 - STATELESS DHCPv6 (M=0, O=1)
+      IPv4: 10.10.20.0/24   GW: 10.10.20.1  DHCP-Router: 10.10.20.2
+      IPv6: 2001:db8:2::/64 GW: 2001:db8:2::1  DHCP-Router: 2001:db8:2::2
+      DHCPv4 pool: 10.10.20.100-150
+      DHCPv6: stateless info-only (DNS/domain, no address pool)
+      Client gets: DHCPv4 addr + SLAAC EUI-64 + DNS via DHCPv6 info-request
+
+    VLAN30 - PURE SLAAC (M=0, O=0)
+      IPv4: 10.10.30.0/24   GW: 10.10.30.1  DHCP-Router: 10.10.30.2
+      IPv6: 2001:db8:3::/64 GW: 2001:db8:3::1
+      DHCPv4 pool: 10.10.30.100-150
+      DHCPv6: NONE - SLAAC only via RA
+      Client gets: DHCPv4 addr + pure EUI-64 SLAAC addr (no DHCPv6 at all)
+
+    === Credentials ===
+      admin / Cisc0Lab! on all routers
+      Clients: root (no password)
+  title: IPv4/IPv6 Dual-Stack — Stateful / Stateless / SLAAC
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
