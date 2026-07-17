@@ -1,0 +1,1119 @@
+annotations: []
+smart_annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R1-CORE
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.100.0.1 255.255.255.255
+           ipv6 address 2001:DB8:100::1/128
+          !
+          interface GigabitEthernet1
+           description CORE-to-R2
+           ip address 10.100.12.1 255.255.255.252
+           ipv6 address 2001:DB8:100:12::1/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description CORE-to-R3-DELIBERATE-HIGH-DELAY
+           ip address 10.100.13.1 255.255.255.252
+           ipv6 address 2001:DB8:100:13::1/64
+           delay 500000
+           ipv6 eigrp 100
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description to-ASBR1
+           ip address 10.101.0.1 255.255.255.252
+           ipv6 address 2001:DB8:100:101::1/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          route-map DENY-TAG-200 deny 10
+           match tag 200
+          route-map DENY-TAG-200 permit 20
+          !
+          route-map DENY-TAG-200-V6 deny 10
+           match tag 200
+          route-map DENY-TAG-200-V6 permit 20
+          !
+          router eigrp CORE
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.100.0.1
+            network 10.100.0.1 0.0.0.0
+            network 10.100.12.1 0.0.0.0
+            network 10.100.13.1 0.0.0.0
+            network 10.101.0.1 0.0.0.0
+            distribute-list route-map DENY-TAG-200 in
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.100.0.1
+            distribute-list route-map DENY-TAG-200-V6 in
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: cat8000v-17-18-02
+    label: R1-CORE
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -200
+    y: -50
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R2-CORE
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.100.0.2 255.255.255.255
+           ipv6 address 2001:DB8:100::2/128
+          !
+          interface GigabitEthernet1
+           description CORE-to-R1
+           ip address 10.100.12.2 255.255.255.252
+           ipv6 address 2001:DB8:100:12::2/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description CORE-to-R3
+           ip address 10.100.23.1 255.255.255.252
+           ipv6 address 2001:DB8:100:23::1/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description to-ASBR2
+           ip address 10.102.0.1 255.255.255.252
+           ipv6 address 2001:DB8:100:102::1/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          router eigrp CORE
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.100.0.2
+            network 10.100.0.2 0.0.0.0
+            network 10.100.12.2 0.0.0.0
+            network 10.100.23.1 0.0.0.0
+            network 10.102.0.1 0.0.0.0
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.100.0.2
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: cat8000v-17-18-02
+    label: R2-CORE
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 200
+    y: -50
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R3-CORE
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.100.0.3 255.255.255.255
+           ipv6 address 2001:DB8:100::3/128
+          !
+          interface GigabitEthernet1
+           description CORE-to-R2
+           ip address 10.100.23.2 255.255.255.252
+           ipv6 address 2001:DB8:100:23::2/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description CORE-to-R1-DELIBERATE-HIGH-DELAY
+           ip address 10.100.13.2 255.255.255.252
+           ipv6 address 2001:DB8:100:13::2/64
+           delay 500000
+           ipv6 eigrp 100
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description to-STUB3
+           ip address 10.103.0.1 255.255.255.252
+           ipv6 address 2001:DB8:100:103::1/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          router eigrp CORE
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.100.0.3
+            network 10.100.0.3 0.0.0.0
+            network 10.100.23.2 0.0.0.0
+            network 10.100.13.2 0.0.0.0
+            network 10.103.0.1 0.0.0.0
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.100.0.3
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: cat8000v-17-18-02
+    label: R3-CORE
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: 150
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname ASBR1-EIGRP
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           description ASBR1-NATIVE-EIGRP-IDENTITY
+           ip address 10.101.1.1 255.255.255.255
+           ipv6 address 2001:DB8:101::1/128
+          !
+          interface GigabitEthernet1
+           description to-R1
+           ip address 10.101.0.2 255.255.255.252
+           ipv6 address 2001:DB8:100:101::2/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          ip route 172.20.10.0 255.255.255.0 Null0
+          ip route 172.20.11.0 255.255.255.0 Null0
+          !
+          ipv6 route 2001:DB8:2010::/64 Null0
+          ipv6 route 2001:DB8:2011::/64 Null0
+          !
+          route-map TAG-METRIC-100 permit 10
+           set tag 100
+           set metric 100000 2000 255 1 1500
+          !
+          route-map TAG-METRIC-100-V6 permit 10
+           set tag 100
+           set metric 100000 2000 255 1 1500
+          !
+          router eigrp CORE
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.101.1.1
+            network 10.101.1.1 0.0.0.0
+            network 10.101.0.2 0.0.0.0
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+            af-interface GigabitEthernet1
+             summary-address 172.20.8.0 255.255.248.0
+            exit-af-interface
+            redistribute static route-map TAG-METRIC-100
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.101.1.1
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+            af-interface GigabitEthernet1
+             summary-address 2001:DB8:2010::/60
+            exit-af-interface
+            redistribute static route-map TAG-METRIC-100-V6
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: cat8000v-17-18-02
+    label: ASBR1-EIGRP
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -400
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname ASBR2-EIGRP
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           description ASBR2-NATIVE-EIGRP-IDENTITY
+           ip address 10.102.1.1 255.255.255.255
+           ipv6 address 2001:DB8:102::1/128
+          !
+          interface GigabitEthernet1
+           description to-R2
+           ip address 10.102.0.2 255.255.255.252
+           ipv6 address 2001:DB8:100:102::2/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          ip route 172.20.20.0 255.255.255.0 Null0
+          ip route 172.20.21.0 255.255.255.0 Null0
+          !
+          ipv6 route 2001:DB8:2020::/64 Null0
+          ipv6 route 2001:DB8:2021::/64 Null0
+          !
+          route-map TAG-METRIC-200 permit 10
+           set tag 200
+           set metric 100000 4000 255 1 1500
+          !
+          route-map TAG-METRIC-200-V6 permit 10
+           set tag 200
+           set metric 100000 4000 255 1 1500
+          !
+          router eigrp CORE
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.102.1.1
+            network 10.102.1.1 0.0.0.0
+            network 10.102.0.2 0.0.0.0
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+            af-interface GigabitEthernet1
+             summary-address 172.20.16.0 255.255.248.0
+            exit-af-interface
+            redistribute static route-map TAG-METRIC-200
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.102.1.1
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+            af-interface GigabitEthernet1
+             summary-address 2001:DB8:2020::/60
+            exit-af-interface
+            redistribute static route-map TAG-METRIC-200-V6
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: cat8000v-17-18-02
+    label: ASBR2-EIGRP
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 400
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname STUB3-EIGRP
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           description STUB3-NATIVE-EIGRP-IDENTITY
+           ip address 10.103.1.1 255.255.255.255
+           ipv6 address 2001:DB8:103::1/128
+          !
+          interface GigabitEthernet1
+           description to-R3
+           ip address 10.103.0.2 255.255.255.252
+           ipv6 address 2001:DB8:100:103::2/64
+           ipv6 eigrp 100
+           no shutdown
+          !
+          router eigrp CORE
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.103.1.1
+            network 10.103.1.1 0.0.0.0
+            network 10.103.0.2 0.0.0.0
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+            eigrp stub connected summary
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.103.1.1
+            af-interface Loopback0
+             passive-interface
+            exit-af-interface
+            eigrp stub connected summary
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: cat8000v-17-18-02
+    label: STUB3-EIGRP
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: 320
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i1
+    i2: i1
+    conditioning: {}
+    label: R1-CORE-GigabitEthernet1<->R2-CORE-GigabitEthernet1
+  - id: l1
+    n1: n1
+    n2: n2
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: R2-CORE-GigabitEthernet2<->R3-CORE-GigabitEthernet1
+  - id: l2
+    n1: n0
+    n2: n2
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: R1-CORE-GigabitEthernet2<->R3-CORE-GigabitEthernet2
+  - id: l3
+    n1: n0
+    n2: n3
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R1-CORE-GigabitEthernet3<->ASBR1-EIGRP-GigabitEthernet1
+  - id: l4
+    n1: n1
+    n2: n4
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R2-CORE-GigabitEthernet3<->ASBR2-EIGRP-GigabitEthernet1
+  - id: l5
+    n1: n2
+    n2: n5
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R3-CORE-GigabitEthernet3<->STUB3-EIGRP-GigabitEthernet1
+lab:
+  description: 'EIGRP named-mode lab mirroring the OSPF-Focused lab''s parameters:
+    static route redistribution with tags and tuned composite metrics, distribute-list
+    route-map tag filtering, per-interface summarization, delay-based metric manipulation,
+    and EIGRP stub routing. Part A is IPv4-only; Part B extends to dual-stack IPv6
+    under the same named-mode process.'
+  notes: |
+    EIGRP-Focused Lab: Redistribution, Tagging & Metrics
+    =====================================================
+
+    OVERVIEW
+    Named-mode EIGRP (AS 100) dual-stack lab mirroring the OSPF lab's topology
+    and teaching goals: 3-router core (R1/R2/R3, full mesh) + 2 ASBRs each
+    redistributing tagged statics + 1 stub router. Cat8000v, IOS-XE.
+
+    TOPOLOGY
+    - R1-CORE, R2-CORE, R3-CORE: full-mesh core, single "router eigrp CORE" process
+    - R1<->R3 direct link deliberately de-preferred via delay 500000 (both ends)
+      so traffic prefers the R1-R2-R3 indirect path
+    - ASBR1-EIGRP (off R1): redistributes 172.20.10.0/24 + .11.0/24 (tag 100),
+      summarized to 172.20.8.0/21; IPv6 mirrors: 2001:db8:2010::/64 + :2011::/64
+      (tag 100) -> 2001:db8:2010::/60
+    - ASBR2-EIGRP (off R2): redistributes 172.20.20.0/24 + .21.0/24 (tag 200),
+      summarized to 172.20.16.0/21; IPv6 mirrors: 2001:db8:2020::/64 + :2021::/64
+      (tag 200) -> 2001:db8:2020::/60
+    - STUB3-EIGRP (off R3): eigrp stub connected summary
+
+    FEATURES DEMONSTRATED
+    - EIGRP named-mode config structure, single process hosting both IPv4 and
+      IPv6 address-families (contrast: OSPF needs two separate processes)
+    - Composite metric (bandwidth/delay/reliability/load/MTU) and delay-based
+      path manipulation, shared automatically across v4/v6 (one delay command,
+      both AFs) unlike OSPF's separate per-AF cost
+    - Static redistribution with tagging + metric via route-map (no inline tag
+      keyword unlike OSPF's redistribute ... tag)
+    - Per-interface summary-address (af-interface submode) - structurally
+      different from OSPF's per-area model, no tag support
+    - distribute-list route-map ... in for tag-based RIB filtering
+    - eigrp stub connected summary - contrasted in detail against OSPF stub
+      areas (restricts what's advertised/queried, not what's received - STUB3
+      keeps a FULL routing table, unlike OSPF's totally-stubby BR3)
+
+    VERIFIED LIVE
+    - All 6 EIGRP neighbor adjacencies up (IPv4 and IPv6) across all 6 links
+    - Delay tuning confirmed effective: R1's route to R3's loopback prefers
+      via R2 (10.100.12.2), direct link present in topology but not successor
+    - STUB3 confirmed with full routing table; R3 shows STUB3 as
+      "Stub Peer Advertising (CONNECTED SUMMARY), Suppressing queries"
+
+    PLATFORM GOTCHA (discovered live)
+    On this IOS-XE build, both "redistribute static route-map ..." and
+    "distribute-list route-map ... in" are REJECTED if placed directly under
+    "address-family ipv4|ipv6 unicast autonomous-system N". They must go
+    inside that AF's "topology base" submode instead. This was missed on the
+    initial config push (no error surfaced during bulk startup-config
+    application, but the lines silently never landed) and only caught by
+    diffing running-config against intent - fixed live on all 3 redistribution
+    points (ASBR1, ASBR2, R1's distribute-list).
+
+    KEY DISCOVERED NUANCE: v4 vs v6 summarization asymmetry
+    IPv4 summary-address gives FULL suppression: individual /24 components
+    never appear anywhere outside their ASBR. IPv6 summary-address (prefix
+    form) gives only PARTIAL suppression: one /64 component per ASBR leaks
+    through the domain as an individual EX route with its tag intact,
+    alongside the /60 summary.
+
+    Direct consequence for distribute-list route-map DENY-TAG-200 on R1:
+    it does NOT filter 172.20.16.0/21 (v4 summary, untagged - filter has
+    nothing to match). It DOES filter 2001:db8:2021::/64 (v6 leaked
+    component, tag 200 intact) while letting 2001:db8:2020::/60 (untagged
+    v6 summary) through. Confirmed live on both address families.
+
+    **Part A** covers EIGRP/IPv4 only, in depth. **Part B** extends the same topology to dual-stack IPv6 — and unlike OSPF (where v2 and v3 are genuinely separate processes), EIGRP named mode runs both address families under a *single* process container, which is one of the bigger structural differences covered in Part B.
+
+    ## Table of Contents
+
+    **Part A — EIGRP (IPv4-only)**
+
+    1. [Overview and Learning Objectives](#1-overview-and-learning-objectives)
+    2. [Topology](#2-topology)
+    3. [Addressing Plan](#3-addressing-plan)
+    4. [EIGRP Named Mode Structure](#4-eigrp-named-mode-structure)
+    5. [The Composite Metric and Why It Matters](#5-the-composite-metric-and-why-it-matters)
+    6. [Static Route Redistribution, Tagging, and Metric](#6-static-route-redistribution-tagging-and-metric)
+    7. [Per-Interface Summarization](#7-per-interface-summarization)
+    8. [Metric Manipulation with `delay`](#8-metric-manipulation-with-delay)
+    9. [EIGRP Stub Routing](#9-eigrp-stub-routing)
+    10. [Tag-Based Filtering with `distribute-list route-map`](#10-tag-based-filtering-with-distribute-list-route-map)
+    11. [Verification Cheat-Sheet (Part A)](#11-verification-cheat-sheet-part-a)
+
+    **Part B — Dual-Stack Extension (IPv6)**
+
+    12. [IPv6 EIGRP on the Same Topology](#12-ipv6-eigrp-on-the-same-topology)
+    13. [What's Identical vs. What's Different](#13-whats-identical-vs-whats-different)
+    14. [Verification Cheat-Sheet (Part B)](#14-verification-cheat-sheet-part-b)
+
+    **Reference**
+
+    15. [Exercises](#15-exercises)
+    16. [Addressing Reference Tables](#16-addressing-reference-tables)
+
+    ---
+
+    ## 1. Overview and Learning Objectives
+
+    Same shape as the OSPF lab, same underlying questions — how do external routes get in, how are they tagged and filtered as they move, how is their cost computed, and how does the protocol let part of the topology opt out of being a transit path — answered with EIGRP's toolkit instead of OSPF's.
+
+    By the end you will have hands-on, verified configuration for:
+
+    - **EIGRP named mode** (`router eigrp NAME` / `address-family ipv4|ipv6 unicast autonomous-system N`), the modern IOS-XE configuration model
+    - The **composite metric** (bandwidth, delay, reliability, load, MTU) and how it differs fundamentally from OSPF's single scalar cost
+    - **`redistribute static`** with an explicit metric vector and a **tag**, set via a route-map (EIGRP's `redistribute` has no inline `tag` keyword — tags require a route-map, unlike OSPF)
+    - **Per-interface summarization** (`summary-address` under `af-interface`) — a structurally different model from OSPF's per-area `area range`
+    - **Metric manipulation** via the `delay` interface command, deliberately overriding EIGRP's default path preference
+    - **EIGRP stub routing** (`eigrp stub connected summary`) and exactly how it differs mechanically from an OSPF stub *area*
+    - **`distribute-list route-map ... in`** for tag-based RIB filtering — same concept as the OSPF lab, confirming it works identically here
+    - The feasibility condition and why EIGRP can fail over to a backup path instantly, without anything resembling OSPF's SPF recomputation
+
+    ---
+
+    ## 2. Topology
+
+    ```mermaid
+    graph TB
+        subgraph Core["EIGRP AS 100"]
+            R1["R1-CORE<br/>Lo0: 10.100.0.1"]
+            R2["R2-CORE<br/>Lo0: 10.100.0.2"]
+            R3["R3-CORE<br/>Lo0: 10.100.0.3"]
+            R1 <-->|default delay| R2
+            R2 <-->|default delay| R3
+            R1 <-->|delay 500000, deliberately high| R3
+        end
+        ASBR1["ASBR1-EIGRP<br/>redistributes static<br/>tag 100, delay 2000"]
+        ASBR2["ASBR2-EIGRP<br/>redistributes static<br/>tag 200, delay 4000"]
+        STUB3["STUB3-EIGRP<br/>eigrp stub connected summary"]
+
+        R1 <--> ASBR1
+        R2 <--> ASBR2
+        R3 <--> STUB3
+    ```
+
+    | Node | Role | Notable config |
+    |---|---|---|
+    | R1-CORE | Core | `distribute-list route-map` (denies tag 200), high-delay link to R3 |
+    | R2-CORE | Core | plain core router — no filtering, no delay tuning |
+    | R3-CORE | Core | high-delay link to R1 |
+    | ASBR1-EIGRP | Redistributor | `redistribute static route-map` (tag 100, delay 2000), per-interface summary |
+    | ASBR2-EIGRP | Redistributor | `redistribute static route-map` (tag 200, delay 4000), per-interface summary |
+    | STUB3-EIGRP | Stub leaf | `eigrp stub connected summary` — advertises only its own connected/summary routes, never used as transit |
+
+    > **Same physical shape as the OSPF lab, deliberately.** R1/R2/R3 form the same triangle, ASBR1/ASBR2 sit in the same positions, and STUB3 takes BR3's place. That's intentional — it lets you compare, link for link, how the *same topology* behaves under a distance-vector protocol with per-router opt-outs versus a link-state protocol with per-area LSA filtering.
+
+    ---
+
+    ## 3. Addressing Plan
+
+    Distinct from the OSPF lab's ranges (own `10.100.0.0/16`-ish block and `172.20.0.0/16`-ish externals) so the two labs stay visually unambiguous if you have both open.
+
+    ### 3.1 Loopbacks
+
+    | Router | Lo0 (v4) | Lo0 (v6) |
+    |---|---|---|
+    | R1 | 10.100.0.1/32 | 2001:db8:100::1/128 |
+    | R2 | 10.100.0.2/32 | 2001:db8:100::2/128 |
+    | R3 | 10.100.0.3/32 | 2001:db8:100::3/128 |
+    | ASBR1 | 10.101.1.1/32 | 2001:db8:101::1/128 |
+    | ASBR2 | 10.102.1.1/32 | 2001:db8:102::1/128 |
+    | STUB3 | 10.103.1.1/32 | 2001:db8:103::1/128 |
+
+    ### 3.2 Point-to-point links
+
+    | Link | v4 subnet | v6 subnet | Notes |
+    |---|---|---|---|
+    | R1 Gi1 – R2 Gi1 | 10.100.12.0/30 | 2001:db8:100:12::/64 | default delay |
+    | R2 Gi2 – R3 Gi1 | 10.100.23.0/30 | 2001:db8:100:23::/64 | default delay |
+    | R1 Gi2 – R3 Gi2 | 10.100.13.0/30 | 2001:db8:100:13::/64 | **delay 500000 both sides** — see Section 8 |
+    | R1 Gi3 – ASBR1 Gi1 | 10.101.0.0/30 | 2001:db8:100:101::/64 | |
+    | R2 Gi3 – ASBR2 Gi1 | 10.102.0.0/30 | 2001:db8:100:102::/64 | |
+    | R3 Gi3 – STUB3 Gi1 | 10.103.0.0/30 | 2001:db8:100:103::/64 | |
+
+    ### 3.3 Redistributed "external" static routes
+
+    | ASBR | Routes (static, to Null0) | Tag | Metric (bw/delay/rel/load/mtu) | Summarized as |
+    |---|---|---|---|---|
+    | ASBR1 | 172.20.10.0/24, 172.20.11.0/24 | 100 | 100000 / 2000 / 255 / 1 / 1500 | 172.20.8.0/21 |
+    | ASBR2 | 172.20.20.0/24, 172.20.21.0/24 | 200 | 100000 / 4000 / 255 / 1 / 1500 | 172.20.16.0/21 |
+
+    ---
+
+    ## 4. EIGRP Named Mode Structure
+
+    Everything in this lab uses EIGRP **named mode** — the modern IOS-XE configuration model that replaced the older "classic" `router eigrp <AS-number>` style. The container itself is just a name (`CORE` in this lab, arbitrary), with the real EIGRP instance created underneath it per address family:
+
+    ```text
+    router eigrp CORE
+     address-family ipv4 unicast autonomous-system 100
+      eigrp router-id 10.100.0.1
+      network 10.100.0.1 0.0.0.0
+      ...
+     exit-address-family
+     address-family ipv6 unicast autonomous-system 100
+      eigrp router-id 10.100.0.1
+      ...
+     exit-address-family
+    ```
+
+    > **This is already a structural difference from OSPF worth flagging early:** OSPFv2 and OSPFv3 are two entirely separate processes with separate `router ospf` / `ipv6 router ospf` configuration trees that happen to run on the same router. EIGRP named mode instead gives you **one process container** (`router eigrp CORE`) with IPv4 and IPv6 as sibling address-families inside it — closer to how BGP handles multi-AFI than to how classic OSPF does. Section 13 covers this in more depth.
+
+    A few structural notes that matter later:
+    - **`network` statements still enable IPv4 EIGRP on interfaces** (unchanged from classic mode) — named mode moved *parameter* configuration (passive-interface, authentication, summarization) into `af-interface` submode, but interface *activation* for IPv4 is still via `network`.
+    - **IPv6 EIGRP has no `network` statement at all** — it's enabled directly per-interface with `ipv6 eigrp 100`, matching OSPFv3's per-interface activation model rather than OSPFv2's.
+    - **`af-interface`** is where you configure anything that used to be a raw interface command in classic mode — `passive-interface`, `summary-address`, authentication, hello/hold timers.
+
+    ---
+
+    ## 5. The Composite Metric and Why It Matters
+
+    OSPF's cost is a single number you can reason about by eye. EIGRP's metric is a composite of up to five interface characteristics — **bandwidth, delay, reliability, load, MTU** — combined through a formula. With default K-values (K1=K3=1, K2=K4=K5=0), the formula simplifies to:
+
+    ```
+    metric = 256 × ( 10,000,000 / min-bandwidth-on-path(Kbps)  +  sum-of-delays-on-path(tens of µs) / 10 )
+    ```
+
+    Two consequences that shape this whole lab:
+
+    1. **Bandwidth is the *minimum* along the path** (a bottleneck-link calculation), while **delay is a *sum*** along the path — they behave completely differently as the path gets longer. This is why Section 8 tunes `delay`, not `bandwidth`: delay accumulates predictably hop by hop, making it the more surgical tool for "make this specific path worse."
+    2. **The metric is a generic interface property, not a protocol-specific one.** `bandwidth` and `delay` are interface characteristics that both EIGRP IPv4 and EIGRP IPv6 read from the same place — unlike OSPF, where `ip ospf cost` and `ipv6 ospf cost` are two entirely separate knobs you'd have to set twice. One `delay 500000` command affects both address families at once (confirmed live in Section 8).
+
+    ---
+
+    ## 6. Static Route Redistribution, Tagging, and Metric
+
+    Both ASBRs redistribute a pair of `ip route ... Null0` statics, same pattern as the OSPF lab. The key difference: EIGRP's `redistribute` command has **no inline `tag` keyword** the way OSPF's does (`redistribute static ... tag 100`). Tagging requires a route-map:
+
+    ```text
+    ip route 172.20.10.0 255.255.255.0 Null0
+    ip route 172.20.11.0 255.255.255.0 Null0
+    !
+    route-map TAG-METRIC-100 permit 10
+     set tag 100
+     set metric 100000 2000 255 1 1500
+    !
+    router eigrp CORE
+     address-family ipv4 unicast autonomous-system 100
+      redistribute static route-map TAG-METRIC-100
+    ```
+
+    The `set metric` five-tuple is `bandwidth(Kbps) delay(tens-of-µs) reliability(0-255) load(0-255) MTU(bytes)` — this is what gets attached to the redistributed route as its *initial* EIGRP metric at the point of redistribution, then normal path-accumulation rules apply as it propagates from there.
+
+    > **Platform gotcha, confirmed live:** on this Cat8000v/IOS-XE build, `redistribute static route-map ...` is **rejected** (`% Invalid input`) if entered directly under `address-family ipv4|ipv6 unicast autonomous-system N`. It has to go inside that address-family's `topology base` submode instead:
+    > ```text
+    > router eigrp CORE
+    >  address-family ipv4 unicast autonomous-system 100
+    >   topology base
+    >    redistribute static route-map TAG-METRIC-100
+    >   exit-af-topology
+    > ```
+    > The same is true of `distribute-list route-map ... in` (Section 10). This isn't documented anywhere obvious — it was only caught by checking `show run | section router eigrp` after an initial push and noticing the line simply wasn't there, with no redistributed routes reaching the core. Worth remembering: named-mode EIGRP silently declining to apply a line during a bulk config push is a lot harder to notice than an outright rejection at an interactive prompt.
+
+    > **Confirm live:** `show ip route 172.20.8.0` on R1 shows the route as `D` — not `D EX`. That's because what R1 actually receives is ASBR1's locally-generated **summary** (Section 7), and EIGRP summary routes are classified as internal regardless of what fed them. The `EX` designation only shows up on individual external routes that reach a router *untouched* — which happens here too, just not where you'd first expect it (Section 7). `show ip eigrp topology 172.20.8.0/21` on ASBR1 shows the full bandwidth/delay/reliability/load/MTU breakdown that produced the metric.
+
+    ---
+
+    ## 7. Per-Interface Summarization
+
+    EIGRP summarization is configured **on the interface the summary exits from**, not on a designated boundary-router type the way OSPF's `area range` is configured per-area on an ABR:
+
+    ```text
+    router eigrp CORE
+     address-family ipv4 unicast autonomous-system 100
+      af-interface GigabitEthernet1
+       summary-address 172.20.8.0 255.255.248.0
+      exit-af-interface
+    ```
+
+    Configured on ASBR1's Gi1 (the interface pointing back toward R1/the rest of the domain), this suppresses `172.20.10.0/24` and `172.20.11.0/24` individually and advertises only `172.20.8.0/21` out that interface.
+
+    > **No tag support on `summary-address`.** Unlike OSPF, where both `area range` and `summary-address` accept an optional `tag` keyword to explicitly tag the aggregate, EIGRP's `summary-address` has no such option. The summary route carries no tag of its own — confirmed live: `show ip route 172.20.8.0` on R1/R2/R3 shows the `/21` with no tag field at all, even though both components were tagged 100 at redistribution.
+
+    > **Confirmed live — IPv4 vs. IPv6 suppression is not symmetric.** For IPv4, `summary-address 172.20.8.0 255.255.248.0` and `summary-address 172.20.16.0 255.255.248.0` fully suppress their components: `show ip route 172.20.10.0 255.255.255.0` and `172.20.20.0 255.255.255.0` come back `% Subnet not in table` everywhere outside their originating ASBR. For IPv6, the equivalent `summary-address 2001:DB8:2010::/60` and `2001:DB8:2020::/60` only *partially* suppress: one component from **each** ASBR leaks through the domain as an individual `EX` route with its tag intact —
+    > ```text
+    > D   2001:DB8:2010::/60 [90/10296320]
+    > EX  2001:DB8:2011::/64 [170/10296320], tag 100
+    > D   2001:DB8:2020::/60 [90/20541440]
+    > EX  2001:DB8:2021::/64 [170/20541440], tag 200
+    > ```
+    > as seen on R1. This is the same shape of finding as the OSPFv2-vs-OSPFv3 `summary-address`/`summary-prefix` asymmetry from the OSPF lab — full suppression on the v4 side, partial leakage on the v6 side — reproduced here on a completely different protocol. It's worth treating as a real platform characteristic rather than a one-off, since it showed up independently in two different labs.
+
+    ---
+
+    ## 8. Metric Manipulation with `delay`
+
+    R1 and R3 have a direct link *and* an indirect one through R2. Left at defaults, EIGRP would pick whichever has the lower composite metric — with all-Gigabit links and no tuning, the direct link (one hop) naturally wins over the two-hop path via R2. This lab overrides that with `delay`:
+
+    ```text
+    interface GigabitEthernet2
+     delay 500000
+    ```
+
+    configured on **both** R1's and R3's side of the direct link (delay, like bandwidth, is a per-interface, per-direction property — same reasoning as the OSPF lab's `ip ospf cost`, set on both ends for a fully symmetric "avoid this link" result).
+
+    > **Confirm live:** `show ip route 10.100.0.3` on R1 — next-hop should be R2 (10.100.12.2), not the direct link. `show ip eigrp topology` on R1 should show the direct-link path to R3 present but *not selected* — worth checking whether it still qualifies as a **feasible successor** (Exercise 4) even though it's not the successor.
+
+    > **Unequal-cost load balancing (not deployed, but worth knowing):** EIGRP's `variance <multiplier>` command (default 1 = equal-cost only) allows using multiple feasible successors simultaneously, proportioned to their metric ratio — something OSPF has no equivalent for at all. This lab leaves `variance` at its default specifically so the delay-tuning result in this section is unambiguous; Exercise 5 has you calculate what variance value would be needed to bring the direct R1–R3 link back into use.
+
+    ---
+
+    ## 9. EIGRP Stub Routing
+
+    STUB3 is configured as a stub:
+
+    ```text
+    router eigrp CORE
+     address-family ipv4 unicast autonomous-system 100
+      eigrp stub connected summary
+    ```
+
+    This is worth contrasting carefully with OSPF's stub *area* mechanism from the OSPF lab, because the two "stub" concepts solve different problems with different mechanics:
+
+    | | OSPF stub area | EIGRP stub router |
+    |---|---|---|
+    | Configured on | The **ABR** (and matched by all routers in the area) | The **stub router itself** |
+    | What it restricts | What LSA *types* are allowed to flow **into** the area (Type-3/Type-5 blocked, replaced by a default) | What that router **advertises** to its neighbors (only connected/summary/static/redistributed routes, per the keywords given) |
+    | Effect on neighbors | The stub router (e.g. BR3) sees a *reduced* view of the network | The stub router's **neighbor** (R3) stops sending EIGRP **queries** to it during DUAL recomputation, treating it as a non-transit leaf |
+    | Does the stub router still learn full routing info? | **No** — totally stubby leaves it with just a default route | **Yes** — nothing in `eigrp stub` restricts what STUB3 *receives* from R3; it still gets the domain's full EIGRP topology unless something else filters it |
+
+    > **Confirm live and compare directly against the OSPF lab:** `show ip route` on STUB3 — unlike BR3 in the OSPF lab (which had almost nothing but a default route), STUB3 should have full visibility into the EIGRP domain's routes. What's different is what STUB3 tells R3 about *itself*, and how R3 treats STUB3 during convergence events — check `show ip eigrp neighbors detail` on R3 and look for the stub flags/received-only indication for the STUB3 adjacency.
+
+    ---
+
+    ## 10. Tag-Based Filtering with `distribute-list route-map`
+
+    Same concept, same command family, as the OSPF lab — R1 is configured to refuse tag-200 routes (ASBR2's) into its own RIB. Like `redistribute`, this command only actually applies inside `topology base` on this platform (Section 6):
+
+    ```text
+    route-map DENY-TAG-200 deny 10
+     match tag 200
+    route-map DENY-TAG-200 permit 20
+    !
+    router eigrp CORE
+     address-family ipv4 unicast autonomous-system 100
+      topology base
+       distribute-list route-map DENY-TAG-200 in
+    ```
+
+    EIGRP is a distance-vector protocol, not link-state — so unlike OSPF, there isn't a shared LSA database to preserve; EIGRP routers only ever advertise their own *best* routes to neighbors in the first place. That makes the RIB-vs-advertisement distinction from the OSPF lab slightly different here: this filter blocks the route from R1's RIB, and since R1 never advertises what it doesn't select as best, this could in principle affect what R1 tells R2 or R3 too — worth confirming directly rather than assuming (Exercise 6).
+
+    > **Confirmed live — the filter is real but narrower than it looks.** `show ip route 172.20.16.0` on R1 still shows the route — the untagged `/21` summary sails right through `match tag 200`, because (Section 7) the summary itself carries no tag. The filter isn't broken; it's doing exactly what a tag match should do, it just has nothing tagged to match against once summarization has stripped the tag. The IPv6 side proves the filter *does* work when there's something to catch: `show ipv6 route 2001:DB8:2021::/64` on R1 comes back **absent** (filtered — that route is the leaked, still-tagged component from Section 7), while `2001:DB8:2020::/60` (the untagged summary) is present, same as the v4 case. Net effect: `distribute-list route-map` here filters individually-tagged routes, but is blind to anything that's been folded into an untagged summary — a real limitation to design around, not a config mistake.
+
+    ---
+
+    ## 11. Verification Cheat-Sheet (Part A)
+
+    ```text
+    show ip eigrp neighbors
+    show ip eigrp neighbors detail
+    show ip eigrp topology
+    show ip eigrp topology all-links
+    show ip route eigrp
+    show ip protocols
+    show eigrp address-family ipv4 interfaces
+    ```
+
+    Things worth specifically confirming after boot:
+
+    - 6 EIGRP neighbor relationships total, matching the 6 physical links.
+    - `redistribute` and `distribute-list route-map ... in` both actually landed in `show run | section router eigrp` — check for the `topology base` submode, not directly under the address-family (Section 6).
+    - Both `172.20.8.0/21` (tag 100) and `172.20.16.0/21` (tag 200) are visible on R1 despite the distribute-list — the summary carries no tag, so the filter has nothing to match (Section 10).
+    - STUB3 has a *full* routing table, not a reduced one — the opposite of what totally-stubby BR3 had in the OSPF lab.
+    - `show ip eigrp topology` on R1 shows the R1–R3 direct link's path as present but not the successor, after the delay tuning in Section 8.
+
+    ---
+
+    ## 12. IPv6 EIGRP on the Same Topology
+
+    Part B adds IPv6 to every interface and loopback already built in Part A, activated under **the same `router eigrp CORE` process** — a second address-family, not a second process. That's the headline structural difference from the OSPF lab, where Part B needed an entirely separate `ipv6 router ospf` process.
+
+    ### 12.1 Addressing (mirrors Part A)
+
+    Redistributed IPv6 statics: ASBR1 → `2001:db8:2010::/64`, `2001:db8:2011::/64` (tag 100, summarized to `2001:db8:2010::/60`); ASBR2 → `2001:db8:2020::/64`, `2001:db8:2021::/64` (tag 200, summarized to `2001:db8:2020::/60`).
+
+    ### 12.2 Config — same process, sibling address-family
+
+    ```text
+    interface GigabitEthernet1
+     ipv6 address 2001:DB8:100:12::1/64
+     ipv6 eigrp 100
+    !
+    router eigrp CORE
+     address-family ipv6 unicast autonomous-system 100
+      eigrp router-id 10.100.0.1
+      distribute-list route-map DENY-TAG-200-V6 in
+      af-interface Loopback0
+       passive-interface
+      exit-af-interface
+     exit-address-family
+    ```
+
+    Note there's no `network` statement anywhere in the IPv6 address-family — activation is entirely via `ipv6 eigrp 100` on each interface, matching OSPFv3's model rather than EIGRP's own IPv4 model.
+
+    ---
+
+    ## 13. What's Identical vs. What's Different
+
+    | Concept | EIGRP IPv4 (Part A) | EIGRP IPv6 (Part B) | Verdict |
+    |---|---|---|---|
+    | Process container | `router eigrp CORE` | **Same** `router eigrp CORE`, sibling address-family | **Genuinely different from OSPF** — one process, not two |
+    | Interface activation | `network` statement | `ipv6 eigrp 100` per interface | **Different mechanism** — no `network` in v6 at all |
+    | Route tags | `set tag` in a route-map | Identical | **Same** |
+    | Composite metric / `delay` tuning | Interface-level `delay`, shared with... | ...the same interface-level `delay` — one setting, both AFs | **Literally the same value**, not just the same concept |
+    | Redistribution | `redistribute static route-map ...` | Identical | **Same** |
+    | Summarization | `summary-address` under `af-interface`, no tag support | Identical, prefix/length notation instead of address+mask | **Same command, same tag limitation** |
+    | Stub routing | `eigrp stub connected summary` | Identical | **Same** |
+    | `distribute-list route-map` | Supported | Supported | **Same** — confirm live in your build |
+
+    > **The one-process-two-address-families model is the biggest conceptual takeaway from Part B.** It means EIGRP IPv4 and IPv6 share neighbor relationships at the protocol level more tightly than OSPFv2/OSPFv3 ever do — though each address-family still maintains its own topology table and neighbor state. Worth checking directly: does `show ip eigrp neighbors` and `show ipv6 eigrp neighbors` on the same router show the same neighbor list, or does each AF still track adjacencies independently? (Exercise 9.)
+
+    ---
+
+    ## 14. Verification Cheat-Sheet (Part B)
+
+    ```text
+    show ipv6 eigrp neighbors
+    show ipv6 eigrp topology
+    show ipv6 route eigrp
+    show ipv6 route 2001:DB8:2010::/60
+    show ipv6 route 2001:DB8:2020::/60
+    ```
+
+    Expect the same 6 adjacencies and the same delay-driven path preference. The filtering result is *not* the same, though: over IPv6, `2001:DB8:2010::/60` and `2001:DB8:2020::/60` (the untagged summaries) show up on R1 same as v4, but `2001:DB8:2011::/64` (tag 100) shows up too while `2001:DB8:2021::/64` (tag 200) is filtered out — because IPv6 summarization here leaks one tagged component per ASBR that the v4 side fully suppresses (Section 7). Confirm with `show ipv6 route eigrp` on R1.
+
+    ---
+
+    ## 15. Exercises
+
+    **1. Redistribution metric, end to end.** On ASBR1, run `show ip eigrp topology 172.20.8.0/21` and note the composite metric. Walk the math by hand using the formula in Section 5 (bandwidth=100000 Kbps, delay=2000 tens-of-µs at the point of redistribution) and confirm it matches what's displayed.
+
+    **2. Summarization gap, and why IPv6 tells a different story.** Confirm `172.20.16.0/21` (ASBR2's summary) has no tag when viewed via `show ip route 172.20.16.0` on R1, and that `distribute-list route-map DENY-TAG-200 in` does *not* filter it out despite matching `tag 200` — the summary has no tag to match. Now check the IPv6 side: `show ipv6 route eigrp` on R1 shows `2001:DB8:2021::/64` (tag 200) filtered out while `2001:DB8:2020::/60` gets through. Why does the same `distribute-list` line produce a different practical result for v4 vs. v6 traffic toward ASBR2's block? (Hint: it's not the filter that's different — Section 7.)
+
+    **3. Feasible successor.** After the delay tuning in Section 8, check `show ip eigrp topology` (not `topology all-links`) on R1 for the route to `10.100.0.3` (R3's loopback). Is the direct R1–R3 path listed at all? If not, check `show ip eigrp topology all-links` — what's the difference between what these two commands show, and why does it matter for understanding feasible successors?
+
+    **4. Break the feasibility condition.** Increase the delay on the R1–R3 link even further (try `delay 5000000`). At what point (if any) does the direct link stop being usable *even as a backup* — i.e., stop satisfying the feasibility condition (its reported distance from R3 must be less than R1's feasible distance via R2)? Explain in your own words why EIGRP enforces this condition before accepting a path as a loop-free backup.
+
+    **5. Variance.** Calculate what `variance` multiplier on R1 would be needed to bring the direct R1–R3 link back into active (unequal-cost) use alongside the via-R2 path, given the metrics you observed in Exercise 1 and 3. Configure it and confirm with `show ip route 10.100.0.3` — do you see two next-hops now?
+
+    **6. RIB filter vs. advertisement.** Section 10 raises the question of whether `distribute-list route-map` on R1 affects what R1 advertises onward to R2/R3, given EIGRP only ever advertises its own best route. Test it: check `show ip route 172.20.16.0` on R2 and R3 — is it present via R1, or only via the direct R2–ASBR2 path? Explain what you find.
+
+    **7. Stub query scoping.** On R3, run `show ip eigrp neighbors detail` and find the STUB3 adjacency. What does it say about STUB3's advertised capabilities? Then simulate a topology change elsewhere in the network (e.g., flap the R1–R3 link) and use `debug eigrp packets query` (careful — verbose) or `show ip eigrp topology` timing to confirm R3 does *not* send a query to STUB3 during the resulting recomputation.
+
+    **8. `eigrp stub` keyword variations.** `eigrp stub` supports several keywords beyond `connected summary` used here — `static`, `redistributed`, `receive-only`. Reconfigure STUB3 with `eigrp stub receive-only` instead and observe what changes about what STUB3 advertises (hint: `receive-only` is the most restrictive — it advertises nothing at all).
+
+    **9. One process, two address families.** Compare `show ip eigrp neighbors` and `show ipv6 eigrp neighbors` on R1. Do the neighbor lists match? Do they converge independently if you flap just the IPv6 address on one interface while leaving IPv4 up? What does this tell you about how tightly coupled the two address-families actually are under the single named-mode process?
+
+    **10. Convert one router back to classic mode.** As a stretch goal, reconfigure R2 using classic-mode EIGRP (`router eigrp 100` at the top level, no address-family) instead of named mode, for IPv4 only. Confirm the adjacency to R1 and R3 still comes up — classic and named mode routers interoperate fine as EIGRP peers, since the on-the-wire protocol is identical; only the *configuration model* differs.
+
+    ---
+
+    ## 16. Addressing Reference Tables
+
+    ### 16.1 Core loopbacks and AS
+
+    | Router | Role | AS | Lo0 (v4) | Lo0 (v6) |
+    |---|---|---|---|---|
+    | R1-CORE | Core | 100 | 10.100.0.1/32 | 2001:db8:100::1/128 |
+    | R2-CORE | Core | 100 | 10.100.0.2/32 | 2001:db8:100::2/128 |
+    | R3-CORE | Core | 100 | 10.100.0.3/32 | 2001:db8:100::3/128 |
+    | ASBR1-EIGRP | Redistributor | 100 | 10.101.1.1/32 | 2001:db8:101::1/128 |
+    | ASBR2-EIGRP | Redistributor | 100 | 10.102.1.1/32 | 2001:db8:102::1/128 |
+    | STUB3-EIGRP | Stub | 100 | 10.103.1.1/32 | 2001:db8:103::1/128 |
+
+    ### 16.2 Redistributed externals
+
+    | Origin | Components | Summary | Tag | Metric (bw/delay/rel/load/mtu) |
+    |---|---|---|---|---|
+    | ASBR1 | 172.20.10.0/24, 172.20.11.0/24 | 172.20.8.0/21 | 100 | 100000/2000/255/1/1500 |
+    | ASBR2 | 172.20.20.0/24, 172.20.21.0/24 | 172.20.16.0/21 | 200 | 100000/4000/255/1/1500 |
+    | ASBR1 (v6) | 2001:db8:2010::/64, 2001:db8:2011::/64 | 2001:db8:2010::/60 | 100 | 100000/2000/255/1/1500 |
+    | ASBR2 (v6) | 2001:db8:2020::/64, 2001:db8:2021::/64 | 2001:db8:2020::/60 | 200 | 100000/4000/255/1/1500 |
+  title: CCIE-EIGRP-Focused
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
