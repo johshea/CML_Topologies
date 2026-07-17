@@ -1,0 +1,1036 @@
+annotations: []
+smart_annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R1-ABR-AREA1
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.0.0.1 255.255.255.255
+           ipv6 address 2001:DB8:0:0::1/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Loopback1
+           description AREA1-NATIVE-SIDE-PREFIX (summarized via area range)
+           ip address 10.1.0.1 255.255.255.255
+           ipv6 address 2001:DB8:1:0::1/128
+           ip ospf 1 area 1
+           ipv6 ospf 1 area 1
+          !
+          interface GigabitEthernet1
+           description AREA0-to-R2
+           ip address 10.255.12.1 255.255.255.252
+           ipv6 address 2001:DB8:1:12::1/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description AREA0-to-R3-DELIBERATE-HIGH-COST
+           ip address 10.255.13.1 255.255.255.252
+           ipv6 address 2001:DB8:1:13::1/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           ip ospf cost 50
+           ipv6 ospf cost 50
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description AREA1-to-ASBR1
+           ip address 10.255.101.1 255.255.255.252
+           ipv6 address 2001:DB8:101::1/64
+           ip ospf 1 area 1
+           ipv6 ospf 1 area 1
+           no shutdown
+          !
+          route-map DENY-TAG-200 deny 10
+           match tag 200
+          route-map DENY-TAG-200 permit 20
+          !
+          route-map DENY-TAG-200-V6 deny 10
+           match tag 200
+          route-map DENY-TAG-200-V6 permit 20
+          !
+          router ospf 1
+           router-id 10.0.0.1
+           area 1 range 10.1.0.0 255.255.254.0
+           passive-interface Loopback0
+           passive-interface Loopback1
+           distribute-list route-map DENY-TAG-200 in
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.1
+           area 1 range 2001:DB8:1::/63
+           passive-interface Loopback0
+           passive-interface Loopback1
+           distribute-list route-map DENY-TAG-200-V6 in
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: cat8000v-17-18-02
+    label: R1-ABR-AREA1
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -200
+    y: -50
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R2-ABR-AREA2-NSSA
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.0.0.2 255.255.255.255
+           ipv6 address 2001:DB8:0:0::2/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Loopback1
+           description AREA2-NATIVE-SIDE-PREFIX (summarized via area range)
+           ip address 10.2.0.1 255.255.255.255
+           ipv6 address 2001:DB8:2:0::1/128
+           ip ospf 1 area 2
+           ipv6 ospf 1 area 2
+          !
+          interface GigabitEthernet1
+           description AREA0-to-R1
+           ip address 10.255.12.2 255.255.255.252
+           ipv6 address 2001:DB8:1:12::2/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description AREA0-to-R3
+           ip address 10.255.23.1 255.255.255.252
+           ipv6 address 2001:DB8:1:23::1/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description AREA2-NSSA-to-ASBR2
+           ip address 10.255.102.1 255.255.255.252
+           ipv6 address 2001:DB8:102::1/64
+           ip ospf 1 area 2
+           ipv6 ospf 1 area 2
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.0.0.2
+           area 2 range 10.2.0.0 255.255.254.0
+           area 2 nssa
+           passive-interface Loopback0
+           passive-interface Loopback1
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.2
+           area 2 range 2001:DB8:2::/63
+           area 2 nssa
+           passive-interface Loopback0
+           passive-interface Loopback1
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: cat8000v-17-18-02
+    label: R2-ABR-AREA2-NSSA
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 200
+    y: -50
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R3-ABR-AREA3-STUB
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.0.0.3 255.255.255.255
+           ipv6 address 2001:DB8:0:0::3/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Loopback1
+           description AREA3-NATIVE-SIDE-PREFIX (summarized via area range)
+           ip address 10.3.0.1 255.255.255.255
+           ipv6 address 2001:DB8:3:0::1/128
+           ip ospf 1 area 3
+           ipv6 ospf 1 area 3
+          !
+          interface GigabitEthernet1
+           description AREA0-to-R2
+           ip address 10.255.23.2 255.255.255.252
+           ipv6 address 2001:DB8:1:23::2/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description AREA0-to-R1-DELIBERATE-HIGH-COST
+           ip address 10.255.13.2 255.255.255.252
+           ipv6 address 2001:DB8:1:13::2/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           ip ospf cost 50
+           ipv6 ospf cost 50
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description AREA3-TOTALLY-STUBBY-to-BR3
+           ip address 10.255.103.1 255.255.255.252
+           ipv6 address 2001:DB8:103::1/64
+           ip ospf 1 area 3
+           ipv6 ospf 1 area 3
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.0.0.3
+           area 3 range 10.3.0.0 255.255.254.0
+           area 3 stub no-summary
+           passive-interface Loopback0
+           passive-interface Loopback1
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.3
+           area 3 range 2001:DB8:3::/63
+           area 3 stub no-summary
+           passive-interface Loopback0
+           passive-interface Loopback1
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: cat8000v-17-18-02
+    label: R3-ABR-AREA3-STUB
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: 150
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname ASBR1-AREA1
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           description ASBR1-NATIVE-OSPF-IDENTITY
+           ip address 10.1.1.1 255.255.255.255
+           ipv6 address 2001:DB8:1:1::1/128
+           ip ospf 1 area 1
+           ipv6 ospf 1 area 1
+          !
+          interface GigabitEthernet1
+           description AREA1-to-R1
+           ip address 10.255.101.2 255.255.255.252
+           ipv6 address 2001:DB8:101::2/64
+           ip ospf 1 area 1
+           ipv6 ospf 1 area 1
+           no shutdown
+          !
+          ip route 172.16.10.0 255.255.255.0 Null0
+          ip route 172.16.11.0 255.255.255.0 Null0
+          !
+          ipv6 route 2001:DB8:1010::/64 Null0
+          ipv6 route 2001:DB8:1011::/64 Null0
+          !
+          router ospf 1
+           router-id 10.1.1.1
+           passive-interface Loopback0
+           redistribute static metric 20 metric-type 1 tag 100 subnets
+           summary-address 172.16.8.0 255.255.248.0 tag 100
+          !
+          ipv6 router ospf 1
+           router-id 10.1.1.1
+           passive-interface Loopback0
+           redistribute static metric 20 metric-type 1 tag 100
+           summary-prefix 2001:DB8:1010::/60 tag 100
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: cat8000v-17-18-02
+    label: ASBR1-AREA1
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -200
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname ASBR2-AREA2-NSSA
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           description ASBR2-NATIVE-OSPF-IDENTITY
+           ip address 10.2.1.1 255.255.255.255
+           ipv6 address 2001:DB8:2:1::1/128
+           ip ospf 1 area 2
+           ipv6 ospf 1 area 2
+          !
+          interface GigabitEthernet1
+           description AREA2-NSSA-to-R2
+           ip address 10.255.102.2 255.255.255.252
+           ipv6 address 2001:DB8:102::2/64
+           ip ospf 1 area 2
+           ipv6 ospf 1 area 2
+           no shutdown
+          !
+          ip route 172.16.20.0 255.255.255.0 Null0
+          ip route 172.16.21.0 255.255.255.0 Null0
+          !
+          ipv6 route 2001:DB8:2020::/64 Null0
+          ipv6 route 2001:DB8:2021::/64 Null0
+          !
+          router ospf 1
+           router-id 10.2.1.1
+           area 2 nssa
+           passive-interface Loopback0
+           redistribute static metric 30 metric-type 2 tag 200 subnets
+           summary-address 172.16.16.0 255.255.248.0 tag 200
+          !
+          ipv6 router ospf 1
+           router-id 10.2.1.1
+           area 2 nssa
+           passive-interface Loopback0
+           redistribute static metric 30 metric-type 2 tag 200
+           summary-prefix 2001:DB8:2020::/60 tag 200
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: cat8000v-17-18-02
+    label: ASBR2-AREA2-NSSA
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 200
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname BR3-AREA3-STUB
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           description BR3-NATIVE-OSPF-IDENTITY
+           ip address 10.3.1.1 255.255.255.255
+           ipv6 address 2001:DB8:3:1::1/128
+           ip ospf 1 area 3
+           ipv6 ospf 1 area 3
+          !
+          interface GigabitEthernet1
+           description AREA3-TOTALLY-STUBBY-to-R3
+           ip address 10.255.103.2 255.255.255.252
+           ipv6 address 2001:DB8:103::2/64
+           ip ospf 1 area 3
+           ipv6 ospf 1 area 3
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.3.1.1
+           area 3 stub
+           passive-interface Loopback0
+          !
+          ipv6 router ospf 1
+           router-id 10.3.1.1
+           area 3 stub
+           passive-interface Loopback0
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: cat8000v-17-18-02
+    label: BR3-AREA3-STUB
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: 320
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i1
+    i2: i1
+    conditioning: {}
+    label: R1-ABR-AREA1-GigabitEthernet1<->R2-ABR-AREA2-NSSA-GigabitEthernet1
+  - id: l1
+    n1: n1
+    n2: n2
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: R2-ABR-AREA2-NSSA-GigabitEthernet2<->R3-ABR-AREA3-STUB-GigabitEthernet1
+  - id: l2
+    n1: n0
+    n2: n2
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: R1-ABR-AREA1-GigabitEthernet2<->R3-ABR-AREA3-STUB-GigabitEthernet2
+  - id: l3
+    n1: n0
+    n2: n3
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R1-ABR-AREA1-GigabitEthernet3<->ASBR1-AREA1-GigabitEthernet1
+  - id: l4
+    n1: n1
+    n2: n4
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R2-ABR-AREA2-NSSA-GigabitEthernet3<->ASBR2-AREA2-NSSA-GigabitEthernet1
+  - id: l5
+    n1: n2
+    n2: n5
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R3-ABR-AREA3-STUB-GigabitEthernet3<->BR3-AREA3-STUB-GigabitEthernet1
+lab:
+  description: Multi-area OSPF (backbone + regular area w/ ASBR, NSSA w/ ASBR, totally-stubby)
+    showcasing static route redistribution, route tagging, metric-type (E1/E2) manipulation,
+    area-range and summary-address summarization, interface cost tuning, and tag-based
+    distribute-list filtering. Part A is OSPFv2/IPv4-only; Part B extends to dual-stack
+    OSPFv3/IPv6.
+  notes: |+
+    # OSPF-Focused Lab: Multi-Area Redistribution, Tagging & Metric Manipulation
+
+    See ospf_lab_guide.md (delivered alongside this lab) for the full write-up, config walkthrough, and exercises. Condensed reference below.
+
+    ## Topology
+    4-area OSPF domain, 6 routers, Area 0 backbone triangle (R1/R2/R3, all ABRs):
+    - R1-ABR-AREA1: ABR Area0<->Area1 (regular). area 1 range 10.1.0.0/23. distribute-list route-map denies tag 200 from its own RIB. High-cost (50) direct link to R3 forces SPF via R2.
+    - R2-ABR-AREA2-NSSA: ABR Area0<->Area2 (NSSA, area 2 nssa). area 2 range 10.2.0.0/23.
+    - R3-ABR-AREA3-STUB: ABR Area0<->Area3 (totally stubby, area 3 stub no-summary). area 3 range 10.3.0.0/23. High-cost (50) direct link to R1.
+    - ASBR1-AREA1: in Area1, redistribute static metric 20 metric-type 1 (E1) tag 100, summary-address 172.16.8.0/21.
+    - ASBR2-AREA2-NSSA: in Area2 (NSSA), redistribute static metric 30 metric-type 2 (E2) tag 200, summary-address 172.16.16.0/21. Produces Type-7, translated to Type-5 at R2.
+    - BR3-AREA3-STUB: leaf inside the totally stubby area, no ASBR (can't have one there).
+
+    Part A = OSPFv2/IPv4 only. Part B = same topology, dual-stack OSPFv3/IPv6 added (separate process, ipv6 router ospf, mirrors v2 area design).
+
+    ## Features demonstrated (verified)
+    - Regular vs NSSA vs totally-stubby area behavior, side by side
+    - redistribute static with explicit metric/metric-type/tag, and the 'subnets' keyword gotcha (v2 only, no v6 equivalent)
+    - E1 vs E2 cost behavior confirmed live: E1 (172.16.8.0/21) cost varies by internal distance (21 at R1, 23 at R3); E2 (172.16.16.0/21) stays flat at 30 everywhere
+    - Type-7->Type-5 NSSA translation confirmed live: advertising router changes from ASBR2 (10.2.1.1) to R2 the translator (10.0.0.2), tag preserved (200)
+    - area range (inter-area summarization at ABR) vs summary-address/summary-prefix (redistribution-time summarization at ASBR) - confirmed both work as intended in v4
+    - ip ospf cost manipulation confirmed live: R1->R3 traffic takes the R2 detour (cost 2) over the direct link (cost 50)
+    - distribute-list route-map tag filtering confirmed live on both v4 and v6: R1 lacks 172.16.16.0/21 / 2001:db8:2020::/60 in its own RIB while still flooding the LSA and while R2/R3 have it normally
+    - Totally stubby area confirmed live: BR3 has only a default route, nothing else, in both v4 and v6
+
+    ## Known live-discovered challenge (documented in guide Section 10.2)
+    OSPFv3 'summary-prefix' did NOT fully suppress covered component routes the way OSPFv2 'summary-address' did - one of the two /64 components leaked through as a separate external route on both ASBR1 and ASBR2. This is a real, reproducible, verified platform behavior difference, not a config error - see the guide and Exercise 10a for the full writeup and a suggested investigation exercise.
+
+
+    This guide has two parts. **Part A** covers OSPFv2/IPv4 only, in depth — that's the core of the lab. **Part B** takes the exact same topology and extends it to dual-stack with OSPFv3/IPv6, showing where the IPv6 side matches OSPFv2 command-for-command and where it genuinely differs.
+
+    ## Table of Contents
+
+    **Part A — OSPFv2 (IPv4-only)**
+
+    1. [Overview and Learning Objectives](#1-overview-and-learning-objectives)
+    2. [Topology](#2-topology)
+    3. [Addressing Plan](#3-addressing-plan)
+    4. [Area Types: Regular, NSSA, and Totally Stubby](#4-area-types-regular-nssa-and-totally-stubby)
+    5. [Static Route Redistribution, Tagging, and Metric-Type](#5-static-route-redistribution-tagging-and-metric-type)
+    6. [Summarization: `area range` vs. `summary-address`](#6-summarization-area-range-vs-summary-address)
+    7. [Interface Cost Manipulation](#7-interface-cost-manipulation)
+    8. [Tag-Based Filtering with `distribute-list route-map`](#8-tag-based-filtering-with-distribute-list-route-map)
+    9. [Verification Cheat-Sheet (Part A)](#9-verification-cheat-sheet-part-a)
+
+    **Part B — Dual-Stack Extension (OSPFv3/IPv6)**
+
+    10. [OSPFv3 on the Same Topology](#10-ospfv3-on-the-same-topology)
+    11. [What's Identical vs. What's Different](#11-whats-identical-vs-whats-different)
+    12. [Verification Cheat-Sheet (Part B)](#12-verification-cheat-sheet-part-b)
+
+    **Reference**
+
+    13. [Exercises](#13-exercises)
+    14. [Addressing Reference Tables](#14-addressing-reference-tables)
+
+    ---
+
+    ## 1. Overview and Learning Objectives
+
+    This lab builds a 6-router, 4-area OSPF domain specifically to exercise the mechanics that don't show up in a single-area lab: how routes get *into* OSPF from outside it, how they're tagged and filtered as they move around, how their cost is computed differently depending on redistribution type, and how the three non-backbone area types (regular, NSSA, totally stubby) each treat that external information differently.
+
+    By the end you will have hands-on, verified configuration for:
+
+    - A proper **4-area OSPF design**: Area 0 (backbone), Area 1 (regular, with an ASBR), Area 2 (**NSSA**, with an ASBR), Area 3 (**totally stubby**, no ASBR)
+    - **`redistribute static`** with explicit **metric**, **metric-type** (E1 vs E2), and **tag**
+    - The **`subnets`** keyword gotcha — redistributed subnetted static routes silently vanish without it
+    - **Route tagging** end-to-end: set at the ASBR, preserved through NSSA Type-7→Type-5 translation, matched downstream
+    - Two different summarization tools — **`area range`** (inter-area, at an ABR) vs **`summary-address`** (redistribution-time, at an ASBR) — and why they're not interchangeable
+    - **Interface cost manipulation** (`ip ospf cost`) to deliberately override SPF's default choice
+    - **`distribute-list route-map ... in`** — filtering what gets installed in *your own* RIB by route tag, without touching LSA flooding (a very different model from BGP's per-neighbor filtering)
+    - The same set of concepts repeated for **OSPFv3/IPv6**, so you can see exactly which commands carry over unchanged and which don't
+
+    ---
+
+    ## 2. Topology
+
+    ```mermaid
+    graph TB
+        subgraph Area0["Area 0 — Backbone"]
+            R1["R1-ABR-AREA1<br/>Lo0: 10.0.0.1"]
+            R2["R2-ABR-AREA2-NSSA<br/>Lo0: 10.0.0.2"]
+            R3["R3-ABR-AREA3-STUB<br/>Lo0: 10.0.0.3"]
+            R1 <-->|cost 1| R2
+            R2 <-->|cost 1| R3
+            R1 <-->|cost 50, deliberately high| R3
+        end
+        ASBR1["ASBR1-AREA1<br/>redistributes static<br/>tag 100, E1, metric 20"]
+        ASBR2["ASBR2-AREA2-NSSA<br/>redistributes static<br/>tag 200, E2, metric 30"]
+        BR3["BR3-AREA3-STUB<br/>leaf, no ASBR"]
+
+        R1 <-->|Area 1, regular| ASBR1
+        R2 <-->|Area 2, NSSA| ASBR2
+        R3 <-->|Area 3, totally stubby| BR3
+    ```
+
+    | Node | Role | Area(s) | Notable config |
+    |---|---|---|---|
+    | R1-ABR-AREA1 | ABR | 0 ↔ 1 (regular) | `area 1 range`, `distribute-list route-map` (denies tag 200), high-cost link to R3 |
+    | R2-ABR-AREA2-NSSA | ABR | 0 ↔ 2 (NSSA) | `area 2 nssa`, `area 2 range` |
+    | R3-ABR-AREA3-STUB | ABR | 0 ↔ 3 (totally stubby) | `area 3 stub no-summary`, `area 3 range`, high-cost link to R1 |
+    | ASBR1-AREA1 | ASBR | 1 | `redistribute static metric 20 metric-type 1 tag 100 subnets`, `summary-address` |
+    | ASBR2-AREA2-NSSA | ASBR (in an NSSA) | 2 | `redistribute static metric 30 metric-type 2 tag 200 subnets`, `summary-address`, `area 2 nssa` |
+    | BR3-AREA3-STUB | Internal router | 3 | `area 3 stub` — no ASBR here, by design |
+
+    > **Why two ASBRs in two different area types:** ASBR1 sits in a *regular* area, so its redistributed routes become ordinary Type-5 external LSAs, flooded domain-wide. ASBR2 sits in an *NSSA*, so the exact same `redistribute static` command instead produces Type-7 LSAs, which only exist inside the NSSA until R2 (the NSSA's ABR) translates them to Type-5 at the area boundary. Comparing the two side by side is the whole point — same redistribution command, different LSA type, different flooding scope, and (as you'll see in Section 9) a different "advertising router" in the database once translated.
+
+    > **Why Area 3 has no ASBR:** it can't. Stub and totally stubby areas categorically forbid Type-5 (and Type-7) external LSAs — that's the entire mechanism by which they keep their routing tables small. An ASBR *cannot* live inside a stub area; if you need to originate external routes from within what would otherwise be a stub area, NSSA (Section 4) is the tool designed for exactly that case.
+
+    ---
+
+    ## 3. Addressing Plan
+
+    All addressing uses RFC 1918 (`10.0.0.0/8`) for the OSPF domain itself and a private-use block (`172.16.0.0/12`) for the redistributed "external" static routes, keeping the two visually distinct in every routing table printout.
+
+    ### 3.1 Loopbacks
+
+    | Router | Lo0 (Router ID) | Lo1 (native, area-summarized) | Area(s) |
+    |---|---|---|---|
+    | R1 | 10.0.0.1/32 | 10.1.0.1/32 | 0 / 1 |
+    | R2 | 10.0.0.2/32 | 10.2.0.1/32 | 0 / 2 |
+    | R3 | 10.0.0.3/32 | 10.3.0.1/32 | 0 / 3 |
+    | ASBR1 | 10.1.1.1/32 (Lo0, native) | — | 1 |
+    | ASBR2 | 10.2.1.1/32 (Lo0, native) | — | 2 |
+    | BR3 | 10.3.1.1/32 (Lo0, native) | — | 3 |
+
+    ### 3.2 Point-to-point links
+
+    | Link | Subnet | Area | Notes |
+    |---|---|---|---|
+    | R1 Gi1 – R2 Gi1 | 10.255.12.0/30 | 0 | default cost (1) |
+    | R2 Gi2 – R3 Gi1 | 10.255.23.0/30 | 0 | default cost (1) |
+    | R1 Gi2 – R3 Gi2 | 10.255.13.0/30 | 0 | **cost 50 both directions** — see Section 7 |
+    | R1 Gi3 – ASBR1 Gi1 | 10.255.101.0/30 | 1 | |
+    | R2 Gi3 – ASBR2 Gi1 | 10.255.102.0/30 | 2 (NSSA) | |
+    | R3 Gi3 – BR3 Gi1 | 10.255.103.0/30 | 3 (totally stubby) | |
+
+    ### 3.3 Redistributed "external" static routes
+
+    | ASBR | Routes (static, to Null0) | Tag | Metric-type | Metric | Summarized as |
+    |---|---|---|---|---|---|
+    | ASBR1 | 172.16.10.0/24, 172.16.11.0/24 | 100 | E1 | 20 | 172.16.8.0/21 |
+    | ASBR2 | 172.16.20.0/24, 172.16.21.0/24 | 200 | E2 | 30 | 172.16.16.0/21 |
+
+    ---
+
+    ## 4. Area Types: Regular, NSSA, and Totally Stubby
+
+    Three non-backbone areas, three different filtering behaviors, all visible from the same vantage point (R1/R2/R3 all sit in Area 0):
+
+    | Area | Type | What flows **in** (Area 0 → area) | What flows **out** (area → Area 0) | Can host an ASBR? |
+    |---|---|---|---|---|
+    | 1 | Regular | Inter-area (Type-3) + external (Type-5) — everything | Intra-area (as Type-3) + external (Type-5) | **Yes** — ASBR1 |
+    | 2 | NSSA (`area 2 nssa`) | Inter-area (Type-3) — externals blocked | Intra-area (as Type-3) + Type-7→Type-5 translated at the ABR | **Yes** — ASBR2 (produces Type-7, not Type-5) |
+    | 3 | Totally stubby (`area 3 stub no-summary`) | **Nothing but a default route** — no Type-3, no Type-5 | Intra-area (as Type-3) — this direction is unaffected by stub/no-summary | No |
+
+    ```text
+    router ospf 1
+     area 2 nssa
+    !
+    router ospf 1
+     area 3 stub no-summary
+    ```
+
+    > **Note:** `no-summary` is an ABR-only keyword — it tells *that* ABR to stop injecting Type-3 summaries into the stub area (turning "stub" into "totally stubby"). Internal routers in the area (BR3) just need the plain `area 3 stub` to agree they're in a stub area; they never see `no-summary`. Same logic applies to `area 2 nssa` — both R2 (the ABR) and ASBR2 (the internal ASBR) need it, because both have to agree on the area's type to interoperate correctly.
+
+    > **Confirm live:** `show ip route` on BR3 should show almost nothing except a single `O*IA` default route plus its own directly connected/intra-area entries — no `O IA` for Area 1/2 prefixes, no `O E1`/`O E2` at all. Compare that to R1 or R2's routing table, which has the full picture.
+
+    ---
+
+    ## 5. Static Route Redistribution, Tagging, and Metric-Type
+
+    Both ASBRs redistribute a pair of `ip route ... Null0` static routes — this is the standard, minimal way to inject "external" reachability into OSPF without needing a real downstream network.
+
+    ```text
+    ip route 172.16.10.0 255.255.255.0 Null0
+    ip route 172.16.11.0 255.255.255.0 Null0
+    !
+    router ospf 1
+     redistribute static metric 20 metric-type 1 tag 100 subnets
+    ```
+
+    > **The `subnets` gotcha:** without the `subnets` keyword, `redistribute static` only redistributes routes that fall on a classful network boundary. Both of our static routes are `/24`s carved out of `172.16.0.0/12` — non-classful subnets — so **without `subnets`, neither route makes it into OSPF at all**, silently. This trips up almost everyone the first time they configure redistribution. Exercise 1 has you remove it and watch the routes disappear.
+
+    **E1 vs. E2 — the actual difference in the routing table**, not just the textbook definition:
+
+    - **E1** (ASBR1, tag 100): the cost shown in `show ip route` is **external metric + cumulative internal OSPF cost to reach the ASBR**. Check the same E1 route from R1 (right next to ASBR1) versus from R3 (two hops further) — the numbers will differ.
+    - **E2** (ASBR2, tag 200, and OSPF's default if you omit metric-type): the cost shown is **just the external metric (30)** — flat, identical, no matter where in the domain you check it from. Internal distance to the ASBR is only used as a *tiebreaker* between multiple candidate E2 paths to the same prefix, it never appears in the displayed cost.
+
+    > **Confirm live:** `show ip route 172.16.8.0` on R1 vs. on R3 — expect two different total costs (E1, ASBR1's route). `show ip route 172.16.16.0` on R1 vs. on R3 — expect the *same* cost, 30, both places (E2, ASBR2's route, now translated through the NSSA).
+
+    ---
+
+    ## 6. Summarization: `area range` vs. `summary-address`
+
+    These two commands are easy to mix up because they both "summarize," but they operate on completely different LSA types and live on different routers:
+
+    | | `area range` | `summary-address` |
+    |---|---|---|
+    | Configured on | An **ABR** | An **ASBR** |
+    | Summarizes | **Inter-area** routes (Type-3) as they cross an area boundary | **Redistributed external** routes (Type-5/7) at the point of redistribution |
+    | In this lab | R1/R2/R3, summarizing each area's native Lo0+Lo1 pair into Area 0 | ASBR1/ASBR2, summarizing their two `/24` statics into one `/21` |
+
+    ```text
+    ! ABR (R1), summarizing intra-area routes on the way OUT of Area 1:
+    router ospf 1
+     area 1 range 10.1.0.0 255.255.254.0
+
+    ! ASBR (ASBR1), summarizing redistributed externals at origination:
+    router ospf 1
+     summary-address 172.16.8.0 255.255.248.0 tag 100
+    ```
+
+    Two things worth noticing once this is live:
+
+    1. `summary-address` **suppresses** the two component `/24`s — only the `/21` summary is ever advertised. That means any downstream tag-matching (Section 8) has to match the tag on the *summary*, which is why `summary-address ... tag 100` explicitly re-applies the tag to the aggregate rather than leaving it untagged.
+    2. `area range` only affects what an ABR sends **out** of the area toward the backbone (and beyond) — it has no bearing on what that same ABR sends **into** a stub/totally-stubby area, which is governed entirely by the stub/`no-summary` settings from Section 4. These are two independent knobs that happen to sit on the same router (R3).
+
+    > **Confirm live:** `show ip ospf database summary` on R2 should show exactly one Type-3 LSA for `10.2.0.0/23`, not two `/32`s. `show ip route` anywhere outside Area 1 should show `172.16.8.0/21`, never `172.16.10.0/24` or `172.16.11.0/24` individually.
+
+    ---
+
+    ## 7. Interface Cost Manipulation
+
+    R1 and R3 have a direct Area 0 link *and* an indirect one through R2. By default, every Gigabit interface gets OSPF cost 1 (reference-bandwidth 100 Mbps ÷ interface bandwidth 1000 Mbps rounds up to the minimum, 1) — so the direct link (cost 1) would normally always win over the two-hop path via R2 (cost 1+1=2). This lab deliberately overrides that:
+
+    ```text
+    interface GigabitEthernet2
+     ip ospf cost 50
+    ```
+
+    configured on **both** R1's and R3's side of the direct link, so SPF in both directions now prefers the R1–R2–R3 path (total cost 2) over the direct link (cost 50).
+
+    > **Why set it on both sides:** OSPF cost is directional — each router only knows the cost it assigns to its own outbound interface. Setting it on just one side makes the path asymmetric (R1→R3 avoids the direct link, but R3→R1 still uses it) — which is a legitimate thing to want sometimes, but this lab sets both sides for a clean, fully symmetric "avoid this link" demonstration.
+
+    > **The reference-bandwidth trap (not deployed, but worth knowing):** because every link in this lab is Gigabit, `auto-cost reference-bandwidth` (default 100) can't differentiate any of them from each other — they'd all compute to cost 1 without the manual override above. In a real network with a mix of 1G/10G/100G links, leaving the default reference-bandwidth means OSPF genuinely cannot tell a 1G link from a 100G one; both show cost 1. See Exercise 5.
+
+    > **Confirm live:** `show ip route 10.0.0.3` on R1 — next-hop should be R2 (10.255.12.2), not the direct link. `show ip ospf interface GigabitEthernet2` on R1 confirms cost 50.
+
+    ---
+
+    ## 8. Tag-Based Filtering with `distribute-list route-map`
+
+    R1 is configured to refuse to install any route tagged 200 (ASBR2's routes) into its own local RIB:
+
+    ```text
+    route-map DENY-TAG-200 deny 10
+     match tag 200
+    route-map DENY-TAG-200 permit 20
+    !
+    router ospf 1
+     distribute-list route-map DENY-TAG-200 in
+    ```
+
+    This is a fundamentally different filtering model from what the BGP lab showed. BGP filters are per-neighbor, because BGP has explicit peering sessions to attach a policy to. OSPF has no such concept — it's a link-state protocol, every router in a non-stub area must have an *identical* topology database or SPF breaks. So `distribute-list route-map ... in` doesn't — and can't — stop the LSA from being flooded to R1's neighbors; **it only controls whether R1 itself installs the resulting route into its own RIB.** R1's OSPF database still has the LSA, R1 still floods it onward exactly as it would otherwise, and R2/R3/everyone else install it normally. Only R1's forwarding behavior changes.
+
+    > **Confirm live:** on R1, `show ip route 172.16.16.0` — absent. `show ip ospf database external` on R1 — the LSA for `172.16.16.0/21` is still there. On R2 or R3, `show ip route 172.16.16.0` — present, normal. That combination is the proof that this is RIB-filtering, not LSA-filtering.
+
+    ---
+
+    ## 9. Verification Cheat-Sheet (Part A)
+
+    ```text
+    show ip ospf neighbor
+    show ip ospf interface brief
+    show ip route ospf
+    show ip ospf database
+    show ip ospf database external
+    show ip ospf database summary
+    show ip bgp community 65001:300
+    show ip route 172.16.8.0
+    show ip route 172.16.16.0
+    show ip protocols
+    ```
+
+    Things worth specifically confirming after boot:
+
+    - 6 OSPF neighbor relationships total, all `FULL`: R1-R2, R2-R3, R1-R3 (Area 0), R1-ASBR1 (Area 1), R2-ASBR2 (Area 2), R3-BR3 (Area 3).
+    - `172.16.8.0/21` (tag 100, E1) is visible everywhere except R1 — wait, R1 originates the filter on *tag 200*, not 100, so `172.16.8.0/21` should be visible on R1 too. `172.16.16.0/21` (tag 200, E2) should be visible everywhere **except R1's RIB** (Section 8) and, by design, nowhere inside Area 3 (Section 4).
+    - BR3's routing table: essentially just a default route and its own connected/loopback entries.
+    - E1 cost for `172.16.8.0/21` differs between R1 and R3; E2 cost for `172.16.16.0/21` is 30 everywhere it's present.
+
+    ---
+
+    ## 10. OSPFv3 on the Same Topology
+
+    Part B adds IPv6 to every interface and loopback already built in Part A and runs a second, independent OSPF process — OSPFv3 — mirroring the exact same area design: Area 0 backbone, Area 1 regular (ASBR1), Area 2 NSSA (ASBR2), Area 3 totally stubby (BR3). Nothing about the topology or the area assignments changes; only the address family does.
+
+    ### 10.1 Addressing (mirrors Part A exactly)
+
+    | Router | Lo0 (v6) | Lo1 (v6, native) |
+    |---|---|---|
+    | R1 | 2001:db8:0:0::1/128 | 2001:db8:1:0::1/128 |
+    | R2 | 2001:db8:0:0::2/128 | 2001:db8:2:0::1/128 |
+    | R3 | 2001:db8:0:0::3/128 | 2001:db8:3:0::1/128 |
+    | ASBR1 | 2001:db8:1:1::1/128 | — |
+    | ASBR2 | 2001:db8:2:1::1/128 | — |
+    | BR3 | 2001:db8:3:1::1/128 | — |
+
+    Redistributed IPv6 statics: ASBR1 → `2001:db8:1010::/64`, `2001:db8:1011::/64` (tag 100, summarized to `2001:db8:1010::/60`); ASBR2 → `2001:db8:2020::/64`, `2001:db8:2021::/64` (tag 200, summarized to `2001:db8:2020::/60`).
+
+    ### 10.2 Config — nearly line-for-line identical
+
+    ```text
+    interface Loopback0
+     ipv6 address 2001:DB8:0:0::1/128
+     ipv6 ospf 1 area 0
+    !
+    ipv6 router ospf 1
+     router-id 10.0.0.1
+     area 1 range 2001:DB8:1::/63
+     passive-interface Loopback0
+     passive-interface Loopback1
+     distribute-list route-map DENY-TAG-200-V6 in
+    ```
+
+    Compare directly to Part A's R1 config in Section 3 — same structure, `ipv6 router ospf 1` instead of `router ospf 1`, `ipv6 ospf 1 area X` instead of `ip ospf 1 area X`.
+
+    ASBR redistribution mirrors too:
+
+    ```text
+    ipv6 route 2001:DB8:1010::/64 Null0
+    ipv6 route 2001:DB8:1011::/64 Null0
+    !
+    ipv6 router ospf 1
+     router-id 10.1.1.1
+     redistribute static metric 20 metric-type 1 tag 100
+     summary-prefix 2001:DB8:1010::/60 tag 100
+    ```
+
+    > **Live discovery — `summary-prefix` doesn't suppress the way `summary-address` does.** This is worth flagging because it's a real, verified difference, not a guess: `show ipv6 ospf database external` on ASBR1 shows it originating **three** LSAs — the `/60` summary, `2001:db8:1011::/64` (a raw component, still individually present), but **not** `2001:db8:1010::/64` (the other raw component, which the summary did suppress). Same pattern, independently, on ASBR2's Type-7 LSAs. In both cases, only the component whose address exactly matches the summary's own base network got suppressed; the other component leaked through as a separate external route. OSPFv2's `summary-address` fully suppressed both `172.16.10.0/24` and `172.16.11.0/24` with no exceptions (Section 6) — this is a genuine, reproducible behavioral gap between the two, confirmed live on `cat8000v-17-18-02`, not a config mistake. **Don't assume `summary-prefix` gives you the same clean suppression `summary-address` does — always confirm with `show ipv6 ospf database external` after configuring it.**
+
+    ---
+
+    ## 11. What's Identical vs. What's Different
+
+    | Concept | OSPFv2 (Part A) | OSPFv3 (Part B) | Verdict |
+    |---|---|---|---|
+    | Area types (regular/NSSA/stub) | `area X nssa`, `area X stub [no-summary]` | Identical syntax | **Same** |
+    | Route tags | 32-bit tag on Type-5/7 LSAs | Same External Route Tag field (RFC 5340) | **Same concept, same command** |
+    | Metric-type E1/E2 | `metric-type {1\|2}` | Identical | **Same** |
+    | Inter-area summarization | `area X range <addr> <mask>` | `area X range <prefix>/<len>` | **Same command, IPv6 prefix notation** |
+    | Redistribution-time summarization | `summary-address <addr> <mask> [tag T]` — fully suppresses all covered components | `summary-prefix <prefix>/<len> [tag T]` — **in this live build, only partially suppressed the covered components** (see Section 10.2) | **Different command name, and not fully behaviorally equivalent** — verify, don't assume |
+    | Classful redistribution gotcha | `subnets` keyword required for non-classful statics | No such keyword — OSPFv3 has no classful-network legacy | **Genuinely different** — IPv6 has no classful addressing history, so the whole `subnets` problem doesn't exist |
+    | Tag-based RIB filtering | `distribute-list route-map ... in` under `router ospf` | Same command under `ipv6 router ospf` (address-family-aware in modern IOS-XE) | **Same concept**, confirm live in your build — Cisco's docs describe this as an `address-family ipv6 unicast` submode feature, so double-check it took effect the same way it did for v2 |
+    | Process model | `router ospf <tag>` | `ipv6 router ospf <tag>` — a **separate, independent process** from the v2 one, sharing nothing but the router | **Different processes entirely** — this lab runs two completely separate OSPF processes side by side, v2 and (classic) v3, not one unified dual-stack process |
+
+    > **Note on process models:** IOS-XE also offers a newer *unified* OSPFv3 process (`router ospfv3 <tag>` with `address-family ipv4 unicast` / `address-family ipv6 unicast` submodes) that can run both address families under a single process. This lab intentionally uses the classic, separate-process model (`router ospf` + `ipv6 router ospf`) because it maps most directly onto everything taught in Part A — but converting to the unified model is a good follow-on exercise once you're comfortable here.
+
+    ---
+
+    ## 12. Verification Cheat-Sheet (Part B)
+
+    ```text
+    show ipv6 ospf neighbor
+    show ipv6 ospf interface brief
+    show ipv6 route ospf
+    show ipv6 ospf database
+    show ipv6 ospf database external
+    show ipv6 route 2001:DB8:1010::/60
+    show ipv6 route 2001:DB8:2020::/60
+    ```
+
+    Expect the same 6 adjacencies, the same NSSA translation behavior, the same E1-varies/E2-flat cost pattern, and the same "present everywhere except R1" filtering result for the tag-200 route — just over IPv6.
+
+    ---
+
+    ## 13. Exercises
+
+    **1. The `subnets` gotcha.** Remove `subnets` from ASBR1's `redistribute static` line. Confirm `172.16.8.0/21` disappears from every router's table even though the static routes are still sitting in ASBR1's own RIB. Put `subnets` back and confirm it returns.
+
+    **2. NSSA vs. Type-5.** On R2, run `show ip ospf database nssa-external` and `show ip ospf database external`. Where does `172.16.16.0/21` show up as which LSA type, and on which router does the *advertising router* field say R2 instead of ASBR2? Explain why.
+
+    **3. Break the area type mismatch.** Remove `area 2 nssa` from ASBR2 only (leave it on R2). What happens to the R2–ASBR2 adjacency? (Hint: area-type mismatches are one of the handful of parameters that must match exactly between two OSPF neighbors before they'll even reach `FULL`.)
+
+    **4. Cost tiebreak.** Change R1's `ip ospf cost 50` on Gi2 down to `2` (still higher than the default-1 path through R2, but much closer). Recompute: is the R1–R2–R3 path (cost 2) still preferred over the direct link (now cost 2)? What happens on an exact tie, and which OSPF tiebreaker resolves it?
+
+    **5. Reference-bandwidth.** Calculate what `auto-cost reference-bandwidth` value you'd need for OSPF to correctly differentiate a 1 Gbps link from a 10 Gbps link (i.e., assign them different, meaningfully-proportioned costs instead of both flooring at 1). Why must this value be configured identically on every router in the domain, not just one?
+
+    **6. Extend the RIB filter.** Add a mirror-image `distribute-list route-map` on R2 that denies tag 100 (ASBR1's routes) instead of tag 200. Confirm R2's RIB now lacks `172.16.8.0/21` while everyone else (including R1, which still has its own tag-200 filter) is unaffected.
+
+    **7. Totally stubby, deeper look.** From BR3, try to `ping` R1's Lo0 (10.0.0.1) or ASBR1's Lo0 (10.1.1.1). Will it work? Check `show ip route` on BR3 first and reason about it before testing — then verify.
+
+    **8. `area range` cost.** `area range` supports an optional `cost` keyword to hard-set the cost of the resulting Type-3 summary instead of using the default (max of the component routes' costs). Set an explicit cost on R1's `area 1 range` and confirm the change in `show ip ospf database summary` on R2 or R3.
+
+    **9. IPv6-only redistribution gotcha (or lack thereof).** Section 11 claims OSPFv3 redistribution has no `subnets`-equivalent gotcha. Prove it: redistribute ASBR2's IPv6 statics *without* any extra keyword and confirm both routes still make it into OSPFv3 — contrast directly with Exercise 1.
+
+    **10a. Chase down the `summary-prefix` gap.** Section 10.2 documents that `summary-prefix` on ASBR1 left `2001:db8:1011::/64` visible as a separate external route alongside the `/60` summary, while `2001:db8:1010::/64` was properly suppressed. Reproduce this yourself with `show ipv6 ospf database external` on ASBR1. Then try reordering the config (remove and re-add `summary-prefix` *after* the `redistribute static` line, or vice versa) and see if ordering changes the outcome. Check Cisco's IOS-XE release notes for `summary-prefix` caveats on your image version — is this a documented limitation or does it look like a genuine bug?
+
+    **10. Convert to the unified OSPFv3 process.** As a stretch goal, reconfigure one router (say ASBR1) to use `router ospfv3 1` with `address-family ipv6 unicast` instead of the classic `ipv6 router ospf 1`. Note everything that has to change syntactically, and confirm the adjacency and redistribution still work identically from ASBR1's neighbors' point of view.
+
+    ---
+
+    ## 14. Addressing Reference Tables
+
+    ### 14.1 AS/area summary
+
+    | Area | Type | Routers | Native prefixes (summarized range) |
+    |---|---|---|---|
+    | 0 | Backbone | R1, R2, R3 | 10.0.0.0/32 ×3 (router IDs) |
+    | 1 | Regular | R1 (ABR), ASBR1 | 10.1.0.0/23 (v4), 2001:db8:1::/63 (v6) |
+    | 2 | NSSA | R2 (ABR), ASBR2 | 10.2.0.0/23 (v4), 2001:db8:2::/63 (v6) |
+    | 3 | Totally stubby | R3 (ABR), BR3 | 10.3.0.0/23 (v4), 2001:db8:3::/63 (v6) |
+
+    ### 14.2 Redistributed externals
+
+    | Origin | Components | Summary | Tag | Type |
+    |---|---|---|---|---|
+    | ASBR1 | 172.16.10.0/24, 172.16.11.0/24 | 172.16.8.0/21 | 100 | E1 |
+    | ASBR2 | 172.16.20.0/24, 172.16.21.0/24 | 172.16.16.0/21 | 200 | E2 |
+    | ASBR1 (v6) | 2001:db8:1010::/64, 2001:db8:1011::/64 | 2001:db8:1010::/60 | 100 | E1 |
+    | ASBR2 (v6) | 2001:db8:2020::/64, 2001:db8:2021::/64 | 2001:db8:2020::/60 | 200 | E2 |
+
+  title: 'CCIE-OSPF-Focused: Multi-Area Redistribution, Tagging  Lab'
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
