@@ -1,0 +1,1451 @@
+annotations: []
+smart_annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R1-ABR
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.1 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::1/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Ethernet0/0
+           ip address 10.0.0.1 255.255.255.0
+           ipv6 address 2001:DB8:0:0::1/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface Ethernet0/1
+           ip address 10.1.1.1 255.255.255.252
+           ipv6 address 2001:DB8:1:1::1/64
+           ip ospf 1 area 1
+           ipv6 ospf 1 area 1
+           no shutdown
+          !
+          interface Ethernet0/2
+           ip address 10.3.1.1 255.255.255.252
+           ipv6 address 2001:DB8:3:1::1/64
+           ip ospf 1 area 3
+           ipv6 ospf 1 area 3
+           no shutdown
+          !
+          interface Ethernet0/3
+           ip address 10.5.1.1 255.255.255.252
+           ipv6 address 2001:DB8:5:1::1/64
+           ip ospf 1 area 5
+           ipv6 ospf 1 area 5
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.255.0.1
+           area 3 stub no-summary
+           area 5 nssa no-summary
+          !
+          ipv6 router ospf 1
+           router-id 10.255.0.1
+           area 3 stub no-summary
+           area 5 nssa no-summary
+          !
+          router bgp 65001
+           bgp router-id 10.255.0.1
+           neighbor 10.255.0.2 remote-as 65001
+           neighbor 10.255.0.2 update-source Loopback0
+           neighbor 10.255.0.20 remote-as 65001
+           neighbor 10.255.0.20 update-source Loopback0
+           neighbor 2001:DB8:FFFF::2 remote-as 65001
+           neighbor 2001:DB8:FFFF::2 update-source Loopback0
+           neighbor 2001:DB8:FFFF::20 remote-as 65001
+           neighbor 2001:DB8:FFFF::20 update-source Loopback0
+           !
+           address-family ipv4 unicast
+            neighbor 10.255.0.2 activate
+            neighbor 10.255.0.20 activate
+           exit-address-family
+           !
+           address-family ipv6 unicast
+            neighbor 2001:DB8:FFFF::2 activate
+            neighbor 2001:DB8:FFFF::20 activate
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: R1-ABR
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -150
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R2-ABR
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.2 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::2/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Ethernet0/0
+           ip address 10.0.0.2 255.255.255.0
+           ipv6 address 2001:DB8:0:0::2/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface Ethernet0/1
+           ip address 10.2.1.1 255.255.255.252
+           ipv6 address 2001:DB8:2:1::1/64
+           ip ospf 1 area 2
+           ipv6 ospf 1 area 2
+           no shutdown
+          !
+          interface Ethernet0/2
+           ip address 10.4.1.1 255.255.255.252
+           ipv6 address 2001:DB8:4:1::1/64
+           ip ospf 1 area 4
+           ipv6 ospf 1 area 4
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.255.0.2
+           area 2 stub
+           area 4 nssa default-information-originate
+          !
+          ipv6 router ospf 1
+           router-id 10.255.0.2
+           area 2 stub
+           area 4 nssa default-information-originate
+          !
+          router bgp 65001
+           bgp router-id 10.255.0.2
+           neighbor 10.255.0.1 remote-as 65001
+           neighbor 10.255.0.1 update-source Loopback0
+           neighbor 10.255.0.20 remote-as 65001
+           neighbor 10.255.0.20 update-source Loopback0
+           neighbor 2001:DB8:FFFF::1 remote-as 65001
+           neighbor 2001:DB8:FFFF::1 update-source Loopback0
+           neighbor 2001:DB8:FFFF::20 remote-as 65001
+           neighbor 2001:DB8:FFFF::20 update-source Loopback0
+           !
+           address-family ipv4 unicast
+            neighbor 10.255.0.1 activate
+            neighbor 10.255.0.20 activate
+           exit-address-family
+           !
+           address-family ipv6 unicast
+            neighbor 2001:DB8:FFFF::1 activate
+            neighbor 2001:DB8:FFFF::20 activate
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: R2-ABR
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 150
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname SW-CORE
+          !
+          interface Ethernet0/0
+           no shutdown
+          !
+          interface Ethernet0/1
+           no shutdown
+          !
+          interface Ethernet0/2
+           no shutdown
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: SW-CORE
+    node_definition: ioll2-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: -100
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R-EDGE
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.20 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::20/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Ethernet0/0
+           ip address 10.0.0.9 255.255.255.0
+           ipv6 address 2001:DB8:0:0::9/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface Ethernet0/1
+           ip address 192.0.2.1 255.255.255.252
+           ipv6 address 2001:DB8:99:1::1/64
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.255.0.20
+          !
+          ipv6 router ospf 1
+           router-id 10.255.0.20
+          !
+          router bgp 65001
+           bgp router-id 10.255.0.20
+           neighbor 10.255.0.1 remote-as 65001
+           neighbor 10.255.0.1 update-source Loopback0
+           neighbor 10.255.0.2 remote-as 65001
+           neighbor 10.255.0.2 update-source Loopback0
+           neighbor 192.0.2.2 remote-as 65002
+           neighbor 2001:DB8:FFFF::1 remote-as 65001
+           neighbor 2001:DB8:FFFF::1 update-source Loopback0
+           neighbor 2001:DB8:FFFF::2 remote-as 65001
+           neighbor 2001:DB8:FFFF::2 update-source Loopback0
+           neighbor 2001:DB8:99:1::2 remote-as 65002
+           !
+           address-family ipv4 unicast
+            neighbor 10.255.0.1 activate
+            neighbor 10.255.0.1 next-hop-self
+            neighbor 10.255.0.2 activate
+            neighbor 10.255.0.2 next-hop-self
+            neighbor 192.0.2.2 activate
+            redistribute ospf 1 route-map OSPF-TO-BGP
+           exit-address-family
+           !
+           address-family ipv6 unicast
+            neighbor 2001:DB8:FFFF::1 activate
+            neighbor 2001:DB8:FFFF::1 next-hop-self
+            neighbor 2001:DB8:FFFF::2 activate
+            neighbor 2001:DB8:FFFF::2 next-hop-self
+            neighbor 2001:DB8:99:1::2 activate
+            redistribute ospf 1 route-map OSPF-TO-BGP
+           exit-address-family
+          !
+          route-map OSPF-TO-BGP deny 10
+           match tag 65001
+          route-map OSPF-TO-BGP permit 20
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: R-EDGE
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: -300
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R-ISP
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.99 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::99/128
+          !
+          interface Loopback1
+           ip address 198.51.100.1 255.255.255.0
+           ipv6 address 2001:DB8:9999::1/64
+          !
+          interface Ethernet0/0
+           ip address 192.0.2.2 255.255.255.252
+           ipv6 address 2001:DB8:99:1::2/64
+           no shutdown
+          !
+          ip route 0.0.0.0 0.0.0.0 Null0
+          ipv6 route ::/0 Null0
+          !
+          router bgp 65002
+           bgp router-id 10.255.0.99
+           neighbor 192.0.2.1 remote-as 65001
+           neighbor 2001:DB8:99:1::1 remote-as 65001
+           !
+           address-family ipv4 unicast
+            neighbor 192.0.2.1 activate
+            network 198.51.100.0 mask 255.255.255.0
+            network 0.0.0.0
+           exit-address-family
+           !
+           address-family ipv6 unicast
+            neighbor 2001:DB8:99:1::1 activate
+            network 2001:DB8:9999::/64
+            network ::/0
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: null
+    label: R-ISP
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: -450
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R3-Area1-Std
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.3 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::3/128
+           ip ospf 1 area 1
+           ipv6 ospf 1 area 1
+          !
+          interface Ethernet0/0
+           ip address 10.1.1.2 255.255.255.252
+           ipv6 address 2001:DB8:1:1::2/64
+           ip ospf 1 area 1
+           ipv6 ospf 1 area 1
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.255.0.3
+          !
+          ipv6 router ospf 1
+           router-id 10.255.0.3
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: null
+    label: R3-Area1-Std
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -440
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R6-Area3-TotStub
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.6 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::6/128
+           ip ospf 1 area 3
+           ipv6 ospf 1 area 3
+          !
+          interface Ethernet0/0
+           ip address 10.3.1.2 255.255.255.252
+           ipv6 address 2001:DB8:3:1::2/64
+           ip ospf 1 area 3
+           ipv6 ospf 1 area 3
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.255.0.6
+           area 3 stub
+          !
+          ipv6 router ospf 1
+           router-id 10.255.0.6
+           area 3 stub
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: null
+    label: R6-Area3-TotStub
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -480
+    y: -80
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R8-Area5-TotNSSA
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.8 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::8/128
+           ip ospf 1 area 5
+           ipv6 ospf 1 area 5
+          !
+          interface Ethernet0/0
+           ip address 10.5.1.2 255.255.255.252
+           ipv6 address 2001:DB8:5:1::2/64
+           ip ospf 1 area 5
+           ipv6 ospf 1 area 5
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.255.0.8
+           area 5 nssa
+          !
+          ipv6 router ospf 1
+           router-id 10.255.0.8
+           area 5 nssa
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n7
+    image_definition: null
+    label: R8-Area5-TotNSSA
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -440
+    y: 40
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R5-Area2-Stub
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.5 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::5/128
+           ip ospf 1 area 2
+           ipv6 ospf 1 area 2
+          !
+          interface Ethernet0/0
+           ip address 10.2.1.2 255.255.255.252
+           ipv6 address 2001:DB8:2:1::2/64
+           ip ospf 1 area 2
+           ipv6 ospf 1 area 2
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.255.0.5
+           area 2 stub
+          !
+          ipv6 router ospf 1
+           router-id 10.255.0.5
+           area 2 stub
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n8
+    image_definition: null
+    label: R5-Area2-Stub
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 480
+    y: -160
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R7-Area4-NSSA
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.7 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::7/128
+           ip ospf 1 area 4
+           ipv6 ospf 1 area 4
+          !
+          interface Ethernet0/0
+           ip address 10.4.1.2 255.255.255.252
+           ipv6 address 2001:DB8:4:1::2/64
+           ip ospf 1 area 4
+           ipv6 ospf 1 area 4
+           no shutdown
+          !
+          interface Ethernet0/1
+           ip address 10.100.1.1 255.255.255.252
+           ipv6 address 2001:DB8:100:1::1/64
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.255.0.7
+           area 4 nssa
+           redistribute eigrp 100 subnets tag 100
+          !
+          ipv6 router ospf 1
+           router-id 10.255.0.7
+           area 4 nssa
+           redistribute eigrp 100 tag 100
+          !
+          router eigrp EIGRP-CCNP
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.255.0.7
+            network 10.100.1.0 0.0.0.3
+            topology base
+             redistribute ospf 1 metric 10000 100 255 1 1500 route-map OSPF-TO-EIGRP
+            exit-af-topology
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.255.0.7
+            af-interface Ethernet0/1
+             no shutdown
+            exit-af-interface
+            topology base
+             redistribute ospf 1 metric 10000 100 255 1 1500 route-map OSPF-TO-EIGRP
+            exit-af-topology
+           exit-address-family
+          !
+          route-map OSPF-TO-EIGRP deny 10
+           match tag 100
+          route-map OSPF-TO-EIGRP permit 20
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n9
+    image_definition: null
+    label: R7-Area4-NSSA
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 400
+    y: -40
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R9-EIGRP
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.9 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::9/128
+          !
+          interface Ethernet0/0
+           ip address 10.100.1.2 255.255.255.252
+           ipv6 address 2001:DB8:100:1::2/64
+           no shutdown
+          !
+          interface Ethernet0/1
+           ip address 10.100.2.1 255.255.255.252
+           ipv6 address 2001:DB8:100:2::1/64
+           no shutdown
+          !
+          router eigrp EIGRP-CCNP
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.255.0.9
+            network 10.100.1.0 0.0.0.3
+            network 10.100.2.0 0.0.0.3
+            network 10.255.0.9 0.0.0.0
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.255.0.9
+            af-interface Ethernet0/0
+             no shutdown
+            exit-af-interface
+            af-interface Ethernet0/1
+             no shutdown
+            exit-af-interface
+            af-interface Loopback0
+             no shutdown
+            exit-af-interface
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n10
+    image_definition: null
+    label: R9-EIGRP
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 560
+    y: -40
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname R10-EIGRP
+          ipv6 unicast-routing
+          !
+          interface Loopback0
+           ip address 10.255.0.10 255.255.255.255
+           ipv6 address 2001:DB8:FFFF::10/128
+          !
+          interface Loopback1
+           ip address 10.200.1.1 255.255.255.0
+           ipv6 address 2001:DB8:200:1::1/64
+          !
+          interface Ethernet0/0
+           ip address 10.100.2.2 255.255.255.252
+           ipv6 address 2001:DB8:100:2::2/64
+           no shutdown
+          !
+          router eigrp EIGRP-CCNP
+           !
+           address-family ipv4 unicast autonomous-system 100
+            eigrp router-id 10.255.0.10
+            network 10.100.2.0 0.0.0.3
+            network 10.200.1.0 0.0.0.255
+            network 10.255.0.10 0.0.0.0
+           exit-address-family
+           !
+           address-family ipv6 unicast autonomous-system 100
+            eigrp router-id 10.255.0.10
+            af-interface Ethernet0/0
+             no shutdown
+            exit-af-interface
+            af-interface Loopback0
+             no shutdown
+            exit-af-interface
+            af-interface Loopback1
+             no shutdown
+            exit-af-interface
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n11
+    image_definition: null
+    label: R10-EIGRP
+    node_definition: iol-xe
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 560
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        type: physical
+        slot: 3
+links:
+  - id: l0
+    n1: n0
+    n2: n2
+    i1: i1
+    i2: i1
+    conditioning: {}
+    label: R1-ABR-Ethernet0/0<->SW-CORE-Ethernet0/0
+  - id: l1
+    n1: n1
+    n2: n2
+    i1: i1
+    i2: i2
+    conditioning: {}
+    label: R2-ABR-Ethernet0/0<->SW-CORE-Ethernet0/1
+  - id: l2
+    n1: n3
+    n2: n2
+    i1: i1
+    i2: i3
+    conditioning: {}
+    label: R-EDGE-Ethernet0/0<->SW-CORE-Ethernet0/2
+  - id: l3
+    n1: n3
+    n2: n4
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: R-EDGE-Ethernet0/1<->R-ISP-Ethernet0/0
+  - id: l4
+    n1: n0
+    n2: n5
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: R1-ABR-Ethernet0/1<->R3-Area1-Std-Ethernet0/0
+  - id: l5
+    n1: n0
+    n2: n6
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R1-ABR-Ethernet0/2<->R6-Area3-TotStub-Ethernet0/0
+  - id: l6
+    n1: n0
+    n2: n7
+    i1: i4
+    i2: i1
+    conditioning: {}
+    label: R1-ABR-Ethernet0/3<->R8-Area5-TotNSSA-Ethernet0/0
+  - id: l7
+    n1: n1
+    n2: n8
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: R2-ABR-Ethernet0/1<->R5-Area2-Stub-Ethernet0/0
+  - id: l8
+    n1: n1
+    n2: n9
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R2-ABR-Ethernet0/2<->R7-Area4-NSSA-Ethernet0/0
+  - id: l9
+    n1: n9
+    n2: n10
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: R7-Area4-NSSA-Ethernet0/1<->R9-EIGRP-Ethernet0/0
+  - id: l10
+    n1: n10
+    n2: n11
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: R9-EIGRP-Ethernet0/1<->R10-EIGRP-Ethernet0/0
+lab:
+  description: 'CCNP ENCOR/ENARSI practice lab: OSPF standard/stub/totally-stubby/NSSA/totally-NSSA
+    areas, EIGRP named mode, dual-AS BGP with mutual redistribution, full IPv4/IPv6
+    dual stack. Built on iol-xe/ioll2-xe to minimize resource usage.'
+  notes: |-
+    # CCNP Lab Guide: OSPF Areas + EIGRP + BGP Dual-Stack
+
+    Self-contained guide for this lab: topology/addressing reference in Part A, hands-on OSPF area-type and LSA-identification scenarios in Part B. All command output shown was captured live from this running lab.
+
+    ## Part A — Lab Reference
+
+    CML lab title: **CCNP: OSPF Areas + EIGRP + BGP Dual-Stack**
+    Lab UUID: `cb835881-135c-46bd-86c5-3ffe92e21e52`
+    All 12 nodes built on `iol-xe` / `ioll2-xe` (Docker-based IOS-XE, 1 vCPU / 1GB RAM each) to avoid the heavier `cat8000v`/`csr1000v` images. Fully booted and converged.
+
+    ### Topology
+
+    ```
+                             R-ISP (AS 65002)
+                           198.51.100.0/24 (v4 "internet")
+                           2001:db8:9999::/64 (v6 "internet")
+                                  |
+                        192.0.2.0/30 (eBGP WAN)
+                           2001:db8:99:1::/64
+                                  |
+                               R-EDGE  (ASBR: OSPF Area0 <-> BGP AS65001,
+                                         mutual redistribution, tag 65001)
+                                  |
+                         10.0.0.0/24 (Area 0, SW-CORE segment)
+                         2001:db8:0:0::/64
+                        /         |          \
+                     R1-ABR --- SW-CORE --- R2-ABR      (iBGP full-mesh AS65001
+                     (DR/BDR election happens here)       between R1, R2, R-EDGE)
+                    /   |   \                |   \
+               Area1  Area3  Area5      Area2   Area4
+              (std)  (tot-  (tot-       (stub) (NSSA)
+                      stub)  NSSA)
+                 |      |      |           |       |
+                 R3     R6     R8          R5      R7 (ASBR)
+                                                     |
+                                            10.100.1.0/30 (EIGRP AS100)
+                                                     |
+                                                    R9 --- R10 (branch LAN
+                                                            10.200.1.0/24)
+    ```
+
+    ### Node-by-node role
+
+    | Node | Node type | Role |
+    |---|---|---|
+    | R1-ABR | iol-xe | Area 0 core, ABR for Area 1 (standard), Area 3 (totally stubby), Area 5 (totally NSSA); iBGP AS65001 |
+    | R2-ABR | iol-xe | Area 0 core, ABR for Area 2 (stub), Area 4 (NSSA); iBGP AS65001 |
+    | SW-CORE | ioll2-xe | L2 multi-access segment for Area 0 (forces DR/BDR election) |
+    | R-EDGE | iol-xe | OSPF Area 0 + iBGP AS65001 + eBGP to R-ISP (AS65002); mutual OSPF<->BGP redistribution |
+    | R-ISP | iol-xe | Simulated "internet" edge, AS 65002, advertises 198.51.100.0/24, 2001:db8:9999::/64, and default routes |
+    | R3-Area1-Std | iol-xe | Area 1 — standard area |
+    | R6-Area3-TotStub | iol-xe | Area 3 — totally stubby area |
+    | R8-Area5-TotNSSA | iol-xe | Area 5 — totally stubby NSSA |
+    | R5-Area2-Stub | iol-xe | Area 2 — stub area |
+    | R7-Area4-NSSA | iol-xe | Area 4 — NSSA, and ASBR redistributing EIGRP AS100 into the NSSA (tag 100) |
+    | R9-EIGRP | iol-xe | EIGRP AS100 (named mode "EIGRP-CCNP"), transit router |
+    | R10-EIGRP | iol-xe | EIGRP AS100 leaf, owns simulated branch LAN 10.200.1.0/24 / 2001:db8:200:1::/64 |
+
+    ### IP addressing plan
+
+    All links and loopbacks are dual-stacked (IPv4 + IPv6).
+
+    | Segment | IPv4 | IPv6 |
+    |---|---|---|
+    | Area 0 (SW-CORE) | 10.0.0.0/24 | 2001:db8:0:0::/64 |
+    | R-EDGE <-> R-ISP (eBGP WAN) | 192.0.2.0/30 | 2001:db8:99:1::/64 |
+    | Area 1 (R1-R3) | 10.1.1.0/30 | 2001:db8:1:1::/64 |
+    | Area 2 (R2-R5) | 10.2.1.0/30 | 2001:db8:2:1::/64 |
+    | Area 3 (R1-R6) | 10.3.1.0/30 | 2001:db8:3:1::/64 |
+    | Area 4 (R2-R7) | 10.4.1.0/30 | 2001:db8:4:1::/64 |
+    | Area 5 (R1-R8) | 10.5.1.0/30 | 2001:db8:5:1::/64 |
+    | EIGRP link R7-R9 | 10.100.1.0/30 | 2001:db8:100:1::/64 |
+    | EIGRP link R9-R10 | 10.100.2.0/30 | 2001:db8:100:2::/64 |
+    | R10 branch LAN (Lo1) | 10.200.1.0/24 | 2001:db8:200:1::/64 |
+    | R-ISP "internet" block (Lo1) | 198.51.100.0/24 | 2001:db8:9999::/64 |
+
+    Loopback0 = Router ID on every node: `10.255.0.<n>` / `2001:db8:ffff::<n>` (R1=.1, R2=.2, R3=.3, R5=.5, R6=.6, R7=.7, R8=.8, R9=.9, R10=.10, R-EDGE=.20, R-ISP=.99).
+
+    ### OSPF area type design (the core of this lab)
+
+    Process `ospf 1` (IPv4) and `ipv6 router ospf 1` (IPv6) run in parallel with identical area assignments, so every area-type behavior can be checked in both address families.
+
+    - **Area 1 — standard**: no special area command. Gets intra-area, inter-area (type-3), and external (type-5) routes — everything.
+    - **Area 2 — stub**: `area 2 stub` on ABR (R2) and internal router (R5). Blocks type-5 externals; ABR auto-injects a default route. Verified: `R5` has inter-area routes + `O*IA 0.0.0.0/0` but zero E2 routes.
+    - **Area 3 — totally stubby**: `area 3 stub no-summary` on the ABR (R1) only; `area 3 stub` on the internal router (R6). Blocks both type-3 *and* type-5; ABR auto-injects only a default route.
+    - **Area 4 — NSSA**: `area 4 nssa` on ABR (R2) and ASBR (R7), plus `area 4 nssa default-information-originate` on R2 so R7 has a route out. R7 redistributes EIGRP AS100 into OSPF as type-7 (tag 100); R2 (the NSSA ABR) automatically translates type-7 to type-5 for the backbone. Verified: `R2`'s routing table shows the EIGRP-derived subnets as `O N2`.
+    - **Area 5 — totally stubby NSSA**: `area 5 nssa no-summary` on the ABR (R1); `area 5 nssa` on the internal router (R8). Verified: `R8`'s routing table contains only a default route plus its own connected subnet — no inter-area or external routes at all.
+
+    This gives you all five non-backbone area behaviors side by side for direct comparison.
+
+    ### EIGRP design
+
+    Named-mode EIGRP process `EIGRP-CCNP`, AS 100, with separate `address-family ipv4 unicast` and `address-family ipv6 unicast` (IPv6 interfaces enabled per-interface via `af-interface ... no shutdown`, since EIGRPv6 has no network statements). R7 is the single redistribution point into OSPF Area 4 (NSSA).
+
+    **Redistribution loop prevention** (classic CCNP ENARSI topic): EIGRP routes are tagged `100` when redistributed into OSPF at R7; OSPF routes are filtered by a `route-map OSPF-TO-EIGRP` that denies tag 100 before being redistributed back into EIGRP. Without this, EIGRP-origin routes would echo back into EIGRP as OSPF externals, causing suboptimal routing / loops.
+
+    ### BGP design
+
+    - **AS 65001** (enterprise): R1, R2, and R-EDGE form a full-mesh iBGP session set over their loopbacks (reachable via OSPF Area 0), with `next-hop-self` applied at R-EDGE.
+    - **AS 65002** ("ISP"): R-ISP peers eBGP with R-EDGE, advertising 198.51.100.0/24, 2001:db8:9999::/64, and default routes (0.0.0.0/0, ::/0).
+    - Both address families (`ipv4 unicast` and `ipv6 unicast`) are activated on every session — this is a genuinely dual-stack BGP design using parallel v4/v6 transport sessions between the same routers, not just prefix advertisement over a single session.
+    - **Redistribution loop prevention**: same tag pattern as EIGRP — BGP routes redistributed into OSPF are tagged `65001`; the `route-map OSPF-TO-BGP` at R-EDGE denies tag 65001 when redistributing OSPF back into BGP.
+
+    Because Areas 2, 3, and 5 block external (type-5) LSAs, the BGP/internet-derived routes from R-EDGE only reach Area 1 (standard) directly — Areas 2/3/5 only get the auto-injected default route. That's expected, and a good discussion point on why area type matters for a design.
+
+    ### Verification commands
+
+    ```
+    show ip ospf neighbor                     ! OSPF adjacencies + DR/BDR (check on R1/R2/R-EDGE for Area 0)
+    show ipv6 ospf neighbor                   ! same, IPv6
+    show ip ospf database database-summary    ! LSA type counts per area — see stub/NSSA differences
+    show ip route ospf                        ! compare route types (O, O IA, O N2, O E2) per router
+    show ip eigrp neighbors / show ipv6 eigrp neighbors
+    show ip eigrp topology
+    show bgp ipv4 unicast summary / show bgp ipv6 unicast summary
+    show bgp ipv4 unicast / show bgp ipv6 unicast
+    show route-map
+    ```
+
+    ### Suggested practice / "break it" exercises
+
+    Working through these on top of the running lab is a solid CCNP ENCOR/ENARSI review:
+
+    Flip Area 4 from NSSA to a plain stub and watch R7 lose the ability to redistribute EIGRP in (stub areas can't have an ASBR). Change Area 5's `no-summary` to a plain NSSA and compare how many more routes R8 receives. Remove the `no-summary` on Area 3 and see the inter-area routes reappear at R6. Temporarily remove the route-map tag filtering on R7 or R-EDGE and use `show ip route` / `traceroute` to observe the redistribution loop / suboptimal path it was preventing. Shut R1's Ethernet0/0 (its link into SW-CORE) and watch OSPF Area 0 partition, then bring it back and watch DR/BDR re-election. On R-EDGE, practice BGP path manipulation (local-preference, AS-path prepend, communities) toward R-ISP and watch how it does or doesn't propagate into OSPF given the redistribution filter.
+
+    ### Operational note
+
+    This CML controller is shared — starting all 12 nodes required freeing capacity by stopping another running lab (`Campus-EVPN-BGP-Fabric-Anycast`), since the controller was at its licensed node ceiling. If you build on this lab later and hit "node licenses are in use," check `get_cml_labs` for other running labs before assuming something is broken.
+
+    ## Part B — Teaching Guide: OSPF Area Types & LSA Identification
+
+    Where Part A explains *how the lab is built*, this part is a set of guided scenarios for *teaching someone how to read OSPF's link-state database and recognize what an area type is actually doing to the routes flowing through it*. Every command below was run against the live lab and the output shown is real, not illustrative.
+
+    One config note: after the base build, R-EDGE was missing the BGP→OSPF half of its redistribution (it only had OSPF→BGP). That's been fixed (`redistribute bgp 65001 subnets tag 65001` under `router ospf 1`, and the IPv6 equivalent) and saved. This turned out to be useful for teaching — it means the lab now has *two distinct kinds* of Type-5 LSA in it, which is exactly what's needed to teach the difference between a genuine ASBR-originated external route and a translated one (Scenario 4).
+
+    ### Part 1 — The LSA types, and why they exist
+
+    | Type | Name | Originated by | Floods | Carries |
+    |---|---|---|---|---|
+    | 1 | Router LSA | Every router | Within its own area only | The router's own links/interfaces — this is what builds the intra-area topology |
+    | 2 | Network LSA | The DR on a multi-access segment | Within its own area only | Which routers are on that broadcast segment |
+    | 3 | Summary LSA (Inter-area) | ABRs | Between areas (subject to area-type filtering) | A single prefix + cost, with all the original topology detail stripped out |
+    | 4 | ASBR-Summary LSA | ABRs | Between areas (subject to area-type filtering) | "Here's how to reach the router ID of that ASBR" — exists purely so other areas can resolve Type-5 advertising routers |
+    | 5 | AS-External LSA | ASBRs (redistribution points) | Everywhere except stub-type areas | Routes injected from outside OSPF (BGP, EIGRP, static, connected, etc.) |
+    | 7 | NSSA-External LSA | ASBRs *inside* an NSSA | Only within that NSSA | Same purpose as Type-5, but used inside NSSAs because Type-5 is banned there; gets translated to Type-5 at the NSSA's ABR |
+
+    OSPFv3 (IPv6) splits some of this differently — Type-1/2 lose their prefix information (moved into separate Link and Intra-Area-Prefix LSAs), Type-3 becomes "Inter-Area-Prefix", Type-4 becomes "Inter-Area-Router" — but the *area-type filtering rules* are identical.
+
+    ### Part 2 — Reading `show ip route` codes without touching the LSDB
+
+    | Code | Meaning | LSA origin |
+    |---|---|---|
+    | `O` | Intra-area | Type-1/2 (SPF within the area) |
+    | `O IA` | Inter-area | Type-3 |
+    | `O E1` | External type 1 | Type-5, cost = external cost + cumulative internal OSPF cost to the ASBR |
+    | `O E2` | External type 2 (default) | Type-5, cost = external cost only, internal cost ignored |
+    | `O N1` | NSSA-external type 1 | Type-7, cost adds internal cost |
+    | `O N2` | NSSA-external type 2 (default) | Type-7, cost is external-only |
+    | `O*IA` / `O*N2` | Candidate default route, inter-area or NSSA | The `*` just marks it eligible to become the gateway of last resort |
+
+    IPv6 equivalents: `O`, `OI`, `OE1`, `OE2`, `ON1`, `ON2` (same meanings, `show ipv6 route ospf`).
+
+    **Quick self-test for a student:** if you see `O E2` on a router, you now know for certain that (a) this prefix came from outside OSPF, (b) it's flooding through an area that does *not* block Type-5, and (c) you cannot yet tell from the route table alone whether this router's Type-5 LSA was self-originated by a real ASBR or translated from a Type-7 by an NSSA ABR — that requires Scenario 4 below.
+
+    ### Scenario 1 — Standard area: full visibility (Area 1 / R3)
+
+    **Goal:** establish the baseline. A standard area receives every LSA type OSPF has to offer except Type-1/2 from other areas.
+
+    ```
+    R3-Area1-Std# show ip route ospf
+
+    O IA     10.0.0.0/24 [110/20] via 10.1.1.1, ...
+    O IA     10.2.1.0/30 [110/30] via 10.1.1.1, ...
+    O IA     10.3.1.0/30 [110/20] via 10.1.1.1, ...
+    O IA     10.4.1.0/30 [110/30] via 10.1.1.1, ...
+    O IA     10.5.1.0/30 [110/20] via 10.1.1.1, ...
+    O E2     10.100.1.0/30 [110/20] via 10.1.1.1, ...   <- EIGRP-origin, translated from Area4's Type-7
+    O E2     10.100.2.0/30 [110/20] via 10.1.1.1, ...
+    O E2     10.200.1.0/24 [110/20] via 10.1.1.1, ...
+    O IA     10.255.0.1/32 ... (and every other router's loopback, all O IA)
+    O E2     10.255.0.9/32 [110/20] via 10.1.1.1, ...
+    O E2     10.255.0.10/32 [110/20] via 10.1.1.1, ...
+    O E2     198.51.100.0/24 [110/1] via 10.1.1.1, ...  <- BGP-origin, self-originated Type-5 at R-EDGE
+    ```
+
+    **Teaching point:** R3 is the only leaf router in the whole lab that sees *both* flavors of external route (BGP-derived and EIGRP-derived) at full cost, because Area 1 has no area-type filtering at all. Every other leaf (R5, R6, R8) is missing one or both of these, which is the whole point of the next three scenarios.
+
+    ### Scenario 2 — Stub area: summaries yes, externals no (Area 2 / R5)
+
+    **Goal:** show that "stub" specifically means "no Type-5 (and no Type-7)", while Type-3 still flows freely.
+
+    ```
+    R5-Area2-Stub# show ip ospf database database-summary
+
+    Process 1 database summary
+      Summary Net   13        <- all the inter-area prefixes, unfiltered
+      Summary ASBR  0         <- Type-4 blocked too
+      Type-7 Ext    0
+      Type-5 Ext    0          <- zero, confirmed
+    ```
+    ```
+    R5-Area2-Stub# show ip route
+    O*IA  0.0.0.0/0 [110/11] via 10.2.1.1, ...    <- auto-injected default, no config needed
+    O IA     10.0.0.0/24 ...
+    O IA     10.1.1.0/30 ...
+    O IA     10.3.1.0/30 ...
+          (every other area's transit subnet and loopback show up as O IA)
+    ```
+
+    **Teaching point:** notice R5 has *13* Summary Net LSAs (every inter-area subnet in the topology) but *zero* externals. It never sees `10.100.1.0/30`, `10.200.1.0/24`, or `198.51.100.0/24` at all — not even as a default-covered destination it can name, it just has *a* default route that happens to cover them. Compare this to Scenario 3 where even the inter-area detail disappears.
+
+    The auto-default here required **no extra configuration** — any Cisco ABR bordering a stub-type area auto-originates a Type-3 default into it the moment `area 2 stub` is configured on the ABR.
+
+    ### Scenario 3 — Totally stubby: the walled garden (Area 3 / R6)
+
+    **Goal:** show what `no-summary` removes on top of stub's Type-5 block.
+
+    ```
+    R6-Area3-TotStub# show ip ospf database database-summary
+
+    Area 3 database summary
+      Router        2
+      Network       1
+      Summary Net   1          <- only ONE summary now: the default
+      Summary ASBR  0
+      Type-7 Ext    0
+    ```
+
+    **Teaching point:** compare `Summary Net` counts side by side — R5 (plain stub) had 13, R6 (totally stubby) has 1. That single remaining summary *is* the default route; `no-summary` on the ABR is what suppresses the other 12.
+
+    ### Scenario 4 — NSSA: watch a route change LSA type mid-flight (Area 4 / R7 → R2)
+
+    The centerpiece scenario — NSSA is the area type most people can recite the definition of but have never actually watched happen.
+
+    **Step 1 — look at the LSA on the originating side, inside the NSSA:**
+    ```
+    R7-Area4-NSSA# show ip ospf database nssa-external 10.200.1.0
+
+    Advertising Router: 10.255.0.7        <- R7 itself, the real ASBR
+    Options: (... Type 7/5 translation, ...)   <- flagged eligible for translation
+    Forward Address: 10.255.0.7
+    External Route Tag: 100
+    ```
+
+    **Step 2 — look at the *same prefix* on the backbone side, past the ABR:**
+    ```
+    R2-ABR# show ip ospf database external 10.200.1.0
+
+    Advertising Router: 10.255.0.2        <- now R2, the NSSA ABR — NOT R7!
+    Forward Address: 10.255.0.7           <- but the forwarding address still points at R7
+    External Route Tag: 100
+    ```
+
+    **The tell:** the LSA type changed (Type-7 → Type-5), the *Advertising Router* field changed from the real originator (R7) to the translator (R2), but the **Forward Address stays pointed at R7**. That's how you can tell, purely from the LSDB, that a Type-5 LSA was *translated* rather than natively originated.
+
+    **Contrast with a real, non-translated ASBR:**
+    ```
+    R-EDGE# show ip ospf database external 198.51.100.0
+
+    Advertising Router: 10.255.0.20       <- R-EDGE, matches the real ASBR
+    Forward Address: 0.0.0.0              <- zero: "route to the advertising router itself"
+    External Route Tag: 65001
+    ```
+
+    **Student exercise:** hand a learner `show ip ospf database external` from any router in Area 0 or Area 1 with the Advertising Router / Forward Address columns redacted, and ask them to classify each entry as "genuine ASBR" or "NSSA-translated" using only the tag and forward-address fields. `10.100.1.0/30`, `10.100.2.0/30`, `10.200.1.0/24`, `10.255.0.9/32`, `10.255.0.10/32` (tag 100, FA=10.255.0.7) are translated; `198.51.100.0/24` (tag 65001, FA=0.0.0.0) is native.
+
+    **Step 3 — the default-route exception.** R2's Type-7 default injected into Area 4 is marked "No Type 7/5 translation" — it's deliberately not translatable, since it only needs to exist inside the NSSA to give R7 a way out; the backbone already has its own path to R-EDGE's default via BGP.
+
+    ### Scenario 5 — Totally stubby NSSA: same walled garden, NSSA flavor (Area 5 / R8)
+
+    ```
+    R8-Area5-TotNSSA# show ip ospf database database-summary
+
+    Summary Net   1     <- default only, same as totally stubby
+    Summary ASBR  0
+    Type-7 Ext    0     <- R8 has no local ASBR, so nothing to redistribute here anyway
+    ```
+
+    **Teaching point:** Area 5 has no ASBR inside it, so on the surface it looks identical to totally stubby Area 3. The distinction only matters the moment you add a locally-redistributing ASBR to Area 5 — it could still originate Type-7 LSAs (NSSA allows that), whereas a plain totally-stubby area could not. Extension exercise: convert R8 into an ASBR (`redistribute connected`) and watch a Type-7 appear despite `no-summary` still blocking everything else.
+
+    ### Scenario 6 — Type-4 (ASBR-Summary): how other areas *find* an ASBR
+
+    ```
+    R3-Area1-Std# show ip ospf database asbr-summary
+
+    Link State ID: 10.255.0.2         <- R2's router ID
+    Advertising Router: 10.255.0.1    <- R1, the ABR bordering Area 1
+    Metric: 10
+    ```
+
+    **Teaching point:** R1 (Area 1's ABR) is telling Area 1 "if you need to resolve an external route whose Advertising Router is 10.255.0.2, here's the cost to reach it." R2 shows up here because it's the one *originating* Type-5 LSAs (as the NSSA translator). Have a student check `show ip ospf database asbr-summary` in Area 2 (stub) and Area 3 (totally stubby) and confirm it's empty in both — Type-4 is subject to the exact same stub-type filtering as Type-5.
+
+    ### Scenario 7 — IPv6/OSPFv3 parity check
+
+    Every filtering rule above holds identically for IPv6:
+
+    ```
+    show ipv6 ospf database database-summary
+    show ipv6 route ospf
+    show ipv6 ospf database nssa-external
+    show ipv6 ospf database external
+    ```
+
+    Confirmed on this lab: R1's `show ipv6 route ospf` shows `OE2 2001:DB8:100:2::/64 ... tag 100` and `OE2 2001:DB8:9999::/64 ... tag 65001` side by side — the same two-flavor-of-external pattern as IPv4 — and R5/R8's IPv6 tables show only `OI ::/0` with no externals, matching their IPv4 behavior exactly.
+
+    ### Quick-reference decision table for students
+
+    | Question | Command | What to look for |
+    |---|---|---|
+    | Is this route intra-area, inter-area, or external? | `show ip route` | O / O IA / O E1 / O E2 / O N1 / O N2 |
+    | Does this area allow external routes at all? | `show ip ospf database database-summary` | Type-5 Ext and Type-7 Ext counts for that area |
+    | Does this area allow inter-area summaries? | same command | Summary Net count — 1 (default only) vs many |
+    | Is this Type-5 genuine or translated from Type-7? | `show ip ospf database external <prefix>` | Forward Address: `0.0.0.0` = genuine ASBR; non-zero = translated |
+    | Where does OSPF think the real ASBR is? | `show ip ospf database asbr-summary` | Link State ID = the ASBR's router ID |
+    | Did the NSSA ABR bother translating this one? | `show ip ospf database nssa-external <prefix>` | Options field: presence/absence of "Type 7/5 translation" |
+
+    ### Suggested next scenarios to build
+
+    Add a second NSSA ABR so users can watch the NSSA translator election (lowest router ID wins by default, `area X nssa translate type7 always` overrides it); temporarily misconfigure `area 3 stub` on R6 without matching `no-summary` on R1 to show a stub-area mismatch adjacency failure (a very common real-world misconfig); or add a virtual link to demonstrate area 0 partition recovery.
+  title: 'CCNP: OSPF Areas + EIGRP + BGP Dual-Stack'
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
