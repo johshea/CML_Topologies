@@ -1,0 +1,1428 @@
+annotations: []
+smart_annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R1-EDGE-ISPA
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          key chain AO-R1-ISPA-V4 tcp
+           key 10
+            send-id 10
+            recv-id 10
+            key-string A1A1A1A1B2B2B2B2C3C3C3C3D4D4D4D4
+            cryptographic-algorithm hmac-sha-1
+          !
+          key chain AO-R1-ISPA-V6 tcp
+           key 10
+            send-id 10
+            recv-id 10
+            key-string E5E5E5E5F6F6F6F6A7A7A7A7B8B8B8B8
+            cryptographic-algorithm hmac-sha-1
+          !
+          key chain AO-R1-R3-V4 tcp
+           key 10
+            send-id 10
+            recv-id 10
+            key-string 1A1A1A1A2B2B2B2B3C3C3C3C4D4D4D4D
+            cryptographic-algorithm hmac-sha-1
+          !
+          key chain AO-R1-R3-V6 tcp
+           key 10
+            send-id 10
+            recv-id 10
+            key-string 5E5E5E5E6F6F6F6F7A7A7A7A8B8B8B8B
+            cryptographic-algorithm hmac-sha-1
+          !
+          interface Loopback0
+           ip address 10.0.0.1 255.255.255.255
+           ipv6 address 2001:DB8:0:0::1/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Loopback1
+           description SITE-1-LAN (advertised via BGP only)
+           ip address 10.1.1.1 255.255.255.0
+           ipv6 address 2001:DB8:1:1::1/64
+          !
+          interface GigabitEthernet1
+           description CORE-LINK-to-R3-RR
+           ip address 10.255.13.1 255.255.255.252
+           ipv6 address 2001:DB8:1:13::1/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description CORE-LINK-to-R2
+           ip address 10.255.12.1 255.255.255.252
+           ipv6 address 2001:DB8:1:12::1/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description eBGP-to-ISPA-AS65002-TCP-AO
+           ip address 100.64.12.1 255.255.255.252
+           ipv6 address 2001:DB8:12::1/64
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.0.0.1
+           passive-interface Loopback0
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.1
+           passive-interface Loopback0
+          !
+          ip prefix-list PL-ISPA-IN-V4 seq 5 permit 198.51.100.0/24
+          ip prefix-list PL-ISPA-IN-V4 seq 10 permit 0.0.0.0/0
+          !
+          ipv6 prefix-list PL-ISPA-IN-V6 seq 5 permit 2001:DB8:51:100::/64
+          ipv6 prefix-list PL-ISPA-IN-V6 seq 10 permit ::/0
+          !
+          ip prefix-list PL-TO-ISPA-V4 seq 5 permit 10.1.1.0/24
+          ip prefix-list PL-TO-ISPA-V4 seq 10 permit 10.1.2.0/24
+          ip prefix-list PL-TO-ISPA-V4 seq 15 permit 192.0.2.0/24
+          !
+          ipv6 prefix-list PL-TO-ISPA-V6 seq 5 permit 2001:DB8:1:1::/64
+          ipv6 prefix-list PL-TO-ISPA-V6 seq 10 permit 2001:DB8:1:2::/64
+          ipv6 prefix-list PL-TO-ISPA-V6 seq 15 permit 2001:DB8:192:2::/64
+          !
+          route-map RM-ISPA-IN-V4 permit 10
+           match ip address prefix-list PL-ISPA-IN-V4
+           set community 65001:100 additive
+           set extcommunity rt 65001:100 additive
+           set local-preference 150
+          !
+          route-map RM-ISPA-IN-V6 permit 10
+           match ipv6 address prefix-list PL-ISPA-IN-V6
+           set community 65001:100 additive
+           set extcommunity rt 65001:100 additive
+           set local-preference 150
+          !
+          route-map RM-ISPA-OUT-V4 permit 10
+           match ip address prefix-list PL-TO-ISPA-V4
+          !
+          route-map RM-ISPA-OUT-V6 permit 10
+           match ipv6 address prefix-list PL-TO-ISPA-V6
+          !
+          router bgp 65001
+           bgp router-id 10.0.0.1
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           neighbor 10.0.0.3 remote-as 65001
+           neighbor 10.0.0.3 description iBGP-to-RR-R3-TCP-AO
+           neighbor 10.0.0.3 update-source Loopback0
+           neighbor 10.0.0.3 ao AO-R1-R3-V4
+           neighbor 2001:DB8:0:0::3 remote-as 65001
+           neighbor 2001:DB8:0:0::3 description iBGP-to-RR-R3-TCP-AO
+           neighbor 2001:DB8:0:0::3 update-source Loopback0
+           neighbor 2001:DB8:0:0::3 ao AO-R1-R3-V6
+           neighbor 100.64.12.2 remote-as 65002
+           neighbor 100.64.12.2 description eBGP-to-ISPA-TCP-AO
+           neighbor 100.64.12.2 ao AO-R1-ISPA-V4
+           neighbor 2001:DB8:12::2 remote-as 65002
+           neighbor 2001:DB8:12::2 description eBGP-to-ISPA-TCP-AO
+           neighbor 2001:DB8:12::2 ao AO-R1-ISPA-V6
+           !
+           address-family ipv4
+            network 10.1.1.0 mask 255.255.255.0
+            neighbor 10.0.0.3 activate
+            neighbor 10.0.0.3 next-hop-self
+            neighbor 10.0.0.3 send-community both
+            neighbor 100.64.12.2 activate
+            neighbor 100.64.12.2 send-community both
+            neighbor 100.64.12.2 route-map RM-ISPA-IN-V4 in
+            neighbor 100.64.12.2 route-map RM-ISPA-OUT-V4 out
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:DB8:1:1::/64
+            neighbor 2001:DB8:0:0::3 activate
+            neighbor 2001:DB8:0:0::3 next-hop-self
+            neighbor 2001:DB8:0:0::3 send-community both
+            neighbor 2001:DB8:12::2 activate
+            neighbor 2001:DB8:12::2 send-community both
+            neighbor 2001:DB8:12::2 route-map RM-ISPA-IN-V6 in
+            neighbor 2001:DB8:12::2 route-map RM-ISPA-OUT-V6 out
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: cat8000v-17-18-02
+    label: R1-EDGE-ISPA
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -150
+    y: -50
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R2-EDGE-ISPB
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.0.0.2 255.255.255.255
+           ipv6 address 2001:DB8:0:0::2/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Loopback1
+           description SITE-2-LAN (advertised via BGP only)
+           ip address 10.1.2.1 255.255.255.0
+           ipv6 address 2001:DB8:1:2::1/64
+          !
+          interface GigabitEthernet1
+           description CORE-LINK-to-R3-RR
+           ip address 10.255.23.1 255.255.255.252
+           ipv6 address 2001:DB8:1:23::1/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description CORE-LINK-to-R1
+           ip address 10.255.12.2 255.255.255.252
+           ipv6 address 2001:DB8:1:12::2/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description eBGP-to-ISPB-AS65003-MD5
+           ip address 100.64.23.1 255.255.255.252
+           ipv6 address 2001:DB8:23::1/64
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.0.0.2
+           passive-interface Loopback0
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.2
+           passive-interface Loopback0
+          !
+          ip prefix-list PL-ISPB-IN-V4 seq 5 permit 203.0.113.0/24
+          ip prefix-list PL-ISPB-IN-V4 seq 10 permit 0.0.0.0/0
+          !
+          ipv6 prefix-list PL-ISPB-IN-V6 seq 5 permit 2001:DB8:203:113::/64
+          ipv6 prefix-list PL-ISPB-IN-V6 seq 10 permit ::/0
+          !
+          ip prefix-list PL-CUST-PFX-V4 seq 5 permit 192.0.2.0/24
+          ip prefix-list PL-CORE-SITES-V4 seq 5 permit 10.1.1.0/24
+          ip prefix-list PL-CORE-SITES-V4 seq 10 permit 10.1.2.0/24
+          !
+          ipv6 prefix-list PL-CUST-PFX-V6 seq 5 permit 2001:DB8:192:2::/64
+          ipv6 prefix-list PL-CORE-SITES-V6 seq 5 permit 2001:DB8:1:1::/64
+          ipv6 prefix-list PL-CORE-SITES-V6 seq 10 permit 2001:DB8:1:2::/64
+          !
+          route-map RM-ISPB-IN-V4 permit 10
+           match ip address prefix-list PL-ISPB-IN-V4
+           set community 65001:200 additive
+           set extcommunity rt 65001:200 additive
+           set local-preference 100
+          !
+          route-map RM-ISPB-IN-V6 permit 10
+           match ipv6 address prefix-list PL-ISPB-IN-V6
+           set community 65001:200 additive
+           set extcommunity rt 65001:200 additive
+           set local-preference 100
+          !
+          route-map RM-ISPB-OUT-V4 permit 10
+           match ip address prefix-list PL-CUST-PFX-V4
+           set as-path prepend 65001 65001
+          route-map RM-ISPB-OUT-V4 permit 20
+           match ip address prefix-list PL-CORE-SITES-V4
+          !
+          route-map RM-ISPB-OUT-V6 permit 10
+           match ipv6 address prefix-list PL-CUST-PFX-V6
+           set as-path prepend 65001 65001
+          route-map RM-ISPB-OUT-V6 permit 20
+           match ipv6 address prefix-list PL-CORE-SITES-V6
+          !
+          router bgp 65001
+           bgp router-id 10.0.0.2
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           neighbor 10.0.0.3 remote-as 65001
+           neighbor 10.0.0.3 description iBGP-to-RR-R3-MD5
+           neighbor 10.0.0.3 update-source Loopback0
+           neighbor 10.0.0.3 password MD5PWR2R3COREV4
+           neighbor 2001:DB8:0:0::3 remote-as 65001
+           neighbor 2001:DB8:0:0::3 description iBGP-to-RR-R3-MD5
+           neighbor 2001:DB8:0:0::3 update-source Loopback0
+           neighbor 2001:DB8:0:0::3 password MD5PWR2R3COREV6
+           neighbor 100.64.23.2 remote-as 65003
+           neighbor 100.64.23.2 description eBGP-to-ISPB-MD5
+           neighbor 100.64.23.2 password MD5PWR2ISPBV4
+           neighbor 2001:DB8:23::2 remote-as 65003
+           neighbor 2001:DB8:23::2 description eBGP-to-ISPB-MD5
+           neighbor 2001:DB8:23::2 password MD5PWR2ISPBV6
+           !
+           address-family ipv4
+            network 10.1.2.0 mask 255.255.255.0
+            neighbor 10.0.0.3 activate
+            neighbor 10.0.0.3 next-hop-self
+            neighbor 10.0.0.3 send-community both
+            neighbor 100.64.23.2 activate
+            neighbor 100.64.23.2 send-community both
+            neighbor 100.64.23.2 route-map RM-ISPB-IN-V4 in
+            neighbor 100.64.23.2 route-map RM-ISPB-OUT-V4 out
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:DB8:1:2::/64
+            neighbor 2001:DB8:0:0::3 activate
+            neighbor 2001:DB8:0:0::3 next-hop-self
+            neighbor 2001:DB8:0:0::3 send-community both
+            neighbor 2001:DB8:23::2 activate
+            neighbor 2001:DB8:23::2 send-community both
+            neighbor 2001:DB8:23::2 route-map RM-ISPB-IN-V6 in
+            neighbor 2001:DB8:23::2 route-map RM-ISPB-OUT-V6 out
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: cat8000v-17-18-02
+    label: R2-EDGE-ISPB
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 150
+    y: -50
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname R3-RR-CUST
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          key chain AO-R1-R3-V4 tcp
+           key 10
+            send-id 10
+            recv-id 10
+            key-string 1A1A1A1A2B2B2B2B3C3C3C3C4D4D4D4D
+            cryptographic-algorithm hmac-sha-1
+          !
+          key chain AO-R1-R3-V6 tcp
+           key 10
+            send-id 10
+            recv-id 10
+            key-string 5E5E5E5E6F6F6F6F7A7A7A7A8B8B8B8B
+            cryptographic-algorithm hmac-sha-1
+          !
+          interface Loopback0
+           ip address 10.0.0.3 255.255.255.255
+           ipv6 address 2001:DB8:0:0::3/128
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+          !
+          interface Loopback1
+           description HQ-SITE-3-LAN (NO_EXPORT - internal AS65001 only)
+           ip address 10.1.3.1 255.255.255.0
+           ipv6 address 2001:DB8:1:3::1/64
+          !
+          interface Loopback2
+           description MGMT-TEST-PREFIX (NO_ADVERTISE - iBGP-local only, v4 only)
+           ip address 10.99.99.1 255.255.255.0
+          !
+          interface GigabitEthernet1
+           description CORE-LINK-to-R1-TCP-AO-iBGP
+           ip address 10.255.13.2 255.255.255.252
+           ipv6 address 2001:DB8:1:13::2/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description CORE-LINK-to-R2-MD5-iBGP
+           ip address 10.255.23.2 255.255.255.252
+           ipv6 address 2001:DB8:1:23::2/64
+           ip ospf 1 area 0
+           ipv6 ospf 1 area 0
+           no shutdown
+          !
+          interface GigabitEthernet3
+           description eBGP-to-CUST-AS65004-MD5
+           ip address 100.64.34.1 255.255.255.252
+           ipv6 address 2001:DB8:34::1/64
+           no shutdown
+          !
+          router ospf 1
+           router-id 10.0.0.3
+           passive-interface Loopback0
+          !
+          ipv6 router ospf 1
+           router-id 10.0.0.3
+           passive-interface Loopback0
+          !
+          ip prefix-list PL-CUST-IN-V4 seq 5 permit 192.0.2.0/24
+          ipv6 prefix-list PL-CUST-IN-V6 seq 5 permit 2001:DB8:192:2::/64
+          !
+          ip prefix-list PL-DEFAULT-V4 seq 5 permit 0.0.0.0/0
+          ipv6 prefix-list PL-DEFAULT-V6 seq 5 permit ::/0
+          !
+          route-map RM-CUST-IN-V4 permit 10
+           match ip address prefix-list PL-CUST-IN-V4
+           set community 65001:300 additive
+           set extcommunity soo 65004:1 additive
+           set local-preference 200
+          !
+          route-map RM-CUST-IN-V6 permit 10
+           match ipv6 address prefix-list PL-CUST-IN-V6
+           set community 65001:300 additive
+           set extcommunity soo 65004:1 additive
+           set local-preference 200
+          !
+          route-map RM-CUST-OUT-V4 permit 10
+           match ip address prefix-list PL-DEFAULT-V4
+          !
+          route-map RM-CUST-OUT-V6 permit 10
+           match ipv6 address prefix-list PL-DEFAULT-V6
+          !
+          route-map SET-HQ-NOEXPORT permit 10
+           set community no-export 65001:999 additive
+          !
+          route-map SET-NOADV permit 10
+           set community no-advertise additive
+          !
+          router bgp 65001
+           bgp router-id 10.0.0.3
+           bgp log-neighbor-changes
+           bgp cluster-id 10.0.0.3
+           no bgp default ipv4-unicast
+           neighbor 10.0.0.1 remote-as 65001
+           neighbor 10.0.0.1 description iBGP-RR-client-R1-TCP-AO
+           neighbor 10.0.0.1 update-source Loopback0
+           neighbor 10.0.0.1 ao AO-R1-R3-V4
+           neighbor 2001:DB8:0:0::1 remote-as 65001
+           neighbor 2001:DB8:0:0::1 description iBGP-RR-client-R1-TCP-AO
+           neighbor 2001:DB8:0:0::1 update-source Loopback0
+           neighbor 2001:DB8:0:0::1 ao AO-R1-R3-V6
+           neighbor 10.0.0.2 remote-as 65001
+           neighbor 10.0.0.2 description iBGP-RR-client-R2-MD5
+           neighbor 10.0.0.2 update-source Loopback0
+           neighbor 10.0.0.2 password MD5PWR2R3COREV4
+           neighbor 2001:DB8:0:0::2 remote-as 65001
+           neighbor 2001:DB8:0:0::2 description iBGP-RR-client-R2-MD5
+           neighbor 2001:DB8:0:0::2 update-source Loopback0
+           neighbor 2001:DB8:0:0::2 password MD5PWR2R3COREV6
+           neighbor 100.64.34.2 remote-as 65004
+           neighbor 100.64.34.2 description eBGP-to-CUST-MD5
+           neighbor 100.64.34.2 password MD5PWR3CUSTV4
+           neighbor 2001:DB8:34::2 remote-as 65004
+           neighbor 2001:DB8:34::2 description eBGP-to-CUST-MD5
+           neighbor 2001:DB8:34::2 password MD5PWR3CUSTV6
+           !
+           address-family ipv4
+            network 10.1.3.0 mask 255.255.255.0 route-map SET-HQ-NOEXPORT
+            network 10.99.99.0 mask 255.255.255.0 route-map SET-NOADV
+            neighbor 10.0.0.1 activate
+            neighbor 10.0.0.1 route-reflector-client
+            neighbor 10.0.0.1 send-community both
+            neighbor 10.0.0.2 activate
+            neighbor 10.0.0.2 route-reflector-client
+            neighbor 10.0.0.2 send-community both
+            neighbor 100.64.34.2 activate
+            neighbor 100.64.34.2 send-community both
+            neighbor 100.64.34.2 route-map RM-CUST-IN-V4 in
+            neighbor 100.64.34.2 route-map RM-CUST-OUT-V4 out
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:DB8:1:3::/64 route-map SET-HQ-NOEXPORT
+            neighbor 2001:DB8:0:0::1 activate
+            neighbor 2001:DB8:0:0::1 route-reflector-client
+            neighbor 2001:DB8:0:0::1 send-community both
+            neighbor 2001:DB8:0:0::2 activate
+            neighbor 2001:DB8:0:0::2 route-reflector-client
+            neighbor 2001:DB8:0:0::2 send-community both
+            neighbor 2001:DB8:34::2 activate
+            neighbor 2001:DB8:34::2 send-community both
+            neighbor 2001:DB8:34::2 route-map RM-CUST-IN-V6 in
+            neighbor 2001:DB8:34::2 route-map RM-CUST-OUT-V6 out
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: cat8000v-17-18-02
+    label: R3-RR-CUST
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname ISPA-AS65002
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          key chain AO-R1-ISPA-V4 tcp
+           key 10
+            send-id 10
+            recv-id 10
+            key-string A1A1A1A1B2B2B2B2C3C3C3C3D4D4D4D4
+            cryptographic-algorithm hmac-sha-1
+          !
+          key chain AO-R1-ISPA-V6 tcp
+           key 10
+            send-id 10
+            recv-id 10
+            key-string E5E5E5E5F6F6F6F6A7A7A7A7B8B8B8B8
+            cryptographic-algorithm hmac-sha-1
+          !
+          interface Loopback0
+           ip address 100.64.2.1 255.255.255.255
+           ipv6 address 2001:DB8:2::1/128
+          !
+          interface Loopback1
+           description SIMULATED-INTERNET-BLOCK-VIA-ISPA
+           ip address 198.51.100.1 255.255.255.0
+           ipv6 address 2001:DB8:51:100::1/64
+          !
+          interface GigabitEthernet1
+           description eBGP-to-CORE-R1-TCP-AO
+           ip address 100.64.12.2 255.255.255.252
+           ipv6 address 2001:DB8:12::2/64
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description eBGP-peering-to-ISPB
+           ip address 100.64.99.1 255.255.255.252
+           ipv6 address 2001:DB8:99::1/64
+           no shutdown
+          !
+          ip route 0.0.0.0 0.0.0.0 Null0
+          ipv6 route ::/0 Null0
+          !
+          router bgp 65002
+           bgp router-id 100.64.2.1
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           neighbor 100.64.12.1 remote-as 65001
+           neighbor 100.64.12.1 description eBGP-to-CORE-R1-TCP-AO
+           neighbor 100.64.12.1 ao AO-R1-ISPA-V4
+           neighbor 2001:DB8:12::1 remote-as 65001
+           neighbor 2001:DB8:12::1 description eBGP-to-CORE-R1-TCP-AO
+           neighbor 2001:DB8:12::1 ao AO-R1-ISPA-V6
+           neighbor 100.64.99.2 remote-as 65003
+           neighbor 100.64.99.2 description eBGP-peer-ISPB
+           neighbor 2001:DB8:99::2 remote-as 65003
+           neighbor 2001:DB8:99::2 description eBGP-peer-ISPB
+           !
+           address-family ipv4
+            network 198.51.100.0 mask 255.255.255.0
+            network 0.0.0.0 mask 0.0.0.0
+            neighbor 100.64.12.1 activate
+            neighbor 100.64.12.1 send-community both
+            neighbor 100.64.99.2 activate
+            neighbor 100.64.99.2 send-community both
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:DB8:51:100::/64
+            network ::/0
+            neighbor 2001:DB8:12::1 activate
+            neighbor 2001:DB8:12::1 send-community both
+            neighbor 2001:DB8:99::2 activate
+            neighbor 2001:DB8:99::2 send-community both
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: cat8000v-17-18-02
+    label: ISPA-AS65002
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -300
+    y: -220
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname ISPB-AS65003
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 100.64.3.1 255.255.255.255
+           ipv6 address 2001:DB8:3::1/128
+          !
+          interface Loopback1
+           description SIMULATED-INTERNET-BLOCK-VIA-ISPB
+           ip address 203.0.113.1 255.255.255.0
+           ipv6 address 2001:DB8:203:113::1/64
+          !
+          interface GigabitEthernet1
+           description eBGP-to-CORE-R2-MD5
+           ip address 100.64.23.2 255.255.255.252
+           ipv6 address 2001:DB8:23::2/64
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description eBGP-peering-to-ISPA
+           ip address 100.64.99.2 255.255.255.252
+           ipv6 address 2001:DB8:99::2/64
+           no shutdown
+          !
+          ip route 0.0.0.0 0.0.0.0 Null0
+          ipv6 route ::/0 Null0
+          !
+          router bgp 65003
+           bgp router-id 100.64.3.1
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           neighbor 100.64.23.1 remote-as 65001
+           neighbor 100.64.23.1 description eBGP-to-CORE-R2-MD5
+           neighbor 100.64.23.1 password MD5PWR2ISPBV4
+           neighbor 2001:DB8:23::1 remote-as 65001
+           neighbor 2001:DB8:23::1 description eBGP-to-CORE-R2-MD5
+           neighbor 2001:DB8:23::1 password MD5PWR2ISPBV6
+           neighbor 100.64.99.1 remote-as 65002
+           neighbor 100.64.99.1 description eBGP-peer-ISPA
+           neighbor 2001:DB8:99::1 remote-as 65002
+           neighbor 2001:DB8:99::1 description eBGP-peer-ISPA
+           !
+           address-family ipv4
+            network 203.0.113.0 mask 255.255.255.0
+            network 0.0.0.0 mask 0.0.0.0
+            neighbor 100.64.23.1 activate
+            neighbor 100.64.23.1 send-community both
+            neighbor 100.64.99.1 activate
+            neighbor 100.64.99.1 send-community both
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:DB8:203:113::/64
+            network ::/0
+            neighbor 2001:DB8:23::1 activate
+            neighbor 2001:DB8:23::1 send-community both
+            neighbor 2001:DB8:99::1 activate
+            neighbor 2001:DB8:99::1 send-community both
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: cat8000v-17-18-02
+    label: ISPB-AS65003
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 300
+    y: -220
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          !
+          hostname CUST-AS65004
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 100.64.4.1 255.255.255.255
+           ipv6 address 2001:DB8:4::1/128
+          !
+          interface Loopback1
+           description CUSTOMER-OWN-PREFIX
+           ip address 192.0.2.1 255.255.255.0
+           ipv6 address 2001:DB8:192:2::1/64
+          !
+          interface GigabitEthernet1
+           description eBGP-to-CORE-R3-MD5
+           ip address 100.64.34.2 255.255.255.252
+           ipv6 address 2001:DB8:34::2/64
+           no shutdown
+          !
+          router bgp 65004
+           bgp router-id 100.64.4.1
+           bgp log-neighbor-changes
+           no bgp default ipv4-unicast
+           neighbor 100.64.34.1 remote-as 65001
+           neighbor 100.64.34.1 description eBGP-to-CORE-R3-MD5
+           neighbor 100.64.34.1 password MD5PWR3CUSTV4
+           neighbor 2001:DB8:34::1 remote-as 65001
+           neighbor 2001:DB8:34::1 description eBGP-to-CORE-R3-MD5
+           neighbor 2001:DB8:34::1 password MD5PWR3CUSTV6
+           !
+           address-family ipv4
+            network 192.0.2.0 mask 255.255.255.0
+            neighbor 100.64.34.1 activate
+            neighbor 100.64.34.1 send-community both
+           exit-address-family
+           !
+           address-family ipv6
+            network 2001:DB8:192:2::/64
+            neighbor 2001:DB8:34::1 activate
+            neighbor 2001:DB8:34::1 send-community both
+           exit-address-family
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: cat8000v-17-18-02
+    label: CUST-AS65004
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: 300
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+links:
+  - id: l0
+    n1: n0
+    n2: n2
+    i1: i1
+    i2: i1
+    conditioning: {}
+    label: R1-EDGE-ISPA-GigabitEthernet1<->R3-RR-CUST-GigabitEthernet1
+  - id: l1
+    n1: n1
+    n2: n2
+    i1: i1
+    i2: i2
+    conditioning: {}
+    label: R2-EDGE-ISPB-GigabitEthernet1<->R3-RR-CUST-GigabitEthernet2
+  - id: l2
+    n1: n0
+    n2: n1
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: R1-EDGE-ISPA-GigabitEthernet2<->R2-EDGE-ISPB-GigabitEthernet2
+  - id: l3
+    n1: n0
+    n2: n3
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R1-EDGE-ISPA-GigabitEthernet3<->ISPA-AS65002-GigabitEthernet1
+  - id: l4
+    n1: n1
+    n2: n4
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R2-EDGE-ISPB-GigabitEthernet3<->ISPB-AS65003-GigabitEthernet1
+  - id: l5
+    n1: n2
+    n2: n5
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: R3-RR-CUST-GigabitEthernet3<->CUST-AS65004-GigabitEthernet1
+  - id: l6
+    n1: n3
+    n2: n4
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: ISPA-AS65002-GigabitEthernet2<->ISPB-AS65003-GigabitEthernet2
+lab:
+  description: Small iBGP route-reflector domain (AS65001) with dual-stack (IPv4/IPv6)
+    eBGP to two upstream ISPs and one downstream customer. Showcases TCP-AO, MD5,
+    extended communities, prefix filters, and route-maps (prepending, local-pref,
+    communities).
+  notes: |-
+    # BGP-Focused Lab: iBGP Route Reflector + Dual-Stack eBGP Security & Policy
+
+    ## Topology
+    AS65001 CORE (iBGP domain, route reflector - R3 is RR, R1/R2 are RR-clients, no full mesh):
+    - R1-EDGE-ISPA (RR client) -- eBGP to ISPA (AS65002), TCP-AO both v4/v6; iBGP to R3, TCP-AO both v4/v6
+    - R2-EDGE-ISPB (RR client) -- eBGP to ISPB (AS65003), MD5 both v4/v6; iBGP to R3, MD5 both v4/v6
+    - R3-RR-CUST (Route Reflector, cluster-id 10.0.0.3) -- eBGP to CUST (AS65004), MD5 both v4/v6
+    ISPA (AS65002) and ISPB (AS65003) also peer directly with each other (eBGP, no auth) so AS-path prepending has an observable effect.
+    CUST (AS65004) is a single-homed stub customer of R3.
+
+    All addressing uses documentation ranges: 10.0.0.0/8, 100.64.0.0/10, 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32.
+
+    ## Features demonstrated
+    - iBGP route reflection (route-reflector-client, cluster-id, next-hop-self on clients) instead of full mesh
+    - TCP-AO (RFC 5925) on R1's eBGP + iBGP sessions, v4 and v6 (key chain ... tcp / neighbor ... ao)
+    - MD5 on R2's and R3's sessions, as a deliberate contrast/migration exercise
+    - Prefix-list filtering at eBGP ingress (ISP blocks + default only; strict single-prefix filter on the customer)
+    - Regular communities tagging route origin (65001:100/200/300) set at ingress, acted on elsewhere
+    - Extended communities: Site-of-Origin (soo 65004:1) on customer routes; RT-format tag for syntax practice
+    - Local preference for outbound TE (customer=200, ISPA=150 primary, ISPB=100 backup)
+    - AS-path prepending for inbound TE (customer prefix prepended x2 toward ISPB) -- verified live: ISPB actually ends up preferring the indirect path via ISPA because of the prepend, a real and intentional teaching point
+    - Well-known communities NO_EXPORT (HQ site prefix, stays inside AS65001) and NO_ADVERTISE (mgmt test prefix, doesn't even reach iBGP peers) -- both verified live
+    - Outbound-to-customer restricted to default-route only
+    - Full IPv4/IPv6 dual-stack BGP throughout (no bgp default ipv4-unicast, explicit per-AF activation# BGP-Focused Lab: iBGP Route Reflector + Dual-Stack eBGP Security & Policy
+
+    **Lab title in CML:** `BGP-Focused: iBGP RR + Dual-Stack eBGP Security & Policy Lab`
+
+    ## Table of Contents
+
+    1. [Overview and Learning Objectives](#1-overview-and-learning-objectives)
+    2. [Topology](#2-topology)
+    3. [Addressing Plan](#3-addressing-plan)
+    4. [Underlay: OSPF (v2) and OSPFv3](#4-underlay-ospf-v2-and-ospfv3)
+    5. [iBGP with a Route Reflector](#5-ibgp-with-a-route-reflector)
+    6. [TCP-AO (RFC 5925)](#6-tcp-ao-rfc-5925--showcased-on-r1s-sessions)
+    7. [MD5 (contrast) and the migration exercise](#7-md5-contrast-and-the-migration-exercise)
+    8. [Prefix-list filtering](#8-prefix-list-filtering)
+    9. [Communities: tag on ingress, act on egress](#9-communities-tag-on-ingress-act-on-egress)
+    10. [Extended communities (RFC 4360)](#10-extended-communities-rfc-4360)
+    11. [Local preference — outbound TE](#11-local-preference--outbound-traffic-engineering)
+    12. [AS-path prepending — inbound TE](#12-as-path-prepending--inbound-traffic-engineering)
+    13. [NO_EXPORT and NO_ADVERTISE](#13-no_export-and-no_advertise--scoping-routes-with-well-known-communities)
+    14. [Outbound-to-customer policy](#14-outbound-to-customer-policy-default-route-only)
+    15. [Verification cheat-sheet](#15-verification-cheat-sheet)
+    16. [Exercises](#16-exercises)
+    17. [Reference: keys and passwords](#17-reference-keys-and-passwords-lab-use-only)
+    18. [AS numbers and prefixes at a glance](#18-as-numbers-and-prefixes-at-a-glance)
+
+    ---
+
+    ## 1. Overview and Learning Objectives
+
+    This lab builds a small, realistic multi-AS BGP environment: a 3-router enterprise core running iBGP via a **route reflector** (not full mesh), dual-homed to two upstream providers, and providing transit for one downstream customer. Two upstream ISPs also peer with each other so that AS-path manipulation has an observable effect — a detail many labs skip.
+
+    By the end of this lab you will have hands-on, verified configuration for:
+
+    - iBGP **route reflection** (RR + 2 clients) instead of full mesh, with `next-hop-self` and a cluster-id
+    - **TCP-AO** (RFC 5925, RFC 5926) — the modern replacement for BGP MD5, applied to both an eBGP and an iBGP session, over IPv4 *and* IPv6
+    - **MD5** authentication, deliberately left on the other sessions as a contrast/migration exercise
+    - **Prefix-list** filtering (inbound bogon/stub protection, strict customer-prefix filtering)
+    - **Route-maps** controlling **local preference** (outbound traffic engineering), **AS-path prepending** (inbound traffic engineering), and **communities**
+    - **BGP communities** (regular, RFC 1997) used to tag routes by origin and to control scope with the well-known communities `NO_EXPORT` and `NO_ADVERTISE`
+    - **Extended communities** (RFC 4360) — Site-of-Origin (SoO) for loop prevention, and a Route-Target-style tag for syntax practice
+    - Full **IPv4/IPv6 dual-stack** BGP (separate address-families, separate neighbor activation, `no bgp default ipv4-unicast`)
+
+    ---
+
+    ## 2. Topology
+
+    ```mermaid
+    graph TB
+        subgraph AS65001["AS 65001 — CORE (iBGP domain, Route Reflector)"]
+            R1["R1-EDGE-ISPA<br/>RR-client<br/>Lo0: 10.0.0.1 / 2001:db8:0:0::1"]
+            R2["R2-EDGE-ISPB<br/>RR-client<br/>Lo0: 10.0.0.2 / 2001:db8:0:0::2"]
+            R3["R3-RR-CUST<br/>Route Reflector<br/>Lo0: 10.0.0.3 / 2001:db8:0:0::3"]
+            R1 <-->|OSPF underlay| R3
+            R2 <-->|OSPF underlay| R3
+            R1 <-->|OSPF underlay only<br/>no iBGP session| R2
+        end
+        ISPA["ISPA-AS65002<br/>Lo1: 198.51.100.0/24"]
+        ISPB["ISPB-AS65003<br/>Lo1: 203.0.113.0/24"]
+        CUST["CUST-AS65004<br/>Lo1: 192.0.2.0/24"]
+
+        R1 <-->|eBGP TCP-AO| ISPA
+        R2 <-->|eBGP MD5| ISPB
+        R3 <-->|eBGP MD5| CUST
+        ISPA <-->|eBGP, no auth| ISPB
+    ```
+
+    | Node | Role | AS | Auth on eBGP | Auth on iBGP (to R3) |
+    |---|---|---|---|---|
+    | R1-EDGE-ISPA | RR client, ISPA edge | 65001 | **TCP-AO** | **TCP-AO** |
+    | R2-EDGE-ISPB | RR client, ISPB edge | 65001 | MD5 | MD5 |
+    | R3-RR-CUST | Route Reflector, CUST edge | 65001 | MD5 | n/a (is the RR) |
+    | ISPA-AS65002 | Upstream #1 ("primary") | 65002 | TCP-AO to R1, none to ISPB | — |
+    | ISPB-AS65003 | Upstream #2 ("backup") | 65003 | MD5 to R2, none to ISPA | — |
+    | CUST-AS65004 | Stub downstream customer | 65004 | MD5 to R3 | — |
+
+    > **Why the ISPA↔ISPB link exists:** without it, ISPA and ISPB never see each other's routes, so AS-path prepending toward one of them has nothing to compare against and produces no visible effect. With the link in place, ISPB actually has two candidate paths to the customer prefix (direct from CORE, and via ISPA), which is what makes the prepending exercise (Section 12) meaningful — including the "prepend too much and you push your own backup traffic onto a worse path" gotcha.
+
+    > **Why a route reflector instead of full mesh:** with only 3 core routers a full mesh (3 sessions) is barely more work than an RR, but the lab intentionally uses R3 as RR so the RR-specific mechanics — `route-reflector-client`, `bgp cluster-id`, and the need for `next-hop-self` on the clients — are exercised. R1 and R2 never peer with each other in iBGP; they only learn about each other's routes through reflection via R3.
+
+    ---
+
+    ## 3. Addressing Plan
+
+    All addressing uses ranges reserved for documentation/lab use (RFC 5737 `192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`; RFC 6598 `100.64.0.0/10`; RFC 1918 `10.0.0.0/8`; and the IPv6 documentation prefix `2001:db8::/32`), so nothing here collides with real Internet space.
+
+    ### 3.1 Loopbacks
+
+    | Router | Lo0 (v4, RID) | Lo0 (v6) | Lo1 (v4, advertised) | Lo1 (v6, advertised) | Lo1 purpose |
+    |---|---|---|---|---|---|
+    | R1 | 10.0.0.1/32 | 2001:db8:0:0::1/128 | 10.1.1.0/24 | 2001:db8:1:1::/64 | Site-1 LAN |
+    | R2 | 10.0.0.2/32 | 2001:db8:0:0::2/128 | 10.1.2.0/24 | 2001:db8:1:2::/64 | Site-2 LAN |
+    | R3 | 10.0.0.3/32 | 2001:db8:0:0::3/128 | 10.1.3.0/24 | 2001:db8:1:3::/64 | HQ LAN — `NO_EXPORT` |
+    | R3 | — | — | 10.99.99.0/24 (Lo2) | — | Mgmt test prefix — `NO_ADVERTISE` |
+    | ISPA | 100.64.2.1/32 | 2001:db8:2::1/128 | 198.51.100.0/24 | 2001:db8:51:100::/64 | Simulated Internet block |
+    | ISPB | 100.64.3.1/32 | 2001:db8:3::1/128 | 203.0.113.0/24 | 2001:db8:203:113::/64 | Simulated Internet block |
+    | CUST | 100.64.4.1/32 | 2001:db8:4::1/128 | 192.0.2.0/24 | 2001:db8:192:2::/64 | Customer's own prefix |
+
+    ### 3.2 Point-to-point links
+
+    | Link | v4 subnet | v6 subnet | Purpose |
+    |---|---|---|---|
+    | R1 Gi1 – R3 Gi1 | 10.255.13.0/30 | 2001:db8:1:13::/64 | Core (IGP + iBGP, TCP-AO) |
+    | R2 Gi1 – R3 Gi2 | 10.255.23.0/30 | 2001:db8:1:23::/64 | Core (IGP + iBGP, MD5) |
+    | R1 Gi2 – R2 Gi2 | 10.255.12.0/30 | 2001:db8:1:12::/64 | Core IGP redundancy only (no iBGP) |
+    | R1 Gi3 – ISPA Gi1 | 100.64.12.0/30 | 2001:db8:12::/64 | eBGP AS65001–AS65002, TCP-AO |
+    | R2 Gi3 – ISPB Gi1 | 100.64.23.0/30 | 2001:db8:23::/64 | eBGP AS65001–AS65003, MD5 |
+    | R3 Gi3 – CUST Gi1 | 100.64.34.0/30 | 2001:db8:34::/64 | eBGP AS65001–AS65004, MD5 |
+    | ISPA Gi2 – ISPB Gi2 | 100.64.99.0/30 | 2001:db8:99::/64 | eBGP AS65002–AS65003, no auth |
+
+    > **Note:** `.1` is always the lower-numbered/left node in each row (R1/R2/R3/ISPA), `.2` the other end, matching what's pushed to the routers.
+
+    ---
+
+    ## 4. Underlay: OSPF (v2) and OSPFv3
+
+    AS 65001's three core routers run OSPF process 1 (area 0) on the Gi1/Gi2 core links and on Loopback0 only — **never** on Loopback1 (site prefixes) or on the eBGP-facing interfaces. This is deliberate: the IGP's only job is to give iBGP a way to resolve next-hops to loopback addresses; actual reachability information (site prefixes, customer prefixes, Internet blocks) is carried by BGP, not leaked into the IGP.
+
+    ```text
+    router ospf 1
+     router-id 10.0.0.1
+     passive-interface Loopback0
+    !
+    ipv6 router ospf 1
+     router-id 10.0.0.1
+     passive-interface Loopback0
+    ```
+
+    Loopback0 is `passive-interface` because it can't form an adjacency anyway — this is just best practice so no one is tempted to add a neighbor statement pointing at it.
+
+    ---
+
+    ## 5. iBGP with a Route Reflector
+
+    R3 is the RR; R1 and R2 are RR-clients. All three peer over Loopback0 (`update-source Loopback0`), which is why the OSPF underlay above matters — R1's loopback has to be reachable from R2 (and vice versa) even though R1 and R2 never talk BGP directly.
+
+    On R3 (RR):
+
+    ```text
+    router bgp 65001
+     bgp cluster-id 10.0.0.3
+     neighbor 10.0.0.1 remote-as 65001
+     neighbor 10.0.0.1 update-source Loopback0
+     neighbor 10.0.0.2 remote-as 65001
+     neighbor 10.0.0.2 update-source Loopback0
+     address-family ipv4
+      neighbor 10.0.0.1 activate
+      neighbor 10.0.0.1 route-reflector-client
+      neighbor 10.0.0.2 activate
+      neighbor 10.0.0.2 route-reflector-client
+     ! (mirrored under address-family ipv6 with the IPv6 loopback addresses)
+    ```
+
+    On R1 and R2 (clients), the iBGP neighbor statement points at R3's loopback and each sets `next-hop-self`:
+
+    ```text
+     address-family ipv4
+      neighbor 10.0.0.3 activate
+      neighbor 10.0.0.3 next-hop-self
+    ```
+
+    > **Why `next-hop-self` matters here:** when R1 learns a route from ISPA over eBGP, the next-hop is ISPA's own address (100.64.12.2), which R2 has no route to (that subnet isn't in OSPF). If R1 didn't rewrite the next-hop to itself before advertising to R3, R3 would faithfully reflect ISPA's address as the next-hop to R2, and R2 would never be able to resolve it — the route would show up but be unusable. Setting `next-hop-self` on the client makes the next-hop R1's own loopback, which *is* in OSPF, so R2 (and R3) can resolve it. Route reflectors do **not** rewrite next-hop by default when reflecting, so this has to happen at the client.
+
+    R1 and R2 never see each other as iBGP neighbors — check `show ip bgp summary` on either and you'll only see R3.
+
+    ---
+
+    ## 6. TCP-AO (RFC 5925) — showcased on R1's sessions
+
+    TCP-AO (TCP Authentication Option) is the IETF-standardized replacement for TCP MD5 (RFC 2385). It fixes MD5's weaknesses (single static algorithm, no key rollover, susceptible to known collision-based attacks on MD5 itself) by supporting modern MACs (HMAC-SHA-1, HMAC-SHA-256, AES-128-CMAC), explicit send/receive key identifiers for rollover, and per-connection master keys.
+
+    This lab puts TCP-AO on **R1's** two BGP sessions — one eBGP (to ISPA) and one iBGP (to R3) — each running over both IPv4 and IPv6, so 4 TCP-AO sessions total. R2's and R3's sessions use classic MD5 instead, specifically so you can compare the two and practice migrating one to the other (Exercise 6).
+
+    Configuration is two parts. First, a **TCP-AO key chain** (note the `tcp` keyword — this is a distinct construct from the classic `key chain` used for RIP/EIGRP):
+
+    ```text
+    key chain AO-R1-ISPA-V4 tcp
+     key 10
+      send-id 10
+      recv-id 10
+      key-string A1A1A1A1B2B2B2B2C3C3C3C3D4D4D4D4
+      cryptographic-algorithm hmac-sha-1
+    ```
+
+    The `key-string` is a 32-hex-digit (or 64-hex-digit) master key — it must match exactly on both peers. `send-id`/`recv-id` (0–255) identify the key on the wire; router A's `send-id` must equal router B's `recv-id` and vice versa. In this lab both ends use the same value (10) for simplicity, which is the common/simplest case.
+
+    Second, apply it to the neighbor **in main `router bgp` mode** (not inside the address-family):
+
+    ```text
+    router bgp 65001
+     neighbor 100.64.12.2 ao AO-R1-ISPA-V4
+     neighbor 2001:DB8:12::2 ao AO-R1-ISPA-V6
+    ```
+
+    The four key chains used in this lab (all on R1, mirrored on R3/ISPA for their shared sessions):
+
+    | Key chain | Session | Key ID | send-id/recv-id |
+    |---|---|---|---|
+    | `AO-R1-ISPA-V4` | R1 ↔ ISPA (eBGP, v4) | 10 | 10/10 |
+    | `AO-R1-ISPA-V6` | R1 ↔ ISPA (eBGP, v6) | 10 | 10/10 |
+    | `AO-R1-R3-V4` | R1 ↔ R3 (iBGP, v4) | 10 | 10/10 |
+    | `AO-R1-R3-V6` | R1 ↔ R3 (iBGP, v6) | 10 | 10/10 |
+
+    > **Verify:** `show key chain <name>` shows key validity; `show ip bgp neighbors <ip>` (look for the authentication line); a flapped/misconfigured TCP-AO session typically sits in `Idle` or cycles `Active`/`Connect` because the TCP handshake itself fails before BGP ever gets a chance to speak — this is different from a *classic* BGP auth failure, which usually gets further (TCP up, OPEN rejected).
+
+    > **Warning:** changing an in-use key chain — even just editing the key-string — will drop the session. Cisco's guidance is explicit: don't modify a key chain in place; add a new key first, or accept the flap in a lab.
+
+    ---
+
+    ## 7. MD5 (contrast) and the migration exercise
+
+    R2's and R3's sessions use the older, simpler `neighbor <ip> password <string>` command, applied the same way — in main `router bgp` mode, once per neighbor address (so once for the v4 session, once for the v6 session, since they're different TCP connections):
+
+    ```text
+    router bgp 65001
+     neighbor 100.64.23.2 password MD5PWR2ISPBV4
+     neighbor 2001:DB8:23::2 password MD5PWR2ISPBV6
+    ```
+
+    MD5 sessions deployed in this lab:
+
+    | Session | Password (v4) | Password (v6) |
+    |---|---|---|
+    | R2 ↔ ISPB (eBGP) | `MD5PWR2ISPBV4` | `MD5PWR2ISPBV6` |
+    | R3 ↔ CUST (eBGP) | `MD5PWR3CUSTV4` | `MD5PWR3CUSTV6` |
+    | R2 ↔ R3 (iBGP) | `MD5PWR2R3COREV4` | `MD5PWR2R3COREV6` |
+
+    See Exercise 6 for converting one of these to TCP-AO.
+
+    ---
+
+    ## 8. Prefix-list filtering
+
+    Prefix-lists in this lab exist at the **inbound eBGP edge only** — their job is to reject anything that shouldn't be accepted from a given AS in the first place, before any route-map or attribute manipulation happens. This is deliberately separated from the community/route-map logic that controls outbound advertisement (Sections 9–11), so the two concerns stay legible.
+
+    - **R1, inbound from ISPA** (`PL-ISPA-IN-V4` / `-V6`): permit only ISPA's own advertised block (`198.51.100.0/24` / `2001:db8:51:100::/64`) and the default route. Anything else is implicitly denied.
+    - **R2, inbound from ISPB**: same pattern for `203.0.113.0/24` / `2001:db8:203:113::/64` + default.
+    - **R3, inbound from CUST** (`PL-CUST-IN-V4` / `-V6`): permit **only** `192.0.2.0/24` / `2001:db8:192:2::/64` — no default route, nothing else. This is the classic stub-customer multihoming filter: a downstream customer should never be able to inject a default route, a full table, or someone else's prefix through you.
+
+    ```text
+    ip prefix-list PL-CUST-IN-V4 seq 5 permit 192.0.2.0/24
+    ```
+
+    > **Note:** prefix-lists have an implicit `deny all` at the end, so no explicit deny line is needed.
+
+    ---
+
+    ## 9. Communities: tag on ingress, act on egress
+
+    This lab uses the classic "tag once at the edge where you learn the route, then make all further decisions off the tag" pattern — it's the standard way large networks keep BGP policy maintainable, since you don't have to re-match raw prefixes everywhere.
+
+    | Community | Meaning | Set where |
+    |---|---|---|
+    | `65001:100` | Learned via ISPA | R1 inbound route-map (`RM-ISPA-IN-V4/V6`) |
+    | `65001:200` | Learned via ISPB | R2 inbound route-map (`RM-ISPB-IN-V4/V6`) |
+    | `65001:300` | Customer-originated route | R3 inbound route-map (`RM-CUST-IN-V4/V6`) |
+    | `65001:999` | Internal-only marker (paired with `NO_EXPORT`) | R3, on the HQ site network statement |
+
+    Example (R1, inbound from ISPA):
+
+    ```text
+    route-map RM-ISPA-IN-V4 permit 10
+     match ip address prefix-list PL-ISPA-IN-V4
+     set community 65001:100 additive
+     set extcommunity rt 65001:100 additive
+     set local-preference 150
+    ```
+
+    > **Note:** communities only leave a router if `send-community` (or `send-community both`, for extended communities too) is configured on that neighbor — it is **not** on by default. Every eBGP and iBGP session in this lab has `send-community both` configured explicitly so tags survive the whole path from ingress edge to wherever they're used.
+
+    ---
+
+    ## 10. Extended communities (RFC 4360)
+
+    Extended communities are most commonly associated with MPLS VPN / EVPN (route-target, route-origin), but two of their uses are legitimate in plain IPv4/IPv6 unicast, and this lab shows both:
+
+    1. **Site of Origin (SoO)** — set on R3 for routes learned from the customer: `set extcommunity soo 65004:1 additive`. SoO exists to prevent a route learned from a site from being re-advertised back to that same site through a different path — critical once a customer is multihomed to two of your edge routers. Our customer is single-homed today, so you won't see SoO *prevent* anything yet, but the syntax and the concept are worth having in place before you multihome it (Exercise 8 asks you to do exactly that and observe SoO doing its job).
+
+    2. **Route-Target-style tag** (`set extcommunity rt 65001:100 additive`, etc.) — attached at each ISP-facing ingress purely as a **syntax exercise / informational tag**. Be aware this is *not* how RT is normally used outside VPNv4/EVPN address families — flagging that explicitly so the pattern isn't copied into a real unicast deployment without understanding why. It's included here so the `set extcommunity rt ...` syntax is familiar before you encounter it for real in an MPLS-VPN lab.
+
+    > **Verify:** `show ip bgp <prefix>` — extended communities show up as `RT:65001:100` / `SoO:65004:1` in the attribute output once `send-community extended` (or `both`) is enabled.
+
+    ---
+
+    ## 11. Local preference — outbound traffic engineering
+
+    Local preference decides which of CORE's two upstream paths (via ISPA or via ISPB) is preferred when both exist — i.e., it controls **outbound** traffic from AS65001's point of view. Higher wins, default is 100.
+
+    | Source | Local-pref | Rationale |
+    |---|---|---|
+    | Routes from CUST | 200 | Customer routes are always most preferred — never send customer traffic the long way around |
+    | Routes from ISPA | 150 | ISPA is the "primary" upstream |
+    | Routes from ISPB | 100 (default, set explicitly) | ISPB is "backup" |
+
+    This is set in the same inbound route-maps that tag the community (Section 9) — `set local-preference 150` alongside `set community 65001:100 additive`.
+
+    > **Verify:** `show ip bgp | include 0.0.0.0` on R1/R2/R3 — the default route learned via ISPA should show local-pref 150 and be marked best (`>`); pull ISPA's session down and watch the ISPB-learned default (local-pref 100) take over.
+
+    ---
+
+    ## 12. AS-path prepending — inbound traffic engineering
+
+    Local preference controls *outbound* routing; it has zero effect on how the rest of the world routes traffic *to* you, because local-pref is never sent to eBGP peers. To influence inbound traffic, you manipulate what the outside world can see — the classic tool is AS-path prepending.
+
+    CORE originates the customer's prefix (`192.0.2.0/24` / learned via CUST, tagged and reflected to R1/R2) toward both ISPA and ISPB. The intent: ISPA should be the customer's **primary** inbound path, ISPB the **backup**.
+
+    - **R1 → ISPA** (`RM-ISPA-OUT-V4/V6`): no prepend. Customer's prefix goes out with AS-path `65001` — as short as possible.
+    - **R2 → ISPB** (`RM-ISPB-OUT-V4/V6`): prepend AS 65001 twice, so the customer's prefix leaves R2 with AS-path `65001 65001 65001` (length 3 instead of 1):
+
+    ```text
+    ip prefix-list PL-CUST-PFX-V4 seq 5 permit 192.0.2.0/24
+    !
+    route-map RM-ISPB-OUT-V4 permit 10
+     match ip address prefix-list PL-CUST-PFX-V4
+     set as-path prepend 65001 65001
+    route-map RM-ISPB-OUT-V4 permit 20
+     match ip address prefix-list PL-CORE-SITES-V4
+    ```
+
+    > **Note:** the route-map has two sequences — seq 10 prepends only the customer prefix; seq 20 lets CORE's own site prefixes out to ISPB unprepended. Prepending is targeted at the specific prefix you're engineering, not a blanket policy.
+
+    > **Why the ISPA↔ISPB link makes this observable:** ISPB now has two candidate paths to the customer prefix — direct from CORE (AS-path `65001 65001 65001 65004`, length 4, because of the prepend) and indirect via ISPA (AS-path `65002 65001 65004`, length 3, since ISPA→CORE is unprepended). ISPB will actually prefer the *indirect* path through ISPA! This is a real, well-known prepending gotcha: prepend too aggressively and you can push traffic onto a path you didn't intend, sometimes one with worse performance than the "backup" you were trying to avoid. Exercise 4 has you tune the prepend count and observe the crossover point.
+    >
+    > **Confirmed live in this build:** `show ip bgp 192.0.2.0` on ISPB-AS65003 shows exactly this — best path `65002 65001 65004` via ISPA, not the direct `65001 65001 65001 65004` path from R2.
+
+    ---
+
+    ## 13. NO_EXPORT and NO_ADVERTISE — scoping routes with well-known communities
+
+    Two prefixes on R3 demonstrate the two "keep this internal" well-known communities from RFC 1997:
+
+    - **`10.1.3.0/24` / `2001:db8:1:3::/64`** (R3's HQ site, Loopback1) is tagged `NO_EXPORT` at origination:
+
+      ```text
+      route-map SET-HQ-NOEXPORT permit 10
+       set community no-export 65001:999 additive
+      !
+      router bgp 65001
+       address-family ipv4
+        network 10.1.3.0 mask 255.255.255.0 route-map SET-HQ-NOEXPORT
+      ```
+
+      `NO_EXPORT` means: advertise freely within AS 65001 (so R1 and R2 will have it via iBGP reflection) but **never** send it to *any* eBGP neighbor. This is enforced automatically by IOS-XE once `send-community` is on toward that neighbor — no separate deny statement is needed in the outbound route-maps, though this lab also excludes it from the outbound prefix-lists as defense-in-depth. Confirm on R1/R2 (`show bgp ipv4 unicast 10.1.3.0`) that it's present, then confirm on ISPA/ISPB/CUST that it is **not**.
+
+    - **`10.99.99.0/24`** (R3's Loopback2, "mgmt test prefix") is tagged `NO_ADVERTISE` — strictly stronger than `NO_EXPORT`: it won't even be sent to *iBGP* peers. Check R3's own BGP table (it's there) versus R1's or R2's (it is not) to see the difference.
+
+    > **Confirmed live in this build:** `10.1.3.0/24` shows up on R1/R2 but is absent on ISPA/ISPB/CUST; `10.99.99.0/24` shows up only on R3.
+
+    ---
+
+    ## 14. Outbound-to-customer policy: default route only
+
+    R3's outbound policy to CUST (`RM-CUST-OUT-V4/V6`) permits only the default route (`0.0.0.0/0` / `::/0`) — a realistic stub-customer design where the customer doesn't need (or want) a full view of CORE's internals or the wider "Internet," just a way out.
+
+    ```text
+    ip prefix-list PL-DEFAULT-V4 seq 5 permit 0.0.0.0/0
+    !
+    route-map RM-CUST-OUT-V4 permit 10
+     match ip address prefix-list PL-DEFAULT-V4
+    ```
+
+    CORE has a default route to hand out in the first place because it learns one from both ISPA and ISPB (each originates `0.0.0.0/0`/`::/0`), and — per Section 11 — prefers ISPA's copy (local-pref 150) as best.
+
+    ---
+
+    ## 15. Verification cheat-sheet
+
+    Run these via CML's console (or `send_cli_command` if you're driving the lab programmatically):
+
+    ```text
+    show ip ospf neighbor
+    show ipv6 ospf neighbor
+    show ip bgp summary
+    show bgp ipv6 unicast summary
+    show ip bgp neighbors <ip> | include Authentication|BGP state
+    show key chain <name>
+    show ip bgp 192.0.2.0
+    show bgp ipv6 unicast 2001:DB8:192:2::/64
+    show ip bgp community 65001:300
+    show ip bgp regexp _65002_
+    show ip route bgp
+    show ipv6 route bgp
+    ```
+
+    Things worth specifically confirming after boot:
+
+    - All 3 OSPF adjacencies (R1-R3, R2-R3, R1-R2) are `FULL`, both v4 and v6.
+    - `show ip bgp summary` on R3 shows exactly 2 iBGP neighbors (R1, R2) and 1 eBGP (CUST) — never R1-to-R2 directly.
+    - `show ip bgp neighbors 100.64.12.2` on R1 shows the TCP-AO key chain in use; `show ip bgp neighbors 100.64.23.2` on R2 shows MD5.
+    - `10.1.3.0/24` is visible on R1/R2 but absent on ISPA/ISPB/CUST.
+    - `10.99.99.0/24` is visible only on R3.
+    - The customer prefix `192.0.2.0/24` shows AS-path `65001` at ISPA and `65001 65001 65001` at ISPB.
+
+    ---
+
+    ## 16. Exercises
+
+    Try each before checking the answer.
+
+    **1. Basic verification.** Bring the lab up and confirm all BGP sessions (v4 and v6, all 6 routers) are `Established`. Which command shows this fastest across every AF at once?
+
+    > *Answer: `show bgp all summary` (or per-AF `show ip bgp summary` / `show bgp ipv6 unicast summary`). Expect 2 iBGP + 1 eBGP session per core router, all Established, for both v4 and v6.*
+
+    **2. Route reflection sanity check.** On R1, run `show ip bgp neighbors`. How many neighbors does R1 have, and why isn't R2 one of them?
+
+    > *Answer: 2 — R3 (iBGP) and ISPA (eBGP). R2 is never configured as a neighbor on R1 because R3 is the route reflector; R1 and R2 learn about each other's routes only via reflection through R3, which is the entire point of using an RR instead of a full mesh.*
+
+    **3. Local preference in action.** On R3, confirm the default route's local-pref is 150 (via ISPA) and it's marked best. Shut R1's eBGP session to ISPA (`neighbor 100.64.12.2 shutdown` under `router bgp 65001` — or just administratively down the Gi3 link) and confirm the default now comes from ISPB with local-pref 100. Un-shut it afterward.
+
+    **4. Tune the AS-path prepend.** Change R2's prepend on the customer prefix from 2 to 1 (`set as-path prepend 65001` — one copy instead of two). Recompute the AS-path lengths ISPB sees for both candidate paths (direct vs. via-ISPA) and predict whether ISPB's best-path choice changes. Verify with `show ip bgp 192.0.2.0` on ISPB-AS65003.
+
+    > *Hint: with a single prepend, direct-from-CORE is AS-path `65001 65001 65004` (length 3) — the same length as via-ISPA (`65002 65001 65004`, length 3). A tie in AS-path length falls through to the next tiebreaker (origin type, MED, eBGP-over-iBGP, router-id, ...) — work out which one decides it here.*
+
+    **5. Community-based filtering.** Write and apply a route-map on R3 that would refuse to reflect any route carrying community `65001:999` to R1 or R2 (i.e., demonstrate that a community tag can gate iBGP distribution too, not just eBGP). You'll need `ip bgp-community new-format` and a matching `match community` clause.
+
+    **6. TCP-AO migration.** Convert R2's eBGP session to ISPB from MD5 to TCP-AO. You'll need a new `key chain ... tcp` on both R2 and ISPB with matching key-string/send-id/recv-id, then `neighbor <ip> ao <keychain>` on both sides in place of `neighbor <ip> password ...`. Expect the session to flap during the cutover — confirm it re-establishes with `show ip bgp neighbors <ip> | include Authentication`.
+
+    **7. NO_EXPORT vs. NO_ADVERTISE.** Explain, without looking back at Section 13, what would change if R3's HQ prefix were tagged `NO_ADVERTISE` instead of `NO_EXPORT`. Then make the change and verify on R1/R2 that the prefix disappears from their BGP tables entirely.
+
+    **8. Multihome the customer (advanced) — makes SoO do real work.** Add a second link from CUST to R1 (a new eBGP AS65004–AS65001 session, mirroring the existing R3–CUST session, including MD5 and a matching strict inbound prefix-list on R1). With SoO already being set for customer routes at ingress, you now have a genuine loop-prevention scenario: confirm that a route reflected from R3 to R1 (or vice versa) carrying `SoO:65004:1` is not re-advertised by R1 back out to CUST. This is the real-world reason SoO exists.
+
+    **9. Extended community as an ACL match.** Write a route-map on ISPA that matches the `rt 65001:100` extended community (set by R1) and drops the prefix instead of forwarding it toward ISPB — demonstrating that extended communities, not just regular ones, can drive route-map `match extcommunity` logic.
+
+    **10. Break it on purpose.** Deliberately mismatch a TCP-AO `send-id`/`recv-id` pair between R1 and ISPA and observe the failure mode (`show ip bgp neighbors`, `debug ip tcp transactions` if you want to go deeper). Compare that failure signature to what you'd see from a simple MD5 password mismatch on R2–ISPB. Which one fails at the TCP layer vs. the BGP OPEN layer?
+
+    ---
+
+    ## 17. Reference: keys and passwords (lab use only)
+
+    | Item | Value |
+    |---|---|
+    | TCP-AO key `AO-R1-ISPA-V4` | key-id 10, send/recv-id 10/10, `A1A1A1A1B2B2B2B2C3C3C3C3D4D4D4D4`, hmac-sha-1 |
+    | TCP-AO key `AO-R1-ISPA-V6` | key-id 10, send/recv-id 10/10, `E5E5E5E5F6F6F6F6A7A7A7A7B8B8B8B8`, hmac-sha-1 |
+    | TCP-AO key `AO-R1-R3-V4` | key-id 10, send/recv-id 10/10, `1A1A1A1A2B2B2B2B3C3C3C3C4D4D4D4D`, hmac-sha-1 |
+    | TCP-AO key `AO-R1-R3-V6` | key-id 10, send/recv-id 10/10, `5E5E5E5E6F6F6F6F7A7A7A7A8B8B8B8B`, hmac-sha-1 |
+    | MD5 R2↔ISPB | `MD5PWR2ISPBV4` / `MD5PWR2ISPBV6` |
+    | MD5 R3↔CUST | `MD5PWR3CUSTV4` / `MD5PWR3CUSTV6` |
+    | MD5 R2↔R3 (iBGP) | `MD5PWR2R3COREV4` / `MD5PWR2R3COREV6` |
+
+    > These are lab-only placeholder values — obviously don't reuse them anywhere real.
+
+    ---
+
+    ## 18. AS numbers and prefixes at a glance
+
+    | AS | Router(s) | Originates |
+    |---|---|---|
+    | 65001 (CORE) | R1, R2, R3 | 10.1.1.0/24, 10.1.2.0/24, 10.1.3.0/24 (NO_EXPORT), 10.99.99.0/24 (NO_ADVERTISE) + IPv6 equivalents |
+    | 65002 (ISPA) | ISPA | 198.51.100.0/24, default (0.0.0.0/0) + IPv6 equivalents |
+    | 65003 (ISPB) | ISPB | 203.0.113.0/24, default (0.0.0.0/0) + IPv6 equivalents |
+    | 65004 (CUST) | CUST | 192.0.2.0/24 + IPv6 equivalent |
+  title: 'CCIE-BGP-Focused: iBGP RR + Dual-Stack eBGP Security Lab'
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
