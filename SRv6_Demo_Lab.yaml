@@ -1,0 +1,1060 @@
+annotations: []
+smart_annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: iosxr_config.txt
+        content: |-
+          hostname PE1
+          !
+          username cisco
+           group root-lr
+           group cisco-support
+           secret cisco
+          !
+          ssh server v2
+          ssh server vrf default
+          !
+          interface Loopback0
+           ipv6 address 2001:db8:0:1::1/128
+          !
+          interface GigabitEthernet0/0/0/0
+           description To-P1
+           no shutdown
+           ipv6 address 2001:db8:1:1::0/127
+           ipv6 enable
+          !
+          interface GigabitEthernet0/0/0/1
+           description To-PE2-direct-shortcut
+           no shutdown
+           ipv6 address 2001:db8:1:3::0/127
+           ipv6 enable
+          !
+          interface GigabitEthernet0/0/0/2
+           description To-Client1
+           no shutdown
+           ipv6 address 2001:db8:2:1::1/64
+           ipv6 enable
+          !
+          interface GigabitEthernet0/0/0/3
+           description To-External-bridge90-mgmt
+           no shutdown
+           ipv4 address dhcp
+          !
+          segment-routing
+           srv6
+            encapsulation
+             source-address 2001:db8:0:1::1
+            !
+            locators
+             locator MAIN
+              prefix fc00:0:1::/48
+             !
+            !
+           !
+          !
+          router ospfv3 CORE
+           router-id 1.1.1.1
+           segment-routing srv6 locator MAIN
+           area 0
+            interface Loopback0
+             passive enable
+            !
+            interface GigabitEthernet0/0/0/0
+             network point-to-point
+            !
+            interface GigabitEthernet0/0/0/1
+             network point-to-point
+            !
+           !
+          !
+          route-policy PASS-CLIENT
+            if destination in (2001:db8:2:0::/32 ge 64) then
+              pass
+            else
+              drop
+            endif
+          end-policy
+          !
+          router bgp 65000
+           bgp router-id 1.1.1.1
+           address-family ipv6 unicast
+            redistribute connected route-policy PASS-CLIENT
+           !
+           neighbor 2001:db8:0:1::3
+            remote-as 65000
+            update-source Loopback0
+            address-family ipv6 unicast
+            !
+           !
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: PE1
+    node_definition: iosxrv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -300
+    y: 0
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: MgmtEth0/RP0/CPU0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: donotuse1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: donotuse2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet0/0/0/0
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: GigabitEthernet0/0/0/1
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: GigabitEthernet0/0/0/2
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: GigabitEthernet0/0/0/3
+        mac_address: null
+        type: physical
+        slot: 6
+  - boot_disk_size: null
+    configuration:
+      - name: iosxr_config.txt
+        content: |-
+          hostname P1
+          !
+          username cisco
+           group root-lr
+           group cisco-support
+           secret cisco
+          !
+          ssh server v2
+          ssh server vrf default
+          !
+          interface Loopback0
+           ipv6 address 2001:db8:0:1::2/128
+          !
+          interface GigabitEthernet0/0/0/0
+           description To-PE1
+           no shutdown
+           ipv6 address 2001:db8:1:1::1/127
+           ipv6 enable
+          !
+          interface GigabitEthernet0/0/0/1
+           description To-PE2
+           no shutdown
+           ipv6 address 2001:db8:1:2::0/127
+           ipv6 enable
+          !
+          segment-routing
+           srv6
+            encapsulation
+             source-address 2001:db8:0:1::2
+            !
+            locators
+             locator MAIN
+              prefix fc00:0:2::/48
+             !
+            !
+           !
+          !
+          router ospfv3 CORE
+           router-id 2.2.2.2
+           segment-routing srv6 locator MAIN
+           area 0
+            interface Loopback0
+             passive enable
+            !
+            interface GigabitEthernet0/0/0/0
+             network point-to-point
+            !
+            interface GigabitEthernet0/0/0/1
+             network point-to-point
+            !
+           !
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: P1
+    node_definition: iosxrv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -75
+    y: 150
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: MgmtEth0/RP0/CPU0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: donotuse1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: donotuse2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet0/0/0/0
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: GigabitEthernet0/0/0/1
+        mac_address: null
+        type: physical
+        slot: 4
+  - boot_disk_size: null
+    configuration:
+      - name: iosxr_config.txt
+        content: |-
+          hostname PE2
+          !
+          username cisco
+           group root-lr
+           group cisco-support
+           secret cisco
+          !
+          ssh server v2
+          ssh server vrf default
+          !
+          interface Loopback0
+           ipv6 address 2001:db8:0:1::3/128
+          !
+          interface GigabitEthernet0/0/0/0
+           description To-P1
+           no shutdown
+           ipv6 address 2001:db8:1:2::1/127
+           ipv6 enable
+          !
+          interface GigabitEthernet0/0/0/1
+           description To-PE1-direct-shortcut
+           no shutdown
+           ipv6 address 2001:db8:1:3::1/127
+           ipv6 enable
+          !
+          interface GigabitEthernet0/0/0/2
+           description To-Client2
+           no shutdown
+           ipv6 address 2001:db8:2:2::1/64
+           ipv6 enable
+          !
+          segment-routing
+           srv6
+            encapsulation
+             source-address 2001:db8:0:1::3
+            !
+            locators
+             locator MAIN
+              prefix fc00:0:3::/48
+             !
+            !
+           !
+          !
+          router ospfv3 CORE
+           router-id 3.3.3.3
+           segment-routing srv6 locator MAIN
+           area 0
+            interface Loopback0
+             passive enable
+            !
+            interface GigabitEthernet0/0/0/0
+             network point-to-point
+            !
+            interface GigabitEthernet0/0/0/1
+             network point-to-point
+            !
+           !
+          !
+          route-policy PASS-CLIENT
+            if destination in (2001:db8:2:0::/32 ge 64) then
+              pass
+            else
+              drop
+            endif
+          end-policy
+          !
+          router bgp 65000
+           bgp router-id 3.3.3.3
+           address-family ipv6 unicast
+            redistribute connected route-policy PASS-CLIENT
+           !
+           neighbor 2001:db8:0:1::1
+            remote-as 65000
+            update-source Loopback0
+            address-family ipv6 unicast
+            !
+           !
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: PE2
+    node_definition: iosxrv9000
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 150
+    y: 0
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: MgmtEth0/RP0/CPU0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: donotuse1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: donotuse2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet0/0/0/0
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: GigabitEthernet0/0/0/1
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: GigabitEthernet0/0/0/2
+        mac_address: null
+        type: physical
+        slot: 5
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          hostname client1
+          ip address add 2001:db8:2:1::10/64 dev eth0
+          ip link set dev eth0 up
+          ip route add default via 2001:db8:2:1::1
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: Client1
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -500
+    y: 0
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          hostname client2
+          ip address add 2001:db8:2:2::10/64 dev eth0
+          ip link set dev eth0 up
+          ip route add default via 2001:db8:2:2::1
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: null
+    label: Client2
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 350
+    y: 0
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: default
+        content: bridge90
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: null
+    label: ext-bridge90
+    node_definition: external_connector
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -300
+    y: -200
+    interfaces:
+      - id: i0
+        label: port
+        mac_address: null
+        type: physical
+        slot: 0
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i4
+    i2: i4
+    conditioning: {}
+    label: PE1-GigabitEthernet0/0/0/0<->P1-GigabitEthernet0/0/0/0
+  - id: l1
+    n1: n1
+    n2: n2
+    i1: i5
+    i2: i4
+    conditioning: {}
+    label: P1-GigabitEthernet0/0/0/1<->PE2-GigabitEthernet0/0/0/0
+  - id: l2
+    n1: n0
+    n2: n2
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: PE1-GigabitEthernet0/0/0/1<->PE2-GigabitEthernet0/0/0/1
+  - id: l3
+    n1: n0
+    n2: n3
+    i1: i6
+    i2: i0
+    conditioning: {}
+    label: PE1-GigabitEthernet0/0/0/2<->Client1-eth0
+  - id: l4
+    n1: n2
+    n2: n4
+    i1: i6
+    i2: i0
+    conditioning: {}
+    label: PE2-GigabitEthernet0/0/0/2<->Client2-eth0
+  - id: l5
+    n1: n0
+    n2: n5
+    i1: i7
+    i2: i0
+    conditioning: {}
+    label: PE1-GigabitEthernet0/0/0/3<->ext-bridge90-port
+lab:
+  description: ISIS+SRv6 underlay, single-AS iBGP overlay, PE1/P1/PE2 (IOS XRv9000)
+    + Client1/Client2 (Alpine)
+  notes: |-
+    SRv6 over OSPFv3 — CML Lab Guide
+    Underlay IGP: OSPFv3 (single area 0) Forwarding: SRv6 (locator-based End SIDs — no MPLS, no LDP) Overlay: Single-AS iBGP IPv6 unicast (BGP-over-SRv6) Remote access: External Connector in bridge mode (bridge90) off PE1 Platform: Cisco IOS XRv9000 (image iosxrv9000-26-1-1) + Alpine Linux clients Lab ID: a49e7c2f-248a-4d75-ab46-27614a871164 · Title: SRv6 Demo Lab
+
+    This guide documents the lab as actually deployed and running in CML, not a paper design. Everything below was pushed to the live nodes.
+
+
+    1. The environment
+    1.1 What this lab is
+    This is a small service-provider core that demonstrates SRv6 (Segment Routing over IPv6) without any MPLS. Three routers form the transport core; two Linux hosts sit at the edges as "customers." The control plane is split into two layers, which is exactly how real SP networks are structured:
+
+    Underlay (transport): OSPFv3 distributes router loopbacks and, crucially, each router's SRv6 locator. Once every router knows every other router's locator, any router can build an IPv6 forwarding path to any other using SRv6 SIDs — no label distribution protocol required, because in SRv6 the "label" is an IPv6 address drawn from the locator.
+    Overlay (services): BGP carries the actual customer prefixes between the edge routers (PEs). BGP next-hops resolve over the SRv6 underlay, so customer traffic is encapsulated in an outer IPv6 header with a Segment Routing Header (SRH) and carried across the core.
+
+    The split matters: the core router (P1) has no idea customer prefixes exist. It only forwards SRv6-encapsulated packets based on the locator route it learned via OSPFv3. This is the SRv6 value proposition — state lives at the edge, the core stays simple.
+    1.2 Node inventory (live)
+    Node
+    Role
+    Platform
+    State role
+    PE1
+    Provider Edge — OSPFv3 + SRv6 + BGP; also hosts the management uplink
+    IOS XRv9000
+    Edge / service
+    P1
+    Provider core — OSPFv3 + SRv6 transit only, no BGP
+    IOS XRv9000
+    Transport
+    PE2
+    Provider Edge — OSPFv3 + SRv6 + BGP
+    IOS XRv9000
+    Edge / service
+    Client1
+    Customer host behind PE1
+    Alpine Linux
+    Test endpoint
+    Client2
+    Customer host behind PE2
+    Alpine Linux
+    Test endpoint
+    ext-bridge90
+    External Connector (bridge mode) → real network
+    CML node
+    Remote access
+
+    1.3 Physical topology (as wired in CML)
+            ┌─────────────────┐
+
+            │  ext-bridge90   │  (External Connector, BRIDGE mode = "bridge90")
+
+            │  (your LAN)     │
+
+            └────────┬────────┘
+
+                     │ PE1 Gi0/0/0/3  (ipv4 dhcp — management uplink)
+
+                     │
+
+     [Client1]──Gi0/0/0/2──┤        Gi0/0/0/0          Gi0/0/0/0        ├──Gi0/0/0/2──[Client2]
+
+                      ┌────┴────┐ ─────────────── ┌────────┐ ─────────── ┌────┴────┐
+
+                      │   PE1   │                 │   P1   │             │   PE2   │
+
+                      └────┬────┘                 └────────┘             └────┬────┘
+
+                           │ Gi0/0/0/1                                  Gi0/0/0/1 │
+
+                           └──────────── direct "shortcut" link ──────────────────┘
+
+                                      (PE1 Gi0/0/0/1 ↔ PE2 Gi0/0/0/1)
+
+    There are two paths PE1→PE2: the direct link (1 hop, OSPF shortest path) and the path through P1 (2 hops). The direct link wins by default; the longer path exists so you can later force traffic onto it with SR-TE (see §7.3).
+
+    XRv9000 interface quirk (important): on this platform the first three NIC slots are MgmtEth0/RP0/CPU0/0, donotuse1, donotuse2. The first usable data interface is GigabitEthernet0/0/0/0. In CML that means data interfaces are added starting at the 4th slot — already handled in this lab, but remember it if you add more links.
+    1.4 Addressing reference
+    Loopbacks (also OSPFv3 router-id source / BGP update-source):
+
+    Node
+    Loopback0
+    OSPFv3 Router-ID
+    BGP Router-ID
+    PE1
+    2001:db8:0:1::1/128
+    1.1.1.1
+    1.1.1.1
+    P1
+    2001:db8:0:1::2/128
+    2.2.2.2
+    — (no BGP)
+    PE2
+    2001:db8:0:1::3/128
+    3.3.3.3
+    3.3.3.3
+
+
+    Core P2P links (/127):
+
+    Link
+    PE/P side
+    Address
+    PE1 Gi0/0/0/0 ↔ P1 Gi0/0/0/0
+    PE1=::0, P1=::1
+    2001:db8:1:1::/127
+    P1 Gi0/0/0/1 ↔ PE2 Gi0/0/0/0
+    P1=::0, PE2=::1
+    2001:db8:1:2::/127
+    PE1 Gi0/0/0/1 ↔ PE2 Gi0/0/0/1 (direct)
+    PE1=::0, PE2=::1
+    2001:db8:1:3::/127
+
+
+    Access links (/64):
+
+    Link
+    Address
+    PE1 Gi0/0/0/2 ↔ Client1
+    PE1=2001:db8:2:1::1, Client1=2001:db8:2:1::10
+    PE2 Gi0/0/0/2 ↔ Client2
+    PE2=2001:db8:2:2::1, Client2=2001:db8:2:2::10
+
+
+    Management uplink: PE1 Gi0/0/0/3 → ipv4 address dhcp (address assigned by whatever DHCP server lives on bridge90).
+
+    SRv6 locators (advertised by OSPFv3):
+
+    Node
+    Locator
+    Prefix
+    PE1
+    MAIN
+    fc00:0:1::/48
+    P1
+    MAIN
+    fc00:0:2::/48
+    PE2
+    MAIN
+    fc00:0:3::/48
+
+
+    Login: username cisco / password cisco (all three routers). SSH v2 enabled.
+
+
+    2. How to reach the lab
+    Console (always works)
+    In the CML UI, open the lab and click any node → Console. This is the out-of-band path and doesn't depend on the bridge.
+    SSH via the external connector (the point of bridge90)
+    Wait for PE1 to finish booting and run, on PE1's console: show ipv4 interface GigabitEthernet0/0/0/3 brief to see the DHCP-assigned address.
+    From a machine on the same L2 segment as bridge90, ssh cisco@<that-address>.
+
+    If Gi0/0/0/3 shows no address: bridge90 has no DHCP server. Console into PE1 and set a static address instead:
+
+    configure
+
+     interface GigabitEthernet0/0/0/3
+
+      no ipv4 address dhcp
+
+      ipv4 address 192.168.90.10 255.255.255.0   ! use your real subnet
+
+     !
+
+     router static
+
+      address-family ipv4 unicast
+
+       0.0.0.0/0 192.168.90.1                      ! your real gateway
+
+    commit
+
+    Tell me the real subnet/gateway for bridge90 and I can push this for you.
+
+
+    3. Full running configuration, explained section by section
+    Below is the actual config on each node, broken into blocks with an explanation of what each does and why it's there. PE1 is annotated in full; P1 and PE2 only differ where noted.
+    3.1 PE1 — annotated
+    Identity + management user
+
+    hostname PE1
+
+    !
+
+    username cisco
+
+     group root-lr
+
+     group cisco-support
+
+     secret cisco
+
+    Why: When a custom day-0 config is pushed to XRv9000, it replaces the platform's default user template. Without re-declaring a user the router would have no login at all. root-lr is the top privilege group; secret stores the password hashed.
+
+    Enable SSH
+
+    ssh server v2
+
+    ssh server vrf default
+
+    Why: Turns on the SSHv2 daemon in the default VRF so you can log in over the bridge90 uplink. Without ssh server vrf default, the daemon wouldn't listen on the global routing table where Gi0/0/0/3 lives.
+
+    Loopback (the router's identity address)
+
+    interface Loopback0
+
+     ipv6 address 2001:db8:0:1::1/128
+
+    Why: The loopback is always up as long as the router is up, so it's the stable address used as the OSPF/BGP source and as the BGP next-hop. Reachability to this /128 across the core is what the entire SRv6 underlay exists to provide.
+
+    Core interfaces
+
+    interface GigabitEthernet0/0/0/0
+
+     description To-P1
+
+     no shutdown
+
+     ipv6 address 2001:db8:1:1::0/127
+
+     ipv6 enable
+
+    !
+
+    interface GigabitEthernet0/0/0/1
+
+     description To-PE2-direct-shortcut
+
+     no shutdown
+
+     ipv6 address 2001:db8:1:3::0/127
+
+     ipv6 enable
+
+    Why: /127 is the modern point-to-point prefix length for IPv6 links (one address each side, no waste). ipv6 enable switches on the link-local address that OSPFv3 actually uses to form adjacencies — OSPFv3 peers over link-local, not the global address.
+
+    Customer-facing interface
+
+    interface GigabitEthernet0/0/0/2
+
+     description To-Client1
+
+     no shutdown
+
+     ipv6 address 2001:db8:2:1::1/64
+
+     ipv6 enable
+
+    Why: This is the PE↔CE access link. The /64 subnet here is what gets advertised into BGP as the "customer route."
+
+    Management uplink to bridge90
+
+    interface GigabitEthernet0/0/0/3
+
+     description To-External-bridge90-mgmt
+
+     no shutdown
+
+     ipv4 address dhcp
+
+    Why: This is the interface cabled to the External Connector. ipv4 address dhcp makes PE1 request an address from bridge90's segment so you can SSH in. It's deliberately not in OSPF or BGP — it's pure out-of-band-style management reachability, kept separate from the SRv6 data plane.
+
+    SRv6 global setup
+
+    segment-routing
+
+     srv6
+
+      encapsulation
+
+       source-address 2001:db8:0:1::1
+
+      !
+
+      locators
+
+       locator MAIN
+
+        prefix fc00:0:1::/48
+
+    Why: This is the heart of SRv6.
+
+    locator MAIN prefix fc00:0:1::/48 carves out the IPv6 block from which this router mints all its SIDs (Segment IDs). A SID is literally an IPv6 address: locator : function : args. The platform auto-allocates an End SID from this block — that's the SID other routers target to "reach PE1 via the underlay."
+    encapsulation source-address sets the outer IPv6 source address PE1 uses when it imposes an SRv6 header on customer traffic. Using the loopback keeps the source stable and routable.
+
+    OSPFv3 with SRv6
+
+    router ospfv3 CORE
+
+     router-id 1.1.1.1
+
+     segment-routing srv6 locator MAIN
+
+     area 0
+
+      interface Loopback0
+
+       passive enable
+
+      !
+
+      interface GigabitEthernet0/0/0/0
+
+       network point-to-point
+
+      !
+
+      interface GigabitEthernet0/0/0/1
+
+       network point-to-point
+
+    Why each line:
+
+    router-id 1.1.1.1 — OSPFv3 needs a 32-bit router-id; it can't derive one automatically in an IPv6-only box reliably, so it's set explicitly.
+    segment-routing srv6 locator MAIN — this is what makes OSPFv3 advertise the locator fc00:0:1::/48 into the IGP. Without this line, neighbors form but nobody learns how to reach PE1's SIDs, and SRv6 forwarding silently fails. This is the #1 thing to check if SRv6 pings don't work.
+    interface Loopback0 / passive enable — advertise the loopback into OSPF but don't try to form an adjacency on it (there's no neighbor on a loopback).
+    network point-to-point on the core links — skips OSPF's DR/BDR election (pointless on a 2-router link) so adjacencies come up faster and cleaner.
+
+    Route-policy to control what leaks into BGP
+
+    route-policy PASS-CLIENT
+
+      if destination in (2001:db8:2:0::/32 ge 64) then
+
+        pass
+
+      else
+
+        drop
+
+      endif
+
+    end-policy
+
+    Why: IOS XR requires an explicit policy on redistribute. This one says "only allow prefixes inside 2001:db8:2:0::/32 that are /64 or longer" — i.e. only the customer access subnets, never the core links or loopbacks. Without the filter, redistribute-connected would dump everything into BGP.
+
+    BGP overlay
+
+    router bgp 65000
+
+     bgp router-id 1.1.1.1
+
+     address-family ipv6 unicast
+
+      redistribute connected route-policy PASS-CLIENT
+
+     !
+
+     neighbor 2001:db8:0:1::3
+
+      remote-as 65000
+
+      update-source Loopback0
+
+      address-family ipv6 unicast
+
+    Why:
+
+    bgp 65000 on both PEs with the same AS = iBGP.
+    redistribute connected route-policy PASS-CLIENT injects the local customer /64 into BGP (filtered as above).
+    neighbor 2001:db8:0:1::3 ... update-source Loopback0 peers to PE2's loopback. That loopback is only reachable because the SRv6 underlay carries it — so BGP literally rides on top of SRv6. P1 is not a BGP neighbor; it never sees these routes.
+    3.2 P1 — what's different
+    P1 is transport only. It has the same SRv6 + OSPFv3 structure but:
+
+    locator fc00:0:2::/48, router-id 2.2.2.2
+    no interface Gi0/0/0/2, no route-policy, no router bgp — it carries no customer state at all.
+
+    router ospfv3 CORE
+
+     router-id 2.2.2.2
+
+     segment-routing srv6 locator MAIN
+
+     area 0
+
+      interface Loopback0
+
+       passive enable
+
+      !
+
+      interface GigabitEthernet0/0/0/0
+
+       network point-to-point
+
+      !
+
+      interface GigabitEthernet0/0/0/1
+
+       network point-to-point
+
+    This is the whole point of SRv6: P1 forwards encapsulated traffic using only the locator routes it learned via OSPFv3, with zero per-customer or per-service configuration.
+    3.3 PE2 — what's different
+    Mirror image of PE1: locator fc00:0:3::/48, router-id 3.3.3.3, BGP peers back to PE1's loopback 2001:db8:0:1::1, customer subnet 2001:db8:2:2::/64. No Gi0/0/0/3 / bridge uplink (only PE1 has the management connection).
+    3.4 Clients (Alpine) — what's different from a router
+    Alpine day-0 config is a shell script sourced as root at boot, not router CLI:
+
+    hostname client1
+
+    ip address add 2001:db8:2:1::10/64 dev eth0
+
+    ip link set dev eth0 up
+
+    ip route add default via 2001:db8:2:1::1
+
+    Why: These are plain Linux hosts. They just need an address and a default route pointing at their PE. All the SRv6/BGP intelligence lives in the routers; the clients are deliberately dumb endpoints.
+
+
+    4. Bring-up verification (run in this order)
+    Each step depends on the previous, so checking in order localizes any failure fast.
+
+    Interfaces up — show ipv6 interface brief (all core + access up/up).
+    Management got DHCP — on PE1: show ipv4 interface GigabitEthernet0/0/0/3 brief.
+    OSPFv3 neighbors — show ospfv3 neighbor. PE1 should list P1 and PE2; P1 lists PE1+PE2; PE2 lists P1+PE1, all in FULL state.
+    SRv6 locator + SIDs allocated — show segment-routing srv6 locator and show segment-routing srv6 sid.
+    Locators learned via OSPF — show route ipv6 fc00::/16 should show the other routers' /48 locators.
+    Loopback reachability over SRv6 — from PE1: ping ipv6 2001:db8:0:1::3 source Loopback0.
+    BGP established — show bgp ipv6 unicast summary on PE1/PE2.
+    Customer prefixes present — show bgp ipv6 unicast shows both 2001:db8:2:1::/64 and 2001:db8:2:2::/64.
+    End-to-end — from Client1: ping -6 2001:db8:2:2::10.
+
+
+    5. Worked examples (verify the lab works)
+    5.1 Confirm the SRv6 underlay (independent of BGP)
+    On PE1:
+
+    show segment-routing srv6 sid
+
+    ping ipv6 2001:db8:0:1::3 source Loopback0
+
+    show cef ipv6 2001:db8:0:1::3/128 detail
+
+    The ping proves loopback-to-loopback works over SRv6. The show cef ... detail reveals the SRv6 forwarding info (the outgoing SID/locator) rather than a plain next-hop. If this fails but OSPF neighbors are FULL, the cause is almost always a missing segment-routing srv6 locator MAIN under router ospfv3 on one node.
+    5.2 Confirm end-to-end customer traffic
+    From Client1:
+
+    ping -6 2001:db8:2:2::10
+
+    traceroute -6 2001:db8:2:2::10
+
+    Path: Client1 → PE1 (plain IPv6 in) → SRv6-encapsulated across the core (direct link, the OSPF shortest path) → PE2 decapsulates → Client2.
+    5.3 See the SRv6 header on the wire
+    Start a packet capture on the PE1↔PE2 direct link from the CML UI, generate traffic from Client1, open in Wireshark, and look for an outer IPv6 packet whose Next Header = 43 (Routing / SRH) wrapping the original Client1→Client2 packet. This is the single most instructive thing to actually see in this lab.
+
+
+    6. OSPFv3 vs the IS-IS version (why this differs)
+    If you saw the earlier IS-IS build, the functional differences worth knowing:
+
+    Aspect
+    IS-IS version
+    OSPFv3 version (this one)
+    Neighbor formation
+    over L2 (CLNS), net address
+    over IPv6 link-local
+    Router identity
+    net 49.0001... (NSAP)
+    router-id 1.1.1.1 (32-bit, mandatory)
+    SRv6 locator binding
+    under address-family ipv6 / segment-routing srv6 locator
+    segment-routing srv6 locator MAIN at process level
+    P2P links
+    point-to-point under interface
+    network point-to-point under interface
+    Areas
+    single L2
+    single area 0
+
+
+    The SRv6 data plane, BGP overlay, addressing, and route-policy are identical — only the IGP changed. That's a useful teaching point on its own: SRv6 is IGP-agnostic.
+
+
+    7. Extending the lab — capabilities & use cases
+    Each of these builds on what's already running. They're ordered roughly easy → advanced.
+    7.1 L3VPN service over SRv6 (the big one)
+    Right now customer traffic rides "global" BGP IPv6 unicast. The natural next step is a real VPNv6 L3VPN:
+
+    Add a VRF on PE1 and PE2 (e.g. vrf CUSTOMER-A), move the client-facing interface into it.
+    Add address-family vpnv6 unicast to BGP and a per-VRF SRv6 locator so the PE allocates a per-VRF End.DT6 SID (decapsulate-and-lookup-in-VRF-table).
+    Result: multi-tenant separation across the same SRv6 core, P1 still oblivious. Use case: this is how SRv6 is actually deployed by carriers — per-customer VPNs with no MPLS.
+    7.2 Add a second customer / second VRF
+    Clone Client1/Client2, attach to spare PE interfaces, put them in vrf CUSTOMER-B. Demonstrates that overlapping/private addressing in different VRFs stays isolated while sharing one underlay.
+    7.3 SR-TE explicit path + automated steering (force the long path)
+    Override the OSPF shortest path so PE1→PE2 traffic goes via P1 instead of the direct link:
+
+    Read real SIDs: show segment-routing srv6 sid on P1 and PE2.
+    On PE1, build an explicit SR policy whose segment-list steps through P1's End SID then PE2's End SID, colored (e.g. color 100), endpoint = PE2 loopback.
+    Color the customer route in BGP so automated steering maps it onto the policy.
+    Verify with show segment-routing traffic-eng policy and re-capture on the PE1↔P1 link — traffic now appears there. Use case: latency-/bandwidth-based traffic engineering, demonstrating that SR policy beats the IGP metric.
+    7.4 TI-LFA fast reroute
+    Enable fast-reroute per-prefix with TI-LFA under OSPFv3 on the core interfaces. Then shut the direct PE1↔PE2 link and watch traffic pre-compute a backup via P1 with sub-50ms convergence. Use case: resiliency demonstration; shows SRv6's loop-free-alternate backup paths.
+    7.5 Use the bridge90 uplink for real tooling
+    With PE1 reachable over bridge90 you can:
+
+    Point NetBox / pyATS / Ansible / Nornir at PE1 and automate config pulls or pushes from your laptop.
+    Run gNMI/telemetry off-box to a collector on your LAN.
+    Extend the bridge to PE2 as well (add another External Connector + interface) for full out-of-band management of every PE. Use case: turns the lab from a closed sandbox into something your real automation stack can drive.
+    7.6 Add a route reflector
+    For more than 2 PEs, full-mesh iBGP doesn't scale. Promote P1 (or add a dedicated node) to a BGP route reflector for the VPNv6/IPv6 address-families. PEs peer only to the RR. Use case: realistic scaling pattern for a growing PE count.
+    7.7 Inter-domain / SRv6 + BGP-LS + PCE
+    Advanced: add an SR-PCE and export topology via BGP-LS so an external controller computes SR policies centrally instead of configuring them by hand on PE1. Use case: controller-driven WAN, the modern SDN-style operating model.
+
+
+    8. Troubleshooting quick table
+    Symptom
+    Likely cause
+    OSPFv3 neighbors not FULL
+    ipv6 enable missing on a core link (no link-local → no adjacency), or mismatched network point-to-point
+    show segment-routing srv6 sid empty
+    segment-routing srv6 locator MAIN missing under router ospfv3 on that node
+    Loopback ping fails, OSPF FULL
+    locator not advertised (same as above) on a transit node
+    BGP stuck Active/Idle
+    loopback-to-loopback SRv6 path broken — fix underlay (§5.1) before BGP
+    Client ping fails, PE-PE ping works
+    redistribute connected route-policy PASS-CLIENT issue, or client default route wrong
+    Can't SSH over bridge90
+    Gi0/0/0/3 got no DHCP address (§2) — set static; or no host on the same bridge segment
+    Logged out, no credentials
+    confirm username cisco secret cisco is present (it is in this build)
+
+    9. Lifecycle / housekeeping
+    Stop the lab from the CML UI before deleting; use Wipe (not delete) to keep configs for a later restart.
+    The External Connector in bridge mode places PE1's Gi0/0/0/3 directly on your physical segment — treat that uplink like a real exposed interface (it's why only the management interface, not the data plane, is bridged).
+    10. References
+    RFC 8986 — SRv6 Network Programming (locator / function / End SID model)
+    RFC 8754 — IPv6 Segment Routing Header (SRH)
+    RFC 5340 — OSPF for IPv6 (OSPFv3)
+    Cisco IOS XR Segment Routing Configuration Guide (match your XR release)
+  title: SRv6 Demo Lab
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
