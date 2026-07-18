@@ -1,0 +1,792 @@
+annotations: []
+smart_annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname CP1
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.200.0.1 255.255.255.255
+           ip router isis FABRIC
+          !
+          interface GigabitEthernet1/0/1
+           description to-BN1
+           no switchport
+           ip address 10.200.255.1 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/2
+           description to-EN1
+           no switchport
+           ip address 10.200.255.5 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/3
+           description to-EN2
+           no switchport
+           ip address 10.200.255.9 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          router isis FABRIC
+           net 49.0001.0000.0000.0001.00
+           is-type level-2-only
+           metric-style wide
+           passive-interface Loopback0
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: CP1
+    node_definition: cat9000v-uadp
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 0
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet1/0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet1/0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet1/0/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: GigabitEthernet1/0/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: GigabitEthernet1/0/5
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: GigabitEthernet1/0/6
+        mac_address: null
+        type: physical
+        slot: 6
+      - id: i8
+        label: GigabitEthernet1/0/7
+        mac_address: null
+        type: physical
+        slot: 7
+      - id: i9
+        label: GigabitEthernet1/0/8
+        mac_address: null
+        type: physical
+        slot: 8
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname BN1
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 10.200.0.2 255.255.255.255
+           ip router isis FABRIC
+          !
+          interface GigabitEthernet1/0/1
+           description to-CP1
+           no switchport
+           ip address 10.200.255.2 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/2
+           description to-EN1
+           no switchport
+           ip address 10.200.255.13 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/3
+           description to-EN2
+           no switchport
+           ip address 10.200.255.17 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/4
+           description CAMPUS-handoff-to-EXT-RTR
+           no switchport
+           ip address 10.200.254.1 255.255.255.252
+           no shutdown
+          !
+          interface GigabitEthernet1/0/5
+           description GUEST-handoff-to-EXT-RTR
+           no switchport
+           shutdown
+          !
+          router isis FABRIC
+           net 49.0001.0000.0000.0002.00
+           is-type level-2-only
+           metric-style wide
+           passive-interface Loopback0
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: BN1
+    node_definition: cat9000v-uadp
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 300
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet1/0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet1/0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet1/0/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: GigabitEthernet1/0/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: GigabitEthernet1/0/5
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: GigabitEthernet1/0/6
+        mac_address: null
+        type: physical
+        slot: 6
+      - id: i8
+        label: GigabitEthernet1/0/7
+        mac_address: null
+        type: physical
+        slot: 7
+      - id: i9
+        label: GigabitEthernet1/0/8
+        mac_address: null
+        type: physical
+        slot: 8
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname EN1
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          vlan 50
+           name CAMPUS
+          !
+          interface Loopback0
+           ip address 10.200.0.3 255.255.255.255
+           ip router isis FABRIC
+          !
+          interface GigabitEthernet1/0/1
+           description to-BN1
+           no switchport
+           ip address 10.200.255.14 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/2
+           description to-CP1
+           no switchport
+           ip address 10.200.255.6 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/3
+           description access-to-H1
+           switchport mode access
+           switchport access vlan 50
+           no shutdown
+          !
+          router isis FABRIC
+           net 49.0001.0000.0000.0003.00
+           is-type level-2-only
+           metric-style wide
+           passive-interface Loopback0
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: EN1
+    node_definition: cat9000v-uadp
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -150
+    y: 0
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet1/0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet1/0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet1/0/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: GigabitEthernet1/0/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: GigabitEthernet1/0/5
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: GigabitEthernet1/0/6
+        mac_address: null
+        type: physical
+        slot: 6
+      - id: i8
+        label: GigabitEthernet1/0/7
+        mac_address: null
+        type: physical
+        slot: 7
+      - id: i9
+        label: GigabitEthernet1/0/8
+        mac_address: null
+        type: physical
+        slot: 8
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname EN2
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          vlan 50
+           name CAMPUS
+          !
+          interface Loopback0
+           ip address 10.200.0.4 255.255.255.255
+           ip router isis FABRIC
+          !
+          interface GigabitEthernet1/0/1
+           description to-BN1
+           no switchport
+           ip address 10.200.255.18 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/2
+           description to-CP1
+           no switchport
+           ip address 10.200.255.10 255.255.255.252
+           ip router isis FABRIC
+           isis network point-to-point
+           no shutdown
+          !
+          interface GigabitEthernet1/0/3
+           description access-to-H2
+           switchport mode access
+           switchport access vlan 50
+           no shutdown
+          !
+          router isis FABRIC
+           net 49.0001.0000.0000.0004.00
+           is-type level-2-only
+           metric-style wide
+           passive-interface Loopback0
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: EN2
+    node_definition: cat9000v-uadp
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 150
+    y: 0
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet1/0/1
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet1/0/2
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet1/0/3
+        mac_address: null
+        type: physical
+        slot: 3
+      - id: i5
+        label: GigabitEthernet1/0/4
+        mac_address: null
+        type: physical
+        slot: 4
+      - id: i6
+        label: GigabitEthernet1/0/5
+        mac_address: null
+        type: physical
+        slot: 5
+      - id: i7
+        label: GigabitEthernet1/0/6
+        mac_address: null
+        type: physical
+        slot: 6
+      - id: i8
+        label: GigabitEthernet1/0/7
+        mac_address: null
+        type: physical
+        slot: 7
+      - id: i9
+        label: GigabitEthernet1/0/8
+        mac_address: null
+        type: physical
+        slot: 8
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname EXT-RTR
+          !
+          no ip domain lookup
+          ip cef
+          ipv6 unicast-routing
+          ipv6 cef
+          !
+          line con 0
+           logging synchronous
+           exec-timeout 0 0
+          !
+          interface Loopback0
+           ip address 198.51.100.1 255.255.255.255
+          !
+          interface GigabitEthernet1
+           description CAMPUS-handoff-to-BN1
+           ip address 10.200.254.2 255.255.255.252
+           no shutdown
+          !
+          interface GigabitEthernet2
+           description GUEST-handoff-to-BN1
+           ip address 10.200.253.2 255.255.255.252
+           shutdown
+          !
+          ip route 172.30.0.0 255.255.0.0 10.200.254.1
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: null
+    label: EXT-RTR
+    node_definition: cat8000v
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 500
+    y: -200
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          hostname H1
+          ip address add 172.30.10.10/24 dev eth0
+          ip link set dev eth0 up
+          ip route add default via 172.30.10.1
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: null
+    label: H1
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: -150
+    y: 150
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          hostname H2
+          ip address add 172.30.20.10/24 dev eth0
+          ip link set dev eth0 up
+          ip route add default via 172.30.20.1
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: null
+    label: H2
+    node_definition: alpine
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 150
+    y: 150
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        type: physical
+        slot: 0
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          platform console serial
+          hostname WLC1
+          !
+          no ip domain lookup
+          !
+          interface Loopback0
+           description shared-services-address-not-a-fabric-RLOC
+           ip address 10.200.0.10 255.255.255.255
+          !
+          interface GigabitEthernet1
+           description uplink-to-BN1-shared-services-REFERENCE-ONLY-intentionally-shutdown
+           ip address 10.200.0.14 255.255.255.252
+           shutdown
+          !
+          wireless management interface GigabitEthernet1
+          !
+          ip route 0.0.0.0 0.0.0.0 10.200.0.13
+          !
+          wireless fabric control-plane CP1-MAP-SERVER
+           ip address 10.200.0.1 key lisp-sda-lab lisp-sda-lab
+          !
+          wireless profile fabric CAMPUS-FABRIC
+           sgt-tag 10
+           client-l2-vnid 8188
+          !
+          wireless tag site CAMPUS-SITE-TAG
+           fabric control-plane CP1-MAP-SERVER
+          !
+          wireless fabric name CAMPUS-FABRIC l2-vnid 8188 l3-vnid 4097 ip 172.30.0.0 255.255.0.0 control-plane-name CP1-MAP-SERVER
+          !
+          line vty 0 4
+           login local
+          !
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n7
+    image_definition: null
+    label: WLC1
+    node_definition: cat9800
+    parameters: {}
+    priority: null
+    pyats:
+      username: null
+      password: null
+      enable_password: null
+    ram: null
+    tags: []
+    x: 150
+    y: -350
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        mac_address: null
+        type: physical
+        slot: 0
+      - id: i2
+        label: GigabitEthernet2
+        mac_address: null
+        type: physical
+        slot: 1
+      - id: i3
+        label: GigabitEthernet3
+        mac_address: null
+        type: physical
+        slot: 2
+      - id: i4
+        label: GigabitEthernet4
+        mac_address: null
+        type: physical
+        slot: 3
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: CP1-GigabitEthernet1/0/1<->BN1-GigabitEthernet1/0/1
+  - id: l1
+    n1: n0
+    n2: n2
+    i1: i3
+    i2: i3
+    conditioning: {}
+    label: CP1-GigabitEthernet1/0/2<->EN1-GigabitEthernet1/0/2
+  - id: l2
+    n1: n0
+    n2: n3
+    i1: i4
+    i2: i3
+    conditioning: {}
+    label: CP1-GigabitEthernet1/0/3<->EN2-GigabitEthernet1/0/2
+  - id: l3
+    n1: n1
+    n2: n2
+    i1: i3
+    i2: i2
+    conditioning: {}
+    label: BN1-GigabitEthernet1/0/2<->EN1-GigabitEthernet1/0/1
+  - id: l4
+    n1: n1
+    n2: n3
+    i1: i4
+    i2: i2
+    conditioning: {}
+    label: BN1-GigabitEthernet1/0/3<->EN2-GigabitEthernet1/0/1
+  - id: l5
+    n1: n1
+    n2: n4
+    i1: i5
+    i2: i1
+    conditioning: {}
+    label: BN1-GigabitEthernet1/0/4<->EXT-RTR-GigabitEthernet1
+  - id: l6
+    n1: n1
+    n2: n4
+    i1: i6
+    i2: i2
+    conditioning: {}
+    label: BN1-GigabitEthernet1/0/5<->EXT-RTR-GigabitEthernet2
+  - id: l7
+    n1: n2
+    n2: n5
+    i1: i4
+    i2: i0
+    conditioning: {}
+    label: EN1-GigabitEthernet1/0/3<->H1-eth0
+  - id: l8
+    n1: n3
+    n2: n6
+    i1: i4
+    i2: i0
+    conditioning: {}
+    label: EN2-GigabitEthernet1/0/3<->H2-eth0
+  - id: l9
+    n1: n7
+    n2: n1
+    i1: i1
+    i2: i7
+    conditioning: {}
+    label: WLC1-GigabitEthernet1<->BN1-GigabitEthernet1/0/6
+lab:
+  description: ''
+  notes: |-
+    SDA Fabric: LISP+VXLAN Without Catalyst Center
+
+    Hand-built SD-Access fabric mechanics on real Catalyst 9000v switches (cat9000v-uadp) -- no Catalyst Center automation. IS-IS underlay, LISP control plane (CP1 = MS/MR), VXLAN data plane, border PxTR/PETR (BN1), two anycast-gateway edge nodes (EN1/EN2). cat8000v used only for EXT-RTR, representing the non-fabric outside network. cat9800 (WLC1) added as a config-only wireless-fabric reference node, physically cabled to BN1 Gi1/0/6 (shared-services position) with the port intentionally shut down on both ends.
+
+    Part A (CAMPUS VN, instance-id 4097, 172.30.0.0/16): fully verified live. IS-IS adjacencies up, LISP site registration confirmed on CP1, intra-fabric VXLAN dataplane (H1<->H2 across EN1/EN2) 100% success, bidirectional fabric<->outside connectivity 100% success via BN1's PITR/PETR + LISP publication-based route-export model.
+
+    Part B: GUEST VN (instance-id 4099, VRF GUEST, 172.31.0.0/16) -- full control-plane + border-dataplane verified live; edge-hosted client dataplane test blocked by a CML platform limitation (see below). IPv6 dual-stack added to CAMPUS VN on existing H1/H2 links -- interface/ND layer fully verified live; LISP IPv6 dynamic-EID registration did not activate (device-tracking/SISF gap), documented as a live finding.
+
+    Wireless (WLC1, cat9800): cabled to BN1 Gi1/0/6 (10.200.0.12/30, BN1=.13/WLC1=.14) -- port shutdown on both ends, intentionally, for reference-only review (not for live traffic -- would hit the new-port limitation below regardless, and WLC1's own console is unresponsive post-boot in this environment). Config includes real Catalyst 9800 SD-Access fabric CLI sourced directly from Cisco's official 17.14.x config guide (wireless fabric control-plane / wireless profile fabric / wireless tag site / wireless fabric name), mapped onto the lab's real CAMPUS VN (l3-vnid 4097, 172.30.0.0/16). An addressing bug from the first pass (WLC1 uplink using .11, the broadcast address of a /30 block) was caught and fixed to .14 in a clean /30.
+
+    Key config gotchas discovered and fixed live: ip routing not on by default on cat9000v-uadp; ip router isis silently dropped if pushed before the isis process is defined in the same config push; itr and proxy-itr are mutually exclusive (proxy-itr is border-only); use-petr goes inside service ipv4, not at the top router lisp level; PITR route injection requires the map-cache publications / import publication publisher / route-export publications trio, not route-export site-registrations; anycast gateway (identical SVI IP on every edge) is required for LISP host mobility to work at all.
+
+    Known limitations (documented in the guide, not hidden): (1) any link added to a cat9000v-uadp switch after the lab's initial topology build fails to pass traffic (0 packets in/out) regardless of link flap or node/switch reboot, reproduced independently 5x across three switch nodes including a stop-link-boot ordering test -- blocked the host-mobility demo and the GUEST-VN edge-client test (WLC1's link is deliberately left shut down rather than tested against this); (2) LISP IPv6 dynamic-EID registration gap; (3) WLC1 console unresponsive post-boot. Core Part A and the GUEST/IPv6 control planes are otherwise fully verified.
+
+    Deliverables: sda_lab_guide.md / sda_lab_guide.txt (18 sections: topology, addressing, IS-IS, LISP CP/edge/border configs, VXLAN, host mobility, GUEST VN, IPv6 dual-stack, wireless fabric reference, known limitations, 11 exercises, reference tables).
+  title: 'SDA Fabric: LISP+VXLAN Without Catalyst Center'
+  node_staging:
+    enabled: false
+    start_remaining: true
+    abort_on_failure: false
+  version: 0.3.1
